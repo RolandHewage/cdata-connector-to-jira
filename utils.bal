@@ -74,6 +74,7 @@ isolated function generateDeleteQuery(string objectName, int objectId) returns s
     return string `DELETE FROM ${objectName} WHERE Id = ${objectId}`;
 }
 
-// isolated function generateJdbcUrl(Configuration configuration) returns string {
-
-// }
+isolated function generateJdbcUrl(Configuration configuration) returns string {
+    string jdbcUrl = "jdbc:cdata:jira:";
+    return jdbcUrl;
+}
