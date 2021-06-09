@@ -23,7 +23,7 @@ public client class Client {
     private jdbc:Client cdataConnectorToJira;
     private sql:ConnectionPool connPool;
 
-    public isolated function init(Configuration configuration) returns sql:Error? {
+    public isolated function init(JiraConfig configuration) returns sql:Error? {
         string jdbcUrl = generateJdbcUrl(configuration);
         log:printInfo(jdbcUrl);
         self.cdataConnectorToJira = check new (jdbcUrl);

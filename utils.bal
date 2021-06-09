@@ -74,7 +74,7 @@ isolated function generateDeleteQuery(string objectName, int objectId) returns s
     return string `DELETE FROM ${objectName} WHERE Id = ${objectId}`;
 }
 
-isolated function generateJdbcUrl(Configuration configuration) returns string {
+isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     string jdbcUrl = "jdbc:cdata:jira:";
     if (configuration.basicAuth.hostBasicAuth is CloudBasicAuth) {
         jdbcUrl = jdbcUrl + handleProperties("User", configuration.basicAuth?.hostBasicAuth.user);
@@ -116,7 +116,7 @@ isolated function generateJdbcUrl(Configuration configuration) returns string {
     return jdbcUrl;
 }
 
-isolated function handleSsoProperties(string url, Configuration configuration) returns string {
+isolated function handleSsoProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("SSO Login URL", configuration?.ssoLoginUrl);
     jdbcUrl = jdbcUrl + handleProperties("SSO Properties", configuration?.ssoProperties);
@@ -124,7 +124,7 @@ isolated function handleSsoProperties(string url, Configuration configuration) r
     return jdbcUrl;
 }
 
-isolated function handleOAuthProperties(string url, Configuration configuration) returns string {
+isolated function handleOAuthProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Initiate OAuth", configuration?.initiateOAuth);
     jdbcUrl = jdbcUrl + handleProperties("OAuth Version", configuration?.oauthVersion);
@@ -148,7 +148,7 @@ isolated function handleOAuthProperties(string url, Configuration configuration)
     return jdbcUrl;
 }
 
-isolated function handleSslProperties(string url, Configuration configuration) returns string {
+isolated function handleSslProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("SSL Client Cert", configuration?.sslClientCert);
     jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Type", configuration?.sslClientCertType);
@@ -158,7 +158,7 @@ isolated function handleSslProperties(string url, Configuration configuration) r
     return jdbcUrl;
 }
 
-isolated function handleFirewallProperties(string url, Configuration configuration) returns string {
+isolated function handleFirewallProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Firewall Type", configuration?.firewallType);
     jdbcUrl = jdbcUrl + handleProperties("Firewall Server", configuration?.firewallServer);
@@ -168,7 +168,7 @@ isolated function handleFirewallProperties(string url, Configuration configurati
     return jdbcUrl;
 }
 
-isolated function handleProxyProperties(string url, Configuration configuration) returns string {
+isolated function handleProxyProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Proxy Auto Detect", configuration?.proxyAutoDetect);
     jdbcUrl = jdbcUrl + handleProperties("Proxy Server", configuration?.proxyServer);
@@ -181,7 +181,7 @@ isolated function handleProxyProperties(string url, Configuration configuration)
     return jdbcUrl;
 }
 
-isolated function handleLoggingProperties(string url, Configuration configuration) returns string {
+isolated function handleLoggingProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Logfile", configuration?.logFile);
     jdbcUrl = jdbcUrl + handleProperties("Verbosity", configuration?.verbosity);
@@ -191,7 +191,7 @@ isolated function handleLoggingProperties(string url, Configuration configuratio
     return jdbcUrl;
 }
 
-isolated function handleSchemaProperties(string url, Configuration configuration) returns string {
+isolated function handleSchemaProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Location", configuration?.location);
     jdbcUrl = jdbcUrl + handleProperties("Browsable Schemas", configuration?.browsableSchemas);
@@ -200,7 +200,7 @@ isolated function handleSchemaProperties(string url, Configuration configuration
     return jdbcUrl;
 }
 
-isolated function handleCachingProperties(string url, Configuration configuration) returns string {
+isolated function handleCachingProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Auto Cache", configuration?.autoCache);
     jdbcUrl = jdbcUrl + handleProperties("Cache Driver", configuration?.cacheDriver);
@@ -212,7 +212,7 @@ isolated function handleCachingProperties(string url, Configuration configuratio
     return jdbcUrl;
 }
 
-isolated function handleMiscellaneousProperties(string url, Configuration configuration) returns string {
+isolated function handleMiscellaneousProperties(string url, JiraConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Batch Size", configuration?.batchSize);
     jdbcUrl = jdbcUrl + handleProperties("Connection Life Time", configuration?.connectionLifeTime);

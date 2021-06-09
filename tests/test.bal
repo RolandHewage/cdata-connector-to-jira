@@ -33,12 +33,12 @@ CloudBasicAuth hostBasicAuth = {
     apiToken: apiToken
 };
 
-BasicAuth basicAuth = {
+JiraBasicAuth basicAuth = {
     hostBasicAuth: hostBasicAuth,
     url: url
 };
 
-Configuration config = {
+JiraConfig config = {
     basicAuth: basicAuth
 };
 

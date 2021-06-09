@@ -17,8 +17,8 @@
 # Client configuration.
 #
 # + basicAuth - Field Description  
-public type Configuration record {
-    BasicAuth basicAuth;
+public type JiraConfig record {
+    JiraBasicAuth basicAuth;
     *Sso;
     *OAuth;
     *Ssl;
@@ -34,7 +34,7 @@ public type Configuration record {
 #
 # + hostBasicAuth - JIRA account basic authentication    
 # + url - The URL to your JIRA endpoint  
-public type BasicAuth record {
+public type JiraBasicAuth record {
     CloudBasicAuth|ServerBasicAuth hostBasicAuth;
     string url;
 };
