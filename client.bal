@@ -41,22 +41,22 @@ public client class Client {
         return result.lastInsertId;
     }
 
-    isolated remote function getObject(string objectName, int objectId, string... fields) 
+    isolated remote function getObject(string objectName, int recordId, string... fields) 
                                        returns record {|record{} value;|}|error? {
-        string selectQuery = generateSelectQuery(objectName, objectId, fields);
+        string selectQuery = generateSelectQuery(objectName, recordId, fields);
         stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
         return resultStream.next();
     }
 
-    isolated remote function updateObject(string objectName, int objectId, map<anydata> payload) 
+    isolated remote function updateObject(string objectName, int recordId, map<anydata> payload) 
                                           returns (string|int)?|sql:Error {
-        string updateQuery = generateUpdateQuery(objectName, objectId, payload);
+        string updateQuery = generateUpdateQuery(objectName, recordId, payload);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
         return result.lastInsertId;
     }
 
-    isolated remote function deleteObject(string objectName, int objectId) returns sql:Error? {
-        string deleteQuery = generateDeleteQuery(objectName, objectId);
+    isolated remote function deleteObject(string objectName, int recordId) returns sql:Error? {
+        string deleteQuery = generateDeleteQuery(objectName, recordId);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
         return;
     }

@@ -38,10 +38,10 @@ isolated function generateInsertQuery(string objectName, map<anydata> payload) r
     return insertQuery;
 }
 
-isolated function generateSelectQuery(string objectName, int objectId, string[] fields) returns string {
+isolated function generateSelectQuery(string objectName, int recordId, string[] fields) returns string {
     string selectQuery = string `SELECT `;
     string keys = string ``;
-    string queryLogic = string `FROM ${objectName} WHERE Id = ${objectId}`;
+    string queryLogic = string `FROM ${objectName} WHERE Id = ${recordId}`;
     int count = 1;
     foreach var item in fields {
         keys = keys + item + string `${(count == fields.length()) ? " " : ","}`;
@@ -51,10 +51,10 @@ isolated function generateSelectQuery(string objectName, int objectId, string[] 
     return selectQuery;
 }
 
-isolated function generateUpdateQuery(string objectName, int objectId, map<anydata> payload) returns string {
+isolated function generateUpdateQuery(string objectName, int recordId, map<anydata> payload) returns string {
     string updateQuery = string `UPDATE ${objectName} `;
     string values = string `SET `;
-    string queryLogic = string ` WHERE Id = ${objectId}`;
+    string queryLogic = string ` WHERE Id = ${recordId}`;
     int count = 1;
     foreach var [key, value] in payload.entries() {
         if (value is string) {
@@ -70,8 +70,8 @@ isolated function generateUpdateQuery(string objectName, int objectId, map<anyda
     return updateQuery;
 }
 
-isolated function generateDeleteQuery(string objectName, int objectId) returns string {
-    return string `DELETE FROM ${objectName} WHERE Id = ${objectId}`;
+isolated function generateDeleteQuery(string objectName, int recordId) returns string {
+    return string `DELETE FROM ${objectName} WHERE Id = ${recordId}`;
 }
 
 isolated function generateJdbcUrl(JiraConfig configuration) returns string {
