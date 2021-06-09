@@ -24,27 +24,9 @@ public client class Client {
     private sql:ConnectionPool connPool;
 
     public isolated function init(Configuration configuration) returns sql:Error? {
-        // self.cdataConnectorToJira = check new ("jdbc:cdata:jira:User=" + configuration.basicAuth.hostBasicAuth.user + 
-        //         ";APIToken=" + configuration.basicAuth.hostBasicAuth?.apiToken.toString() + 
-        //         ";Url=" + configuration.basicAuth.url);
-
         string jdbcUrl = generateJdbcUrl(configuration);
         log:printInfo(jdbcUrl);
         self.cdataConnectorToJira = check new (jdbcUrl);
-
-        // if (configuration?.poolingEnabled == true) {
-        //     self.connPool = {
-        //         maxOpenConnections: configuration?.maxOpenConnections ?: 15,
-        //         maxConnectionLifeTime: configuration?.maxConnectionLifeTime ?: 1800,
-        //         minIdleConnections: configuration?.minIdleConnections ?: 15
-        //     };
-        //     self.cdataConnectorToJira = check new ("jdbc:cdata:jira:User=" + configuration.user + 
-        //         ";APIToken=" + configuration.apiToken + ";Url=" + configuration.url, 
-        //         connectionPool = self.connPool);
-        // } else {
-        //     self.cdataConnectorToJira = check new ("jdbc:salesforce:User=" + configuration.user + 
-        //         ";APIToken=" + configuration.apiToken + ";Security Token=" + configuration.url);
-        // }
     }
 
     isolated remote function getObjects(string objectName) returns stream<record{}, error> {
@@ -78,53 +60,6 @@ public client class Client {
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
         return;
     }
-
-    // isolated remote function batchInsertAccounts(Account[] accounts) returns string[]|sql:Error {
-    //     sql:ParameterizedQuery[] insertQueries =
-    //         from var data in accounts
-    //             select  `INSERT INTO Account (Name, Type, AccountNumber, Industry, Description)
-    //                     VALUES (${data.Name}, ${data?.Type},
-    //                     ${data?.AccountNumber}, ${data?.Industry}, ${data?.Description})`;
-
-    //     sql:ExecutionResult[] batchResults = check self.cdataConnectorToSalesforce->batchExecute(insertQueries);
-    //     string[] generatedIds = [];
-    //     foreach var batchResult in batchResults {
-    //         generatedIds.push(<string> batchResult.lastInsertId);
-    //     }
-    //     return generatedIds;
-    // }
-
-    // isolated remote function batchUpdateAccounts(Account[] accounts) returns string[]|sql:Error {
-    //     sql:ParameterizedQuery[] updateQueries =
-    //         from var data in accounts
-    //             select `UPDATE Account SET name = ${data.Name} WHERE id = ${data.Id}`;
-
-    //     sql:ExecutionResult[] batchResults = check self.cdataConnectorToSalesforce->batchExecute(updateQueries);
-    //     string[] generatedIds = [];
-    //     foreach var batchResult in batchResults {
-    //         generatedIds.push(<string> batchResult.lastInsertId);
-    //     }
-    //     return generatedIds;
-    // }
-
-    // isolated remote function batchDeleteAccounts(string[] accountIds) returns sql:Error? {
-    //     sql:ParameterizedQuery[] deleteQueries =
-    //         from var data in accountIds
-    //             select `DELETE FROM Account WHERE id = ${data}`;
-    //     sql:ExecutionResult[] batchResults = check self.cdataConnectorToSalesforce->batchExecute(deleteQueries);
-    //     return;
-    // }
-
-    // isolated remote function getUserInformation() returns stream<record{}, sql:Error>|sql:Error? {
-    //     sql:ProcedureCallResult retCall = check self.cdataConnectorToSalesforce->call("{CALL GetUserInformation()}");
-    //     stream<record{}, sql:Error>? result = retCall.queryResult;
-    //     if (!(result is ())) {
-    //         stream<record{}, sql:Error> userStream = <stream<record{}, sql:Error>> result;
-    //         return userStream;
-    //     } 
-    //     checkpanic retCall.close();
-    //     return;
-    // }
 
     isolated remote function close() returns sql:Error? {
         check self.cdataConnectorToJira.close();

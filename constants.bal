@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-//Symbols
+// Symbols
 const string QUESTION_MARK = "?";
 const string PATH_SEPARATOR = "/";
 const string EMPTY_STRING = "";
