@@ -23,7 +23,7 @@ public client class Client {
     private jdbc:Client cdataConnectorToJira;
     private sql:ConnectionPool connPool;
 
-    public isolated function init(JiraConfig configuration) returns sql:Error? {
+    public isolated function init(JiraConfig configuration) returns error? {
         string jdbcUrl = generateJdbcUrl(configuration);
         log:printInfo(jdbcUrl);
         self.cdataConnectorToJira = check new (jdbcUrl);
@@ -35,7 +35,7 @@ public client class Client {
         return resultStream;
     }
 
-    isolated remote function createObject(string objectName, map<anydata> payload) returns (string|int)?|sql:Error {
+    isolated remote function createObject(string objectName, map<anydata> payload) returns (string|int)?|error {
         string insertQuery = generateInsertQuery(objectName, payload);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(insertQuery);
         return result.lastInsertId;
@@ -49,19 +49,19 @@ public client class Client {
     }
 
     isolated remote function updateObject(string objectName, int recordId, map<anydata> payload) 
-                                          returns (string|int)?|sql:Error {
+                                          returns (string|int)?|error {
         string updateQuery = generateUpdateQuery(objectName, recordId, payload);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
         return result.lastInsertId;
     }
 
-    isolated remote function deleteObject(string objectName, int recordId) returns sql:Error? {
+    isolated remote function deleteObject(string objectName, int recordId) returns error? {
         string deleteQuery = generateDeleteQuery(objectName, recordId);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
         return;
     }
 
-    isolated remote function close() returns sql:Error? {
+    isolated remote function close() returns error? {
         check self.cdataConnectorToJira.close();
     }
 } 

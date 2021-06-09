@@ -70,7 +70,7 @@ function createObject() {
         ProjectTypeKey: "business",
         Description: "New business project"
     };
-    (string|int)?|sql:Error createObjectResponse = cdataConnectorToJira->createObject(objectName, project);
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createObject(objectName, project);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Object ID: ", createObjectResponse);
         projectId = createObjectResponse;
@@ -107,7 +107,7 @@ function updateObject() {
         Description: "Updated description",
         AssigneeType: "UNASSIGNED"
     };
-    (string|int)?|sql:Error updateRecordResponse = cdataConnectorToJira->updateObject(objectName, <int> projectId, 
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateObject(objectName, <int> projectId, 
         project);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Object ID: ", updateRecordResponse);
@@ -121,7 +121,7 @@ function updateObject() {
     enable: true
 }
 function deleteObject() {
-    sql:Error? deleteAccountResponse = cdataConnectorToJira->deleteObject(objectName, <int> projectId);
+    error? deleteAccountResponse = cdataConnectorToJira->deleteObject(objectName, <int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Object ID: ", projectId);
     } else {
@@ -132,7 +132,7 @@ function deleteObject() {
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
-    sql:Error? closeResponse = cdataConnectorToJira->close();
+    error? closeResponse = cdataConnectorToJira->close();
     if (closeResponse is sql:Error) {
         test:assertFail(closeResponse.message());
     }
