@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/sql;
+import ballerina/log;
 import ballerinax/java.jdbc;
 
 # CData Client connector to Jira.  
@@ -23,9 +24,14 @@ public client class Client {
     private sql:ConnectionPool connPool;
 
     public isolated function init(Configuration configuration) returns sql:Error? {
-        self.cdataConnectorToJira = check new ("jdbc:cdata:jira:User=" + configuration.basicAuth.hostBasicAuth.user + 
-                ";APIToken=" + configuration.basicAuth.hostBasicAuth?.apiToken.toString() + 
-                ";Url=" + configuration.basicAuth.url);
+        // self.cdataConnectorToJira = check new ("jdbc:cdata:jira:User=" + configuration.basicAuth.hostBasicAuth.user + 
+        //         ";APIToken=" + configuration.basicAuth.hostBasicAuth?.apiToken.toString() + 
+        //         ";Url=" + configuration.basicAuth.url);
+
+        string jdbcUrl = generateJdbcUrl(configuration);
+        log:printInfo(jdbcUrl);
+        self.cdataConnectorToJira = check new (jdbcUrl);
+
         // if (configuration?.poolingEnabled == true) {
         //     self.connPool = {
         //         maxOpenConnections: configuration?.maxOpenConnections ?: 15,
