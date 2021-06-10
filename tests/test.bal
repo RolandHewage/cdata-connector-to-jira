@@ -129,6 +129,32 @@ function deleteObject() {
     }
 }
 
+@test:Config {
+    dependsOn: [deleteObject],
+    enable: true
+}
+function getConditionalObjects() {
+    WhereCondition one = {
+        'key: "Id",
+        value: <int> projectId,
+        operator: "=",
+        operation: "OR"
+    };
+    WhereCondition two = {
+        'key: "Name",
+        value: "RolyProject1",
+        operator: "="
+    };
+    stream<record{}, error> conditionalObjectStreamResponse = cdataConnectorToJira->getConditionalObjects(objectName, 
+        [one, two]);
+    error? e = conditionalObjectStreamResponse.forEach(isolated function(record{} jobject) {
+        io:println("Conditional Object details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

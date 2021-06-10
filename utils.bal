@@ -74,6 +74,43 @@ isolated function generateDeleteQuery(string objectName, int recordId) returns s
     return string `DELETE FROM ${objectName} WHERE Id = ${recordId}`;
 }
 
+isolated function generateConditionalSelectAllQuery(string objectName, WhereCondition[]? whereCondition = ()) 
+                                                    returns string {
+    if (whereCondition is WhereCondition[]) {
+        string condition = "";
+        foreach var item in whereCondition {
+            anydata conditionValue = item.value;
+            if (conditionValue is string) {
+                if (item?.operation.toString() == NOT) {
+                    condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                        string `'${conditionValue}'` + " ";
+                } else {
+                    condition = condition + item.'key + string `${item.operator.toString()}` + 
+                        string `'${conditionValue}'` + " " + item?.operation.toString() + " ";
+                }
+            } else if (conditionValue is int|float|decimal|boolean) {
+                if (item?.operation.toString() == NOT) {
+                    condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                        string `${conditionValue}` + " ";
+                } else {
+                    condition = condition + item.'key + string `${item.operator.toString()}` + 
+                        string `${conditionValue}` + " " + item?.operation.toString() + " ";
+                }
+            } else if (conditionValue is ()) {
+                if (item?.operation.toString() == NOT) {
+                    condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                        string `NULL` + " ";
+                } else {
+                    condition = condition + item.'key + string `${item.operator.toString()}` + 
+                        string `NULL` + " " + item?.operation.toString() + " ";
+                }
+            }    
+        }
+        return string `SELECT * FROM (${objectName}) WHERE ${condition}`;
+    }                                                 
+    return string `SELECT * FROM (${objectName})`;
+}
+
 isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     string jdbcUrl = "jdbc:cdata:jira:";
     if (configuration.basicAuth.hostBasicAuth is CloudBasicAuth) {

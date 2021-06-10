@@ -273,3 +273,31 @@ public type Miscellaneous record {
     string useConnectionPooling?;
     string useDefaultOrderBy?;
 };
+
+# Condition used with the SQL `WHERE` clause.
+#
+# + 'key - condition key  
+# + value - condition value    
+# + operator - condition operator 
+# + operation - condition operation
+public type WhereCondition record {
+    string 'key;
+    (int|float|decimal|string|boolean) value;
+    Operator operator;
+    Operation operation?;
+};
+
+public enum Operator {
+    EQUALS = "=",
+    GREATER_THAN = ">",
+    LESS_THAN = "<",
+    GREATER_THAN_OR_EQUAL = ">=",
+    LESS_THAN_OR_EQUAL = "<=",
+    NOT_EQUAL = "<>"
+}
+
+public enum Operation {
+    AND,
+    OR,
+    NOT
+}

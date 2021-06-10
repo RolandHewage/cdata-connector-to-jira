@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/sql;
-import ballerina/log;
+import ballerina/io;
 import ballerinax/java.jdbc;
 
 # CData Client connector to Jira.  
@@ -25,7 +25,6 @@ public client class Client {
 
     public isolated function init(JiraConfig configuration) returns error? {
         string jdbcUrl = generateJdbcUrl(configuration);
-        log:printInfo(jdbcUrl);
         self.cdataConnectorToJira = check new (jdbcUrl);
     }
 
@@ -59,6 +58,14 @@ public client class Client {
         string deleteQuery = generateDeleteQuery(objectName, recordId);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
         return;
+    }
+
+    isolated remote function getConditionalObjects(string objectName, WhereCondition[]? whereCondition = ()) 
+                                                   returns stream<record{}, error> {
+        string selectQuery = generateConditionalSelectAllQuery(objectName, whereCondition);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream;
     }
 
     isolated remote function close() returns error? {
