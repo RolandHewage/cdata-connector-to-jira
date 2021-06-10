@@ -18,6 +18,7 @@ import ballerina/io;
 import ballerina/os;
 import ballerina/sql;
 import ballerina/test;
+import cdata as cdata;
 
 (string|int)? projectId = ();
 string[] accountIds = [];
@@ -134,13 +135,13 @@ function deleteObject() {
     enable: true
 }
 function getConditionalObjects() {
-    WhereCondition one = {
+    cdata:WhereCondition one = {
         'key: "Id",
         value: <int> projectId,
         operator: "=",
         operation: "OR"
     };
-    WhereCondition two = {
+    cdata:WhereCondition two = {
         'key: "Name",
         value: "RolyProject1",
         operator: "="

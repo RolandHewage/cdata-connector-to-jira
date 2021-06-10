@@ -14,11 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Client configuration.
-#
-# + basicAuth - Field Description  
-public type JiraConfig record {
-    JiraBasicAuth basicAuth;
+# Common configuration.
+public type CommonConfig record {
     *Sso;
     *OAuth;
     *Ssl;
@@ -28,33 +25,6 @@ public type JiraConfig record {
     *Schema;
     *Caching;
     *Miscellaneous;
-};
-
-# Basic authentication.
-#
-# + hostBasicAuth - JIRA account basic authentication    
-# + url - The URL to your JIRA endpoint  
-public type JiraBasicAuth record {
-    CloudBasicAuth|ServerBasicAuth hostBasicAuth;
-    string url;
-};
-
-# JIRA Cloud account basic authentication.
-#
-# + user - The JIRA user account used to authenticate  
-# + apiToken - APIToken of the currently authenticated user  
-public type CloudBasicAuth record {
-    string user;
-    string apiToken;
-};
-
-# JIRA Server account basic authentication.
-#
-# + user - The JIRA user account used to authenticate  
-# + password - The password used to authenticate the user 
-public type ServerBasicAuth record {
-    string user;
-    string password;
 };
 
 // Connection Properties

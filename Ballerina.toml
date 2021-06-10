@@ -1,10 +1,11 @@
 [package]
 org = "ballerinax"
-name = "cdata_connector_to_jira"
+name = "cdata"
 version = "0.1.0"
 license= ["Apache-2.0"]
 authors = ["Ballerina"]
 keywords = ["CData","Jira"]
+export = ["cdata", "cdata.jira"]
 
 [build-options]
 observabilityIncluded = true

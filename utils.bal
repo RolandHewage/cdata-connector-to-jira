@@ -14,11 +14,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-isolated function generateSelectAllQuery(string objectName) returns string {
+public isolated function generateSelectAllQuery(string objectName) returns string {
     return string `SELECT * FROM (${objectName})`;
 }
 
-isolated function generateInsertQuery(string objectName, map<anydata> payload) returns string {
+public isolated function generateInsertQuery(string objectName, map<anydata> payload) returns string {
     string insertQuery = string `INSERT INTO ${objectName} `;
     string keys = string `(`;
     string values = string `VALUES (`;
@@ -38,7 +38,7 @@ isolated function generateInsertQuery(string objectName, map<anydata> payload) r
     return insertQuery;
 }
 
-isolated function generateSelectQuery(string objectName, int recordId, string[] fields) returns string {
+public isolated function generateSelectQuery(string objectName, int recordId, string[] fields) returns string {
     string selectQuery = string `SELECT `;
     string keys = string ``;
     string queryLogic = string `FROM ${objectName} WHERE Id = ${recordId}`;
@@ -51,7 +51,7 @@ isolated function generateSelectQuery(string objectName, int recordId, string[] 
     return selectQuery;
 }
 
-isolated function generateUpdateQuery(string objectName, int recordId, map<anydata> payload) returns string {
+public isolated function generateUpdateQuery(string objectName, int recordId, map<anydata> payload) returns string {
     string updateQuery = string `UPDATE ${objectName} `;
     string values = string `SET `;
     string queryLogic = string ` WHERE Id = ${recordId}`;
@@ -70,11 +70,11 @@ isolated function generateUpdateQuery(string objectName, int recordId, map<anyda
     return updateQuery;
 }
 
-isolated function generateDeleteQuery(string objectName, int recordId) returns string {
+public isolated function generateDeleteQuery(string objectName, int recordId) returns string {
     return string `DELETE FROM ${objectName} WHERE Id = ${recordId}`;
 }
 
-isolated function generateConditionalSelectAllQuery(string objectName, WhereCondition[]? whereCondition = ()) 
+public isolated function generateConditionalSelectAllQuery(string objectName, WhereCondition[]? whereCondition = ()) 
                                                     returns string {
     if (whereCondition is WhereCondition[]) {
         string condition = "";
@@ -111,18 +111,8 @@ isolated function generateConditionalSelectAllQuery(string objectName, WhereCond
     return string `SELECT * FROM (${objectName})`;
 }
 
-isolated function generateJdbcUrl(JiraConfig configuration) returns string {
-    string jdbcUrl = "jdbc:cdata:jira:";
-    if (configuration.basicAuth.hostBasicAuth is CloudBasicAuth) {
-        jdbcUrl = jdbcUrl + handleProperties("User", configuration.basicAuth?.hostBasicAuth.user);
-        jdbcUrl = jdbcUrl + handleProperties("APIToken", configuration.basicAuth?.hostBasicAuth?.apiToken);
-        jdbcUrl = jdbcUrl + handleProperties("Url", configuration.basicAuth.url);
-    }
-    if (configuration.basicAuth.hostBasicAuth is ServerBasicAuth) {
-        jdbcUrl = jdbcUrl + handleProperties("User", configuration.basicAuth?.hostBasicAuth.user);
-        jdbcUrl = jdbcUrl + handleProperties("Password", configuration.basicAuth?.hostBasicAuth?.password);
-        jdbcUrl = jdbcUrl + handleProperties("Url", configuration.basicAuth.url);
-    }
+public isolated function generateJdbcUrl(string url, CommonConfig configuration) returns string {
+    string jdbcUrl = "";
     if (configuration?.enableSso == true) {
         jdbcUrl = jdbcUrl + handleSsoProperties(jdbcUrl, configuration);
     }
@@ -150,10 +140,10 @@ isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     if (configuration?.enableMiscellaneous == true) {
         jdbcUrl = jdbcUrl + handleMiscellaneousProperties(jdbcUrl, configuration);
     }
-    return jdbcUrl;
+    return (url + jdbcUrl);
 }
 
-isolated function handleSsoProperties(string url, JiraConfig configuration) returns string {
+isolated function handleSsoProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("SSO Login URL", configuration?.ssoLoginUrl);
     jdbcUrl = jdbcUrl + handleProperties("SSO Properties", configuration?.ssoProperties);
@@ -161,7 +151,7 @@ isolated function handleSsoProperties(string url, JiraConfig configuration) retu
     return jdbcUrl;
 }
 
-isolated function handleOAuthProperties(string url, JiraConfig configuration) returns string {
+isolated function handleOAuthProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Initiate OAuth", configuration?.initiateOAuth);
     jdbcUrl = jdbcUrl + handleProperties("OAuth Version", configuration?.oauthVersion);
@@ -185,7 +175,7 @@ isolated function handleOAuthProperties(string url, JiraConfig configuration) re
     return jdbcUrl;
 }
 
-isolated function handleSslProperties(string url, JiraConfig configuration) returns string {
+isolated function handleSslProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("SSL Client Cert", configuration?.sslClientCert);
     jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Type", configuration?.sslClientCertType);
@@ -195,7 +185,7 @@ isolated function handleSslProperties(string url, JiraConfig configuration) retu
     return jdbcUrl;
 }
 
-isolated function handleFirewallProperties(string url, JiraConfig configuration) returns string {
+isolated function handleFirewallProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Firewall Type", configuration?.firewallType);
     jdbcUrl = jdbcUrl + handleProperties("Firewall Server", configuration?.firewallServer);
@@ -205,7 +195,7 @@ isolated function handleFirewallProperties(string url, JiraConfig configuration)
     return jdbcUrl;
 }
 
-isolated function handleProxyProperties(string url, JiraConfig configuration) returns string {
+isolated function handleProxyProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Proxy Auto Detect", configuration?.proxyAutoDetect);
     jdbcUrl = jdbcUrl + handleProperties("Proxy Server", configuration?.proxyServer);
@@ -218,7 +208,7 @@ isolated function handleProxyProperties(string url, JiraConfig configuration) re
     return jdbcUrl;
 }
 
-isolated function handleLoggingProperties(string url, JiraConfig configuration) returns string {
+isolated function handleLoggingProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Logfile", configuration?.logFile);
     jdbcUrl = jdbcUrl + handleProperties("Verbosity", configuration?.verbosity);
@@ -228,7 +218,7 @@ isolated function handleLoggingProperties(string url, JiraConfig configuration) 
     return jdbcUrl;
 }
 
-isolated function handleSchemaProperties(string url, JiraConfig configuration) returns string {
+isolated function handleSchemaProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Location", configuration?.location);
     jdbcUrl = jdbcUrl + handleProperties("Browsable Schemas", configuration?.browsableSchemas);
@@ -237,7 +227,7 @@ isolated function handleSchemaProperties(string url, JiraConfig configuration) r
     return jdbcUrl;
 }
 
-isolated function handleCachingProperties(string url, JiraConfig configuration) returns string {
+isolated function handleCachingProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Auto Cache", configuration?.autoCache);
     jdbcUrl = jdbcUrl + handleProperties("Cache Driver", configuration?.cacheDriver);
@@ -249,7 +239,7 @@ isolated function handleCachingProperties(string url, JiraConfig configuration) 
     return jdbcUrl;
 }
 
-isolated function handleMiscellaneousProperties(string url, JiraConfig configuration) returns string {
+isolated function handleMiscellaneousProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Batch Size", configuration?.batchSize);
     jdbcUrl = jdbcUrl + handleProperties("Connection Life Time", configuration?.connectionLifeTime);
@@ -274,7 +264,7 @@ isolated function handleMiscellaneousProperties(string url, JiraConfig configura
     return jdbcUrl;
 }
 
-isolated function handleProperties(string 'key, anydata value) returns string {
+public isolated function handleProperties(string 'key, anydata value) returns string {
     string suffix = "";
     if (value is string|int|float|decimal|boolean) {
         suffix = string `${'key}` + EQUAL + string `${value}` + SEMI_COLON;

@@ -17,6 +17,7 @@
 import ballerina/sql;
 import ballerina/io;
 import ballerinax/java.jdbc;
+import cdata as cdata;
 
 # CData Client connector to Jira.  
 public client class Client {
@@ -29,40 +30,40 @@ public client class Client {
     }
 
     isolated remote function getObjects(string objectName) returns stream<record{}, error> {
-        string selectQuery = generateSelectAllQuery(objectName);
+        string selectQuery = cdata:generateSelectAllQuery(objectName);
         stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
         return resultStream;
     }
 
     isolated remote function createObject(string objectName, map<anydata> payload) returns (string|int)?|error {
-        string insertQuery = generateInsertQuery(objectName, payload);
+        string insertQuery = cdata:generateInsertQuery(objectName, payload);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getObject(string objectName, int recordId, string... fields) 
                                        returns record {|record{} value;|}|error? {
-        string selectQuery = generateSelectQuery(objectName, recordId, fields);
+        string selectQuery = cdata:generateSelectQuery(objectName, recordId, fields);
         stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
         return resultStream.next();
     }
 
     isolated remote function updateObject(string objectName, int recordId, map<anydata> payload) 
                                           returns (string|int)?|error {
-        string updateQuery = generateUpdateQuery(objectName, recordId, payload);
+        string updateQuery = cdata:generateUpdateQuery(objectName, recordId, payload);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteObject(string objectName, int recordId) returns error? {
-        string deleteQuery = generateDeleteQuery(objectName, recordId);
+        string deleteQuery = cdata:generateDeleteQuery(objectName, recordId);
         sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
         return;
     }
 
-    isolated remote function getConditionalObjects(string objectName, WhereCondition[]? whereCondition = ()) 
+    isolated remote function getConditionalObjects(string objectName, cdata:WhereCondition[]? whereCondition = ()) 
                                                    returns stream<record{}, error> {
-        string selectQuery = generateConditionalSelectAllQuery(objectName, whereCondition);
+        string selectQuery = cdata:generateConditionalSelectAllQuery(objectName, whereCondition);
         io:println(selectQuery);
         stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
         return resultStream;
