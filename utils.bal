@@ -145,66 +145,66 @@ public isolated function generateJdbcUrl(string url, CommonConfig configuration)
 
 isolated function handleSsoProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("SSO Login URL", configuration?.ssoLoginUrl);
-    jdbcUrl = jdbcUrl + handleProperties("SSO Properties", configuration?.ssoProperties);
-    jdbcUrl = jdbcUrl + handleProperties("SSO Exchange Url", configuration?.ssoExchangeUrl);
+    jdbcUrl = url + handleProperties("SSOLoginUrl", configuration?.ssoLoginUrl);
+    jdbcUrl = jdbcUrl + handleProperties("SSOProperties", configuration?.ssoProperties);
+    jdbcUrl = jdbcUrl + handleProperties("SSOExchangeUrl", configuration?.ssoExchangeUrl);
     return jdbcUrl;
 }
 
 isolated function handleOAuthProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Initiate OAuth", configuration?.initiateOAuth);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Version", configuration?.oauthVersion);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Client Id", configuration?.oauthClientId);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Client Secret", configuration?.oauthClientSecret);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Access Token", configuration?.oauthAccessToken);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Access Token Secret", configuration?.oauthAccessTokenSecret);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Settings Location", configuration?.oauthSettingsLocation);
-    jdbcUrl = jdbcUrl + handleProperties("Callback URL", configuration?.callbackUrl);
-    jdbcUrl = jdbcUrl + handleProperties("Cloud Id", configuration?.cloudId);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Verifier", configuration?.oauthVerifier);
-    jdbcUrl = jdbcUrl + handleProperties("Auth Token", configuration?.authToken);
-    jdbcUrl = jdbcUrl + handleProperties("Auth Key", configuration?.authKey);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Refresh Token", configuration?.oauthRefreshToken);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Expires In", configuration?.oauthExpiresIn);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Token Timestamp", configuration?.oauthTokenTimestamp);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Store Type", configuration?.certificateStoreType);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Store", configuration?.certificateStore);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Subject", configuration?.certificateSubject);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Store Password", configuration?.certificateStorePassword);
+    jdbcUrl = url + handleProperties("InitiateOAuth", configuration?.initiateOAuth);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthVersion", configuration?.oauthVersion);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthClient Id", configuration?.oauthClientId);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthClientSecret", configuration?.oauthClientSecret);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthAccessToken", configuration?.oauthAccessToken);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthAccessTokenSecret", configuration?.oauthAccessTokenSecret);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthSettingsLocation", configuration?.oauthSettingsLocation);
+    jdbcUrl = jdbcUrl + handleProperties("CallbackURL", configuration?.callbackUrl);
+    jdbcUrl = jdbcUrl + handleProperties("CloudId", configuration?.cloudId);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthVerifier", configuration?.oauthVerifier);
+    jdbcUrl = jdbcUrl + handleProperties("AuthToken", configuration?.authToken);
+    jdbcUrl = jdbcUrl + handleProperties("AuthKey", configuration?.authKey);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthRefreshToken", configuration?.oauthRefreshToken);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthExpiresIn", configuration?.oauthExpiresIn);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthTokenTimestamp", configuration?.oauthTokenTimestamp);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateStoreType", configuration?.certificateStoreType);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateStore", configuration?.certificateStore);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateSubject", configuration?.certificateSubject);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateStorePassword", configuration?.certificateStorePassword);
     return jdbcUrl;
 }
 
 isolated function handleSslProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("SSL Client Cert", configuration?.sslClientCert);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Type", configuration?.sslClientCertType);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Password", configuration?.sslClientCertPassword);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Subject", configuration?.sslClientCertSubject);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Server Cert", configuration?.sslServerCert);
+    jdbcUrl = url + handleProperties("SSLClientCert", configuration?.sslClientCert);
+    jdbcUrl = jdbcUrl + handleProperties("SSLClientCertType", configuration?.sslClientCertType);
+    jdbcUrl = jdbcUrl + handleProperties("SSLClientCertPassword", configuration?.sslClientCertPassword);
+    jdbcUrl = jdbcUrl + handleProperties("SSLClientCertSubject", configuration?.sslClientCertSubject);
+    jdbcUrl = jdbcUrl + handleProperties("SSLServerCert", configuration?.sslServerCert);
     return jdbcUrl;
 }
 
 isolated function handleFirewallProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Firewall Type", configuration?.firewallType);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall Server", configuration?.firewallServer);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall Port", configuration?.firewallPort);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall User", configuration?.firewallUser);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall Password", configuration?.firewallPassword);
+    jdbcUrl = url + handleProperties("FirewallType", configuration?.firewallType);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallServer", configuration?.firewallServer);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallPort", configuration?.firewallPort);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallUser", configuration?.firewallUser);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallPassword", configuration?.firewallPassword);
     return jdbcUrl;
 }
 
 isolated function handleProxyProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Proxy Auto Detect", configuration?.proxyAutoDetect);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Server", configuration?.proxyServer);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Port", configuration?.proxyPort);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Auth Scheme", configuration?.proxyAuthScheme);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy User", configuration?.proxyUser);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Password", configuration?.proxyPassword);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy SSL Type", configuration?.proxySslType);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Exceptions", configuration?.proxyExceptions);
+    jdbcUrl = url + handleProperties("ProxyAutoDetect", configuration?.proxyAutoDetect);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyServer", configuration?.proxyServer);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyPort", configuration?.proxyPort);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyAuthScheme", configuration?.proxyAuthScheme);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyUser", configuration?.proxyUser);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyPassword", configuration?.proxyPassword);
+    jdbcUrl = jdbcUrl + handleProperties("ProxySSLType", configuration?.proxySslType);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyExceptions", configuration?.proxyExceptions);
     return jdbcUrl;
 }
 
@@ -212,16 +212,16 @@ isolated function handleLoggingProperties(string url, CommonConfig configuration
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Logfile", configuration?.logFile);
     jdbcUrl = jdbcUrl + handleProperties("Verbosity", configuration?.verbosity);
-    jdbcUrl = jdbcUrl + handleProperties("Log Modules", configuration?.logModules);
-    jdbcUrl = jdbcUrl + handleProperties("Max Log File Size", configuration?.maxLogFileSize);
-    jdbcUrl = jdbcUrl + handleProperties("Max Log File Count", configuration?.maxLogFileCount);
+    jdbcUrl = jdbcUrl + handleProperties("LogModules", configuration?.logModules);
+    jdbcUrl = jdbcUrl + handleProperties("MaxLogFileSize", configuration?.maxLogFileSize);
+    jdbcUrl = jdbcUrl + handleProperties("MaxLogFileCount", configuration?.maxLogFileCount);
     return jdbcUrl;
 }
 
 isolated function handleSchemaProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Location", configuration?.location);
-    jdbcUrl = jdbcUrl + handleProperties("Browsable Schemas", configuration?.browsableSchemas);
+    jdbcUrl = jdbcUrl + handleProperties("BrowsableSchemas", configuration?.browsableSchemas);
     jdbcUrl = jdbcUrl + handleProperties("Tables", configuration?.tables);
     jdbcUrl = jdbcUrl + handleProperties("Views", configuration?.views);
     return jdbcUrl;
@@ -229,38 +229,38 @@ isolated function handleSchemaProperties(string url, CommonConfig configuration)
 
 isolated function handleCachingProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Auto Cache", configuration?.autoCache);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Driver", configuration?.cacheDriver);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Connection", configuration?.cacheConnection);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Location", configuration?.cacheLocation);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Tolerance", configuration?.cacheTolerance);
+    jdbcUrl = url + handleProperties("AutoCache", configuration?.autoCache);
+    jdbcUrl = jdbcUrl + handleProperties("CacheDriver", configuration?.cacheDriver);
+    jdbcUrl = jdbcUrl + handleProperties("CacheConnection", configuration?.cacheConnection);
+    jdbcUrl = jdbcUrl + handleProperties("CacheLocation", configuration?.cacheLocation);
+    jdbcUrl = jdbcUrl + handleProperties("CacheTolerance", configuration?.cacheTolerance);
     jdbcUrl = jdbcUrl + handleProperties("Offline", configuration?.offline);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Metadata", configuration?.cacheMetadata);
+    jdbcUrl = jdbcUrl + handleProperties("CacheMetadata", configuration?.cacheMetadata);
     return jdbcUrl;
 }
 
 isolated function handleMiscellaneousProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Batch Size", configuration?.batchSize);
-    jdbcUrl = jdbcUrl + handleProperties("Connection Life Time", configuration?.connectionLifeTime);
-    jdbcUrl = jdbcUrl + handleProperties("Connect On Open", configuration?.connectOnOpen);
-    jdbcUrl = jdbcUrl + handleProperties("Include Custom Fields", configuration?.includeCustomFields);
-    jdbcUrl = jdbcUrl + handleProperties("Max Rows", configuration?.maxRows);
-    jdbcUrl = jdbcUrl + handleProperties("Max Threads", configuration?.maxThreads);
+    jdbcUrl = url + handleProperties("BatchSize", configuration?.batchSize);
+    jdbcUrl = jdbcUrl + handleProperties("ConnectionLifeTime", configuration?.connectionLifeTime);
+    jdbcUrl = jdbcUrl + handleProperties("ConnectOnOpen", configuration?.connectOnOpen);
+    jdbcUrl = jdbcUrl + handleProperties("IncludeCustomFields", configuration?.includeCustomFields);
+    jdbcUrl = jdbcUrl + handleProperties("MaxRows", configuration?.maxRows);
+    jdbcUrl = jdbcUrl + handleProperties("MaxThreads", configuration?.maxThreads);
     jdbcUrl = jdbcUrl + handleProperties("Other", configuration?.other);
     jdbcUrl = jdbcUrl + handleProperties("Pagesize", configuration?.pageSize);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Idle Timeout", configuration?.poolIdleTimeout);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Max Size", configuration?.poolMaxSize);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Min Size", configuration?.poolMinSize);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Wait Time", configuration?.poolWaitTime);
-    jdbcUrl = jdbcUrl + handleProperties("Pseudo Columns", configuration?.pseudoColumns);
+    jdbcUrl = jdbcUrl + handleProperties("PoolIdleTimeout", configuration?.poolIdleTimeout);
+    jdbcUrl = jdbcUrl + handleProperties("PoolMaxSize", configuration?.poolMaxSize);
+    jdbcUrl = jdbcUrl + handleProperties("PoolMinSize", configuration?.poolMinSize);
+    jdbcUrl = jdbcUrl + handleProperties("PoolWaitTime", configuration?.poolWaitTime);
+    jdbcUrl = jdbcUrl + handleProperties("PseudoColumns", configuration?.pseudoColumns);
     jdbcUrl = jdbcUrl + handleProperties("Readonly", configuration?.'readonly);
     jdbcUrl = jdbcUrl + handleProperties("RTK", configuration?.rtk);
-    jdbcUrl = jdbcUrl + handleProperties("Support Enhanced SQL", configuration?.supportEnhancedSql);
+    jdbcUrl = jdbcUrl + handleProperties("SupportEnhancedSQL", configuration?.supportEnhancedSql);
     jdbcUrl = jdbcUrl + handleProperties("Timeout", configuration?.timeout);
     jdbcUrl = jdbcUrl + handleProperties("Timezone", configuration?.timezone);
-    jdbcUrl = jdbcUrl + handleProperties("Use Connection Pooling", configuration?.useConnectionPooling);
-    jdbcUrl = jdbcUrl + handleProperties("Use Default Order By", configuration?.useDefaultOrderBy);
+    jdbcUrl = jdbcUrl + handleProperties("UseConnectionPooling", configuration?.useConnectionPooling);
+    jdbcUrl = jdbcUrl + handleProperties("UseDefaultOrderBy", configuration?.useDefaultOrderBy);
     return jdbcUrl;
 }
 

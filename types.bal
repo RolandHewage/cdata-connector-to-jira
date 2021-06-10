@@ -116,7 +116,7 @@ public type Firewall record {
     boolean enableFirewall?;
     string firewallType?;
     string firewallServer?;
-    string firewallPort?;
+    int firewallPort?;
     string firewallUser?;
     string firewallPassword?;
 };
@@ -134,9 +134,9 @@ public type Firewall record {
 # + proxyExceptions - A semicolon separated list of destination hostnames or IPs that are exempt from connecting through the ProxyServer
 public type Proxy record {
     boolean enableProxy?;
-    string proxyAutoDetect?;
+    boolean proxyAutoDetect?;
     string proxyServer?;
-    string proxyPort?;
+    int proxyPort?;
     string proxyAuthScheme?;
     string proxyUser?;
     string proxyPassword?;
@@ -188,13 +188,13 @@ public type Schema record {
 # + cacheMetadata - This property determines whether or not to cache the table metadata to a file store
 public type Caching record {
     boolean enableCaching?;
-    string autoCache?;
+    boolean autoCache?;
     string cacheDriver?;
     string cacheConnection?;
     string cacheLocation?;
-    string cacheTolerance?;
-    string offline?;
-    string cacheMetadata?;
+    int cacheTolerance?;
+    boolean offline?;
+    boolean cacheMetadata?;
 };
 
 # Complete list of the Miscellaneous properties you can configure in the connection string for this provider.
@@ -222,26 +222,26 @@ public type Caching record {
 # + useDefaultOrderBy - Indicates if a default order by should be applied if none is specified in the query
 public type Miscellaneous record {
     boolean enableMiscellaneous?;
-    string batchSize?;
-    string connectionLifeTime?;
-    string connectOnOpen?;
-    string includeCustomFields?;
-    string maxRows?;
+    int batchSize?;
+    int connectionLifeTime?;
+    boolean connectOnOpen?;
+    boolean includeCustomFields?;
+    int maxRows?;
     string maxThreads?;
     string other?;
-    string pageSize?;
-    string poolIdleTimeout?;
-    string poolMaxSize?;
-    string poolMinSize?;
-    string poolWaitTime?;
+    int pageSize?;
+    int poolIdleTimeout?;
+    int poolMaxSize?;
+    int poolMinSize?;
+    int poolWaitTime?;
     string pseudoColumns?;
-    string 'readonly?;
+    boolean 'readonly?;
     string rtk?;
-    string supportEnhancedSql?;
-    string timeout?;
+    boolean supportEnhancedSql?;
+    int timeout?;
     string timezone?;
-    string useConnectionPooling?;
-    string useDefaultOrderBy?;
+    boolean useConnectionPooling?;
+    boolean useDefaultOrderBy?;
 };
 
 # Condition used with the SQL `WHERE` clause.
@@ -270,4 +270,30 @@ public enum Operation {
     AND,
     OR,
     NOT
+}
+
+// OAuth Connection String Options
+
+public enum InitiateOAuth {
+    OFF,
+    GETANDREFRESH,
+    REFRESH
+}
+
+// Firewall Connection String Options
+
+public enum FirewallType {
+    NONE,
+    TUNNEL,
+    SOCKS4,
+    SOCKS5
+}
+
+// Proxy Connection String Options
+
+public enum ProxyAuthScheme {
+    BASIC,
+    DIGEST,
+    NEGOTIATE,
+    PROPRIETARY
 }
