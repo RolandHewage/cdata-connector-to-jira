@@ -14,11 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Client configuration.
-#
-# + basicAuth - Field Description  
-public type Configuration record {
-    BasicAuth basicAuth;
+# Common configuration.
+public type CommonConfig record {
     *Sso;
     *OAuth;
     *Ssl;
@@ -28,33 +25,6 @@ public type Configuration record {
     *Schema;
     *Caching;
     *Miscellaneous;
-};
-
-# Basic authentication.
-#
-# + hostBasicAuth - JIRA account basic authentication    
-# + url - The URL to your JIRA endpoint  
-public type BasicAuth record {
-    CloudBasicAuth|ServerBasicAuth hostBasicAuth;
-    string url;
-};
-
-# JIRA Cloud account basic authentication.
-#
-# + user - The JIRA user account used to authenticate  
-# + apiToken - APIToken of the currently authenticated user  
-public type CloudBasicAuth record {
-    string user;
-    string apiToken;
-};
-
-# JIRA Server account basic authentication.
-#
-# + user - The JIRA user account used to authenticate  
-# + password - The password used to authenticate the user 
-public type ServerBasicAuth record {
-    string user;
-    string password;
 };
 
 // Connection Properties
@@ -146,7 +116,7 @@ public type Firewall record {
     boolean enableFirewall?;
     string firewallType?;
     string firewallServer?;
-    string firewallPort?;
+    int firewallPort?;
     string firewallUser?;
     string firewallPassword?;
 };
@@ -164,9 +134,9 @@ public type Firewall record {
 # + proxyExceptions - A semicolon separated list of destination hostnames or IPs that are exempt from connecting through the ProxyServer
 public type Proxy record {
     boolean enableProxy?;
-    string proxyAutoDetect?;
+    boolean proxyAutoDetect?;
     string proxyServer?;
-    string proxyPort?;
+    int proxyPort?;
     string proxyAuthScheme?;
     string proxyUser?;
     string proxyPassword?;
@@ -218,13 +188,13 @@ public type Schema record {
 # + cacheMetadata - This property determines whether or not to cache the table metadata to a file store
 public type Caching record {
     boolean enableCaching?;
-    string autoCache?;
+    boolean autoCache?;
     string cacheDriver?;
     string cacheConnection?;
     string cacheLocation?;
-    string cacheTolerance?;
-    string offline?;
-    string cacheMetadata?;
+    int cacheTolerance?;
+    boolean offline?;
+    boolean cacheMetadata?;
 };
 
 # Complete list of the Miscellaneous properties you can configure in the connection string for this provider.
@@ -252,53 +222,78 @@ public type Caching record {
 # + useDefaultOrderBy - Indicates if a default order by should be applied if none is specified in the query
 public type Miscellaneous record {
     boolean enableMiscellaneous?;
-    string batchSize?;
-    string connectionLifeTime?;
-    string connectOnOpen?;
-    string includeCustomFields?;
-    string maxRows?;
+    int batchSize?;
+    int connectionLifeTime?;
+    boolean connectOnOpen?;
+    boolean includeCustomFields?;
+    int maxRows?;
     string maxThreads?;
     string other?;
-    string pageSize?;
-    string poolIdleTimeout?;
-    string poolMaxSize?;
-    string poolMinSize?;
-    string poolWaitTime?;
+    int pageSize?;
+    int poolIdleTimeout?;
+    int poolMaxSize?;
+    int poolMinSize?;
+    int poolWaitTime?;
     string pseudoColumns?;
-    string 'readonly?;
+    boolean 'readonly?;
     string rtk?;
-    string supportEnhancedSql?;
-    string timeout?;
+    boolean supportEnhancedSql?;
+    int timeout?;
     string timezone?;
-    string useConnectionPooling?;
-    string useDefaultOrderBy?;
+    boolean useConnectionPooling?;
+    boolean useDefaultOrderBy?;
 };
 
+# Condition used with the SQL `WHERE` clause.
+#
+# + 'key - condition key  
+# + value - condition value    
+# + operator - condition operator 
+# + operation - condition operation
+public type WhereCondition record {
+    string 'key;
+    (int|float|decimal|string|boolean) value;
+    Operator operator;
+    Operation operation?;
+};
 
+public enum Operator {
+    EQUALS = "=",
+    GREATER_THAN = ">",
+    LESS_THAN = "<",
+    GREATER_THAN_OR_EQUAL = ">=",
+    LESS_THAN_OR_EQUAL = "<=",
+    NOT_EQUAL = "<>"
+}
 
-// public type Security record {
-//     string ssoProperties?;
-//     string sslServerCert?;
-// };
+public enum Operation {
+    AND,
+    OR,
+    NOT
+}
 
-// public type Caching record {
-//     boolean autoCacheEnabled?;
-//     string cacheConnection?;
-//     string cacheDriver?;
-//     string cacheLocation?;
-//     boolean cacheMetadata?;
-//     string cacheTolerance?;
-// };
+// OAuth Connection String Options
 
-// public type ConnectionPooling record {
-//     boolean poolingEnabled?;
-//     int maxOpenConnections?;
-//     decimal maxConnectionLifeTime?;
-//     int minIdleConnections?;
-// };
+public enum InitiateOAuth {
+    OFF,
+    GETANDREFRESH,
+    REFRESH
+}
 
-// public type Advance record {
-//     int queryTimeout?;
-//     int maxRows?;
-//     int batchSize?;
-// };
+// Firewall Connection String Options
+
+public enum FirewallType {
+    NONE,
+    TUNNEL,
+    SOCKS4,
+    SOCKS5
+}
+
+// Proxy Connection String Options
+
+public enum ProxyAuthScheme {
+    BASIC,
+    DIGEST,
+    NEGOTIATE,
+    PROPRIETARY
+}

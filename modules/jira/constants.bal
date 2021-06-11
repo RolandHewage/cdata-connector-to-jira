@@ -14,14 +14,5 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// Symbols
-const string QUESTION_MARK = "?";
-const string PATH_SEPARATOR = "/";
-const string EMPTY_STRING = "";
-const string WHITE_SPACE = " ";
-const string FORWARD_SLASH = "/";
-const string DASH_WITH_WHITE_SPACES_SYMBOL = " - ";
-const string COLON = ":";
-const string SEMI_COLON = ";";
-const string EXCLAMATION_MARK = "!";
-const string EQUAL = "=";
+// Jira Objects
+public const string PROJECTS = "Projects";

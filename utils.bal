@@ -14,11 +14,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-isolated function generateSelectAllQuery(string objectName) returns string {
+public isolated function generateSelectAllQuery(string objectName) returns string {
     return string `SELECT * FROM (${objectName})`;
 }
 
-isolated function generateInsertQuery(string objectName, map<anydata> payload) returns string {
+public isolated function generateInsertQuery(string objectName, map<anydata> payload) returns string {
     string insertQuery = string `INSERT INTO ${objectName} `;
     string keys = string `(`;
     string values = string `VALUES (`;
@@ -38,10 +38,10 @@ isolated function generateInsertQuery(string objectName, map<anydata> payload) r
     return insertQuery;
 }
 
-isolated function generateSelectQuery(string objectName, int objectId, string[] fields) returns string {
+public isolated function generateSelectQuery(string objectName, int recordId, string[] fields) returns string {
     string selectQuery = string `SELECT `;
     string keys = string ``;
-    string queryLogic = string `FROM ${objectName} WHERE Id = ${objectId}`;
+    string queryLogic = string `FROM ${objectName} WHERE Id = ${recordId}`;
     int count = 1;
     foreach var item in fields {
         keys = keys + item + string `${(count == fields.length()) ? " " : ","}`;
@@ -51,10 +51,10 @@ isolated function generateSelectQuery(string objectName, int objectId, string[] 
     return selectQuery;
 }
 
-isolated function generateUpdateQuery(string objectName, int objectId, map<anydata> payload) returns string {
+public isolated function generateUpdateQuery(string objectName, int recordId, map<anydata> payload) returns string {
     string updateQuery = string `UPDATE ${objectName} `;
     string values = string `SET `;
-    string queryLogic = string ` WHERE Id = ${objectId}`;
+    string queryLogic = string ` WHERE Id = ${recordId}`;
     int count = 1;
     foreach var [key, value] in payload.entries() {
         if (value is string) {
@@ -70,22 +70,100 @@ isolated function generateUpdateQuery(string objectName, int objectId, map<anyda
     return updateQuery;
 }
 
-isolated function generateDeleteQuery(string objectName, int objectId) returns string {
-    return string `DELETE FROM ${objectName} WHERE Id = ${objectId}`;
+public isolated function generateDeleteQuery(string objectName, int recordId) returns string {
+    return string `DELETE FROM ${objectName} WHERE Id = ${recordId}`;
 }
 
-isolated function generateJdbcUrl(Configuration configuration) returns string {
-    string jdbcUrl = "jdbc:cdata:jira:";
-    if (configuration.basicAuth.hostBasicAuth is CloudBasicAuth) {
-        jdbcUrl = jdbcUrl + handleProperties("User", configuration.basicAuth?.hostBasicAuth.user);
-        jdbcUrl = jdbcUrl + handleProperties("APIToken", configuration.basicAuth?.hostBasicAuth?.apiToken);
-        jdbcUrl = jdbcUrl + handleProperties("Url", configuration.basicAuth.url);
+public isolated function generateConditionalSelectAllQuery(string objectName, WhereCondition[]? whereConditions = ()) 
+                                                           returns string {
+    if (whereConditions is WhereCondition[]) {
+        string condition = handleWhereCondition(whereConditions);
+        return string `SELECT * FROM (${objectName})${condition}`;
+    }                                                 
+    return string `SELECT * FROM (${objectName})`;
+}
+
+public isolated function generateConditionalSelectQuery(string objectName, string[] fields, 
+                                                        WhereCondition[]? whereConditions) returns string {
+    string selectQuery = string `SELECT `;
+    string keys = string ``;
+    string queryLogic = string `FROM ${objectName}`;
+    int count = 1;
+    foreach var item in fields {
+        keys = keys + item + string `${(count == fields.length()) ? " " : ","}`;
+        count = count + 1;
     }
-    if (configuration.basicAuth.hostBasicAuth is ServerBasicAuth) {
-        jdbcUrl = jdbcUrl + handleProperties("User", configuration.basicAuth?.hostBasicAuth.user);
-        jdbcUrl = jdbcUrl + handleProperties("Password", configuration.basicAuth?.hostBasicAuth?.password);
-        jdbcUrl = jdbcUrl + handleProperties("Url", configuration.basicAuth.url);
+    selectQuery = selectQuery + keys + queryLogic;
+
+    if (whereConditions is WhereCondition[]) {
+        string condition = handleWhereCondition(whereConditions);
+        return (selectQuery + string `${condition}`);
+    }                                                 
+    return selectQuery;
+}
+
+public isolated function generateConditionalUpdateQuery(string objectName, map<anydata> payload, 
+                                                        WhereCondition[] whereConditions) returns string {
+    string updateQuery = string `UPDATE ${objectName} `;
+    string values = string `SET `;
+    int count = 1;
+    foreach var [key, value] in payload.entries() {
+        if (value is string) {
+            values = values + key + " = " + string `'${value}'` + string `${(count == payload.length()) ? "" : ","}`;
+        } else if (value is int|float|decimal|boolean) {
+            values = values + key + " = " + string `${value}` + string `${(count == payload.length()) ? "" : ","}`;
+        } else if (value is ()) {
+            values = values + key + " = " + string `NULL` + string `${(count == payload.length()) ? "" : ","}`;
+        }  
+        count = count + 1;
     }
+    updateQuery = updateQuery + values;
+    
+    string condition = handleWhereCondition(whereConditions);
+    return (updateQuery + string `${condition}`);
+}
+
+public isolated function generateConditionalDeleteQuery(string objectName, WhereCondition[] whereConditions) 
+                                                        returns string {
+    string condition = handleWhereCondition(whereConditions);
+    return string `DELETE FROM ${objectName}${condition}`;
+}
+
+isolated function handleWhereCondition(WhereCondition[] whereConditions) returns string {
+    string condition = " WHERE ";
+    foreach var item in whereConditions {
+        anydata conditionValue = item.value;
+        if (conditionValue is string) {
+            if (item?.operation.toString() == NOT) {
+                condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                    string `'${conditionValue}'` + " ";
+            } else {
+                condition = condition + item.'key + string `${item.operator.toString()}` + 
+                    string `'${conditionValue}'` + " " + item?.operation.toString() + " ";
+            }
+        } else if (conditionValue is int|float|decimal|boolean) {
+            if (item?.operation.toString() == NOT) {
+                condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                    string `${conditionValue}` + " ";
+            } else {
+                condition = condition + item.'key + string `${item.operator.toString()}` + 
+                    string `${conditionValue}` + " " + item?.operation.toString() + " ";
+            }
+        } else if (conditionValue is ()) {
+            if (item?.operation.toString() == NOT) {
+                condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                    string `NULL` + " ";
+            } else {
+                condition = condition + item.'key + string `${item.operator.toString()}` + 
+                    string `NULL` + " " + item?.operation.toString() + " ";
+            }
+        }    
+    }
+    return condition;
+}
+
+public isolated function generateJdbcUrl(string url, CommonConfig configuration) returns string {
+    string jdbcUrl = "";
     if (configuration?.enableSso == true) {
         jdbcUrl = jdbcUrl + handleSsoProperties(jdbcUrl, configuration);
     }
@@ -113,131 +191,131 @@ isolated function generateJdbcUrl(Configuration configuration) returns string {
     if (configuration?.enableMiscellaneous == true) {
         jdbcUrl = jdbcUrl + handleMiscellaneousProperties(jdbcUrl, configuration);
     }
-    return jdbcUrl;
+    return (url + jdbcUrl);
 }
 
-isolated function handleSsoProperties(string url, Configuration configuration) returns string {
+isolated function handleSsoProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("SSO Login URL", configuration?.ssoLoginUrl);
-    jdbcUrl = jdbcUrl + handleProperties("SSO Properties", configuration?.ssoProperties);
-    jdbcUrl = jdbcUrl + handleProperties("SSO Exchange Url", configuration?.ssoExchangeUrl);
+    jdbcUrl = url + handleProperties("SSOLoginUrl", configuration?.ssoLoginUrl);
+    jdbcUrl = jdbcUrl + handleProperties("SSOProperties", configuration?.ssoProperties);
+    jdbcUrl = jdbcUrl + handleProperties("SSOExchangeUrl", configuration?.ssoExchangeUrl);
     return jdbcUrl;
 }
 
-isolated function handleOAuthProperties(string url, Configuration configuration) returns string {
+isolated function handleOAuthProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Initiate OAuth", configuration?.initiateOAuth);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Version", configuration?.oauthVersion);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Client Id", configuration?.oauthClientId);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Client Secret", configuration?.oauthClientSecret);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Access Token", configuration?.oauthAccessToken);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Access Token Secret", configuration?.oauthAccessTokenSecret);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Settings Location", configuration?.oauthSettingsLocation);
-    jdbcUrl = jdbcUrl + handleProperties("Callback URL", configuration?.callbackUrl);
-    jdbcUrl = jdbcUrl + handleProperties("Cloud Id", configuration?.cloudId);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Verifier", configuration?.oauthVerifier);
-    jdbcUrl = jdbcUrl + handleProperties("Auth Token", configuration?.authToken);
-    jdbcUrl = jdbcUrl + handleProperties("Auth Key", configuration?.authKey);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Refresh Token", configuration?.oauthRefreshToken);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Expires In", configuration?.oauthExpiresIn);
-    jdbcUrl = jdbcUrl + handleProperties("OAuth Token Timestamp", configuration?.oauthTokenTimestamp);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Store Type", configuration?.certificateStoreType);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Store", configuration?.certificateStore);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Subject", configuration?.certificateSubject);
-    jdbcUrl = jdbcUrl + handleProperties("Certificate Store Password", configuration?.certificateStorePassword);
+    jdbcUrl = url + handleProperties("InitiateOAuth", configuration?.initiateOAuth);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthVersion", configuration?.oauthVersion);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthClient Id", configuration?.oauthClientId);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthClientSecret", configuration?.oauthClientSecret);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthAccessToken", configuration?.oauthAccessToken);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthAccessTokenSecret", configuration?.oauthAccessTokenSecret);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthSettingsLocation", configuration?.oauthSettingsLocation);
+    jdbcUrl = jdbcUrl + handleProperties("CallbackURL", configuration?.callbackUrl);
+    jdbcUrl = jdbcUrl + handleProperties("CloudId", configuration?.cloudId);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthVerifier", configuration?.oauthVerifier);
+    jdbcUrl = jdbcUrl + handleProperties("AuthToken", configuration?.authToken);
+    jdbcUrl = jdbcUrl + handleProperties("AuthKey", configuration?.authKey);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthRefreshToken", configuration?.oauthRefreshToken);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthExpiresIn", configuration?.oauthExpiresIn);
+    jdbcUrl = jdbcUrl + handleProperties("OAuthTokenTimestamp", configuration?.oauthTokenTimestamp);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateStoreType", configuration?.certificateStoreType);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateStore", configuration?.certificateStore);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateSubject", configuration?.certificateSubject);
+    jdbcUrl = jdbcUrl + handleProperties("CertificateStorePassword", configuration?.certificateStorePassword);
     return jdbcUrl;
 }
 
-isolated function handleSslProperties(string url, Configuration configuration) returns string {
+isolated function handleSslProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("SSL Client Cert", configuration?.sslClientCert);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Type", configuration?.sslClientCertType);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Password", configuration?.sslClientCertPassword);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Client Cert Subject", configuration?.sslClientCertSubject);
-    jdbcUrl = jdbcUrl + handleProperties("SSL Server Cert", configuration?.sslServerCert);
+    jdbcUrl = url + handleProperties("SSLClientCert", configuration?.sslClientCert);
+    jdbcUrl = jdbcUrl + handleProperties("SSLClientCertType", configuration?.sslClientCertType);
+    jdbcUrl = jdbcUrl + handleProperties("SSLClientCertPassword", configuration?.sslClientCertPassword);
+    jdbcUrl = jdbcUrl + handleProperties("SSLClientCertSubject", configuration?.sslClientCertSubject);
+    jdbcUrl = jdbcUrl + handleProperties("SSLServerCert", configuration?.sslServerCert);
     return jdbcUrl;
 }
 
-isolated function handleFirewallProperties(string url, Configuration configuration) returns string {
+isolated function handleFirewallProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Firewall Type", configuration?.firewallType);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall Server", configuration?.firewallServer);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall Port", configuration?.firewallPort);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall User", configuration?.firewallUser);
-    jdbcUrl = jdbcUrl + handleProperties("Firewall Password", configuration?.firewallPassword);
+    jdbcUrl = url + handleProperties("FirewallType", configuration?.firewallType);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallServer", configuration?.firewallServer);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallPort", configuration?.firewallPort);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallUser", configuration?.firewallUser);
+    jdbcUrl = jdbcUrl + handleProperties("FirewallPassword", configuration?.firewallPassword);
     return jdbcUrl;
 }
 
-isolated function handleProxyProperties(string url, Configuration configuration) returns string {
+isolated function handleProxyProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Proxy Auto Detect", configuration?.proxyAutoDetect);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Server", configuration?.proxyServer);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Port", configuration?.proxyPort);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Auth Scheme", configuration?.proxyAuthScheme);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy User", configuration?.proxyUser);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Password", configuration?.proxyPassword);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy SSL Type", configuration?.proxySslType);
-    jdbcUrl = jdbcUrl + handleProperties("Proxy Exceptions", configuration?.proxyExceptions);
+    jdbcUrl = url + handleProperties("ProxyAutoDetect", configuration?.proxyAutoDetect);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyServer", configuration?.proxyServer);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyPort", configuration?.proxyPort);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyAuthScheme", configuration?.proxyAuthScheme);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyUser", configuration?.proxyUser);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyPassword", configuration?.proxyPassword);
+    jdbcUrl = jdbcUrl + handleProperties("ProxySSLType", configuration?.proxySslType);
+    jdbcUrl = jdbcUrl + handleProperties("ProxyExceptions", configuration?.proxyExceptions);
     return jdbcUrl;
 }
 
-isolated function handleLoggingProperties(string url, Configuration configuration) returns string {
+isolated function handleLoggingProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Logfile", configuration?.logFile);
     jdbcUrl = jdbcUrl + handleProperties("Verbosity", configuration?.verbosity);
-    jdbcUrl = jdbcUrl + handleProperties("Log Modules", configuration?.logModules);
-    jdbcUrl = jdbcUrl + handleProperties("Max Log File Size", configuration?.maxLogFileSize);
-    jdbcUrl = jdbcUrl + handleProperties("Max Log File Count", configuration?.maxLogFileCount);
+    jdbcUrl = jdbcUrl + handleProperties("LogModules", configuration?.logModules);
+    jdbcUrl = jdbcUrl + handleProperties("MaxLogFileSize", configuration?.maxLogFileSize);
+    jdbcUrl = jdbcUrl + handleProperties("MaxLogFileCount", configuration?.maxLogFileCount);
     return jdbcUrl;
 }
 
-isolated function handleSchemaProperties(string url, Configuration configuration) returns string {
+isolated function handleSchemaProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
     jdbcUrl = url + handleProperties("Location", configuration?.location);
-    jdbcUrl = jdbcUrl + handleProperties("Browsable Schemas", configuration?.browsableSchemas);
+    jdbcUrl = jdbcUrl + handleProperties("BrowsableSchemas", configuration?.browsableSchemas);
     jdbcUrl = jdbcUrl + handleProperties("Tables", configuration?.tables);
     jdbcUrl = jdbcUrl + handleProperties("Views", configuration?.views);
     return jdbcUrl;
 }
 
-isolated function handleCachingProperties(string url, Configuration configuration) returns string {
+isolated function handleCachingProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Auto Cache", configuration?.autoCache);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Driver", configuration?.cacheDriver);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Connection", configuration?.cacheConnection);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Location", configuration?.cacheLocation);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Tolerance", configuration?.cacheTolerance);
+    jdbcUrl = url + handleProperties("AutoCache", configuration?.autoCache);
+    jdbcUrl = jdbcUrl + handleProperties("CacheDriver", configuration?.cacheDriver);
+    jdbcUrl = jdbcUrl + handleProperties("CacheConnection", configuration?.cacheConnection);
+    jdbcUrl = jdbcUrl + handleProperties("CacheLocation", configuration?.cacheLocation);
+    jdbcUrl = jdbcUrl + handleProperties("CacheTolerance", configuration?.cacheTolerance);
     jdbcUrl = jdbcUrl + handleProperties("Offline", configuration?.offline);
-    jdbcUrl = jdbcUrl + handleProperties("Cache Metadata", configuration?.cacheMetadata);
+    jdbcUrl = jdbcUrl + handleProperties("CacheMetadata", configuration?.cacheMetadata);
     return jdbcUrl;
 }
 
-isolated function handleMiscellaneousProperties(string url, Configuration configuration) returns string {
+isolated function handleMiscellaneousProperties(string url, CommonConfig configuration) returns string {
     string jdbcUrl = "";
-    jdbcUrl = url + handleProperties("Batch Size", configuration?.batchSize);
-    jdbcUrl = jdbcUrl + handleProperties("Connection Life Time", configuration?.connectionLifeTime);
-    jdbcUrl = jdbcUrl + handleProperties("Connect On Open", configuration?.connectOnOpen);
-    jdbcUrl = jdbcUrl + handleProperties("Include Custom Fields", configuration?.includeCustomFields);
-    jdbcUrl = jdbcUrl + handleProperties("Max Rows", configuration?.maxRows);
-    jdbcUrl = jdbcUrl + handleProperties("Max Threads", configuration?.maxThreads);
+    jdbcUrl = url + handleProperties("BatchSize", configuration?.batchSize);
+    jdbcUrl = jdbcUrl + handleProperties("ConnectionLifeTime", configuration?.connectionLifeTime);
+    jdbcUrl = jdbcUrl + handleProperties("ConnectOnOpen", configuration?.connectOnOpen);
+    jdbcUrl = jdbcUrl + handleProperties("IncludeCustomFields", configuration?.includeCustomFields);
+    jdbcUrl = jdbcUrl + handleProperties("MaxRows", configuration?.maxRows);
+    jdbcUrl = jdbcUrl + handleProperties("MaxThreads", configuration?.maxThreads);
     jdbcUrl = jdbcUrl + handleProperties("Other", configuration?.other);
     jdbcUrl = jdbcUrl + handleProperties("Pagesize", configuration?.pageSize);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Idle Timeout", configuration?.poolIdleTimeout);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Max Size", configuration?.poolMaxSize);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Min Size", configuration?.poolMinSize);
-    jdbcUrl = jdbcUrl + handleProperties("Pool Wait Time", configuration?.poolWaitTime);
-    jdbcUrl = jdbcUrl + handleProperties("Pseudo Columns", configuration?.pseudoColumns);
+    jdbcUrl = jdbcUrl + handleProperties("PoolIdleTimeout", configuration?.poolIdleTimeout);
+    jdbcUrl = jdbcUrl + handleProperties("PoolMaxSize", configuration?.poolMaxSize);
+    jdbcUrl = jdbcUrl + handleProperties("PoolMinSize", configuration?.poolMinSize);
+    jdbcUrl = jdbcUrl + handleProperties("PoolWaitTime", configuration?.poolWaitTime);
+    jdbcUrl = jdbcUrl + handleProperties("PseudoColumns", configuration?.pseudoColumns);
     jdbcUrl = jdbcUrl + handleProperties("Readonly", configuration?.'readonly);
     jdbcUrl = jdbcUrl + handleProperties("RTK", configuration?.rtk);
-    jdbcUrl = jdbcUrl + handleProperties("Support Enhanced SQL", configuration?.supportEnhancedSql);
+    jdbcUrl = jdbcUrl + handleProperties("SupportEnhancedSQL", configuration?.supportEnhancedSql);
     jdbcUrl = jdbcUrl + handleProperties("Timeout", configuration?.timeout);
     jdbcUrl = jdbcUrl + handleProperties("Timezone", configuration?.timezone);
-    jdbcUrl = jdbcUrl + handleProperties("Use Connection Pooling", configuration?.useConnectionPooling);
-    jdbcUrl = jdbcUrl + handleProperties("Use Default Order By", configuration?.useDefaultOrderBy);
+    jdbcUrl = jdbcUrl + handleProperties("UseConnectionPooling", configuration?.useConnectionPooling);
+    jdbcUrl = jdbcUrl + handleProperties("UseDefaultOrderBy", configuration?.useDefaultOrderBy);
     return jdbcUrl;
 }
 
-isolated function handleProperties(string 'key, anydata value) returns string {
+public isolated function handleProperties(string 'key, anydata value) returns string {
     string suffix = "";
     if (value is string|int|float|decimal|boolean) {
         suffix = string `${'key}` + EQUAL + string `${value}` + SEMI_COLON;
