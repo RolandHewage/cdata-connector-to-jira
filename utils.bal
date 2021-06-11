@@ -74,41 +74,92 @@ public isolated function generateDeleteQuery(string objectName, int recordId) re
     return string `DELETE FROM ${objectName} WHERE Id = ${recordId}`;
 }
 
-public isolated function generateConditionalSelectAllQuery(string objectName, WhereCondition[]? whereCondition = ()) 
-                                                    returns string {
-    if (whereCondition is WhereCondition[]) {
-        string condition = "";
-        foreach var item in whereCondition {
-            anydata conditionValue = item.value;
-            if (conditionValue is string) {
-                if (item?.operation.toString() == NOT) {
-                    condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
-                        string `'${conditionValue}'` + " ";
-                } else {
-                    condition = condition + item.'key + string `${item.operator.toString()}` + 
-                        string `'${conditionValue}'` + " " + item?.operation.toString() + " ";
-                }
-            } else if (conditionValue is int|float|decimal|boolean) {
-                if (item?.operation.toString() == NOT) {
-                    condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
-                        string `${conditionValue}` + " ";
-                } else {
-                    condition = condition + item.'key + string `${item.operator.toString()}` + 
-                        string `${conditionValue}` + " " + item?.operation.toString() + " ";
-                }
-            } else if (conditionValue is ()) {
-                if (item?.operation.toString() == NOT) {
-                    condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
-                        string `NULL` + " ";
-                } else {
-                    condition = condition + item.'key + string `${item.operator.toString()}` + 
-                        string `NULL` + " " + item?.operation.toString() + " ";
-                }
-            }    
-        }
-        return string `SELECT * FROM (${objectName}) WHERE ${condition}`;
+public isolated function generateConditionalSelectAllQuery(string objectName, WhereCondition[]? whereConditions = ()) 
+                                                           returns string {
+    if (whereConditions is WhereCondition[]) {
+        string condition = handleWhereCondition(whereConditions);
+        return string `SELECT * FROM (${objectName})${condition}`;
     }                                                 
     return string `SELECT * FROM (${objectName})`;
+}
+
+public isolated function generateConditionalSelectQuery(string objectName, string[] fields, 
+                                                        WhereCondition[]? whereConditions) returns string {
+    string selectQuery = string `SELECT `;
+    string keys = string ``;
+    string queryLogic = string `FROM ${objectName}`;
+    int count = 1;
+    foreach var item in fields {
+        keys = keys + item + string `${(count == fields.length()) ? " " : ","}`;
+        count = count + 1;
+    }
+    selectQuery = selectQuery + keys + queryLogic;
+
+    if (whereConditions is WhereCondition[]) {
+        string condition = handleWhereCondition(whereConditions);
+        return (selectQuery + string `${condition}`);
+    }                                                 
+    return selectQuery;
+}
+
+public isolated function generateConditionalUpdateQuery(string objectName, map<anydata> payload, 
+                                                        WhereCondition[] whereConditions) returns string {
+    string updateQuery = string `UPDATE ${objectName} `;
+    string values = string `SET `;
+    int count = 1;
+    foreach var [key, value] in payload.entries() {
+        if (value is string) {
+            values = values + key + " = " + string `'${value}'` + string `${(count == payload.length()) ? "" : ","}`;
+        } else if (value is int|float|decimal|boolean) {
+            values = values + key + " = " + string `${value}` + string `${(count == payload.length()) ? "" : ","}`;
+        } else if (value is ()) {
+            values = values + key + " = " + string `NULL` + string `${(count == payload.length()) ? "" : ","}`;
+        }  
+        count = count + 1;
+    }
+    updateQuery = updateQuery + values;
+    
+    string condition = handleWhereCondition(whereConditions);
+    return (updateQuery + string `${condition}`);
+}
+
+public isolated function generateConditionalDeleteQuery(string objectName, WhereCondition[] whereConditions) 
+                                                        returns string {
+    string condition = handleWhereCondition(whereConditions);
+    return string `DELETE FROM ${objectName}${condition}`;
+}
+
+isolated function handleWhereCondition(WhereCondition[] whereConditions) returns string {
+    string condition = " WHERE ";
+    foreach var item in whereConditions {
+        anydata conditionValue = item.value;
+        if (conditionValue is string) {
+            if (item?.operation.toString() == NOT) {
+                condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                    string `'${conditionValue}'` + " ";
+            } else {
+                condition = condition + item.'key + string `${item.operator.toString()}` + 
+                    string `'${conditionValue}'` + " " + item?.operation.toString() + " ";
+            }
+        } else if (conditionValue is int|float|decimal|boolean) {
+            if (item?.operation.toString() == NOT) {
+                condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                    string `${conditionValue}` + " ";
+            } else {
+                condition = condition + item.'key + string `${item.operator.toString()}` + 
+                    string `${conditionValue}` + " " + item?.operation.toString() + " ";
+            }
+        } else if (conditionValue is ()) {
+            if (item?.operation.toString() == NOT) {
+                condition = condition + "NOT " + item.'key + string `${item.operator.toString()}` + 
+                    string `NULL` + " ";
+            } else {
+                condition = condition + item.'key + string `${item.operator.toString()}` + 
+                    string `NULL` + " " + item?.operation.toString() + " ";
+            }
+        }    
+    }
+    return condition;
 }
 
 public isolated function generateJdbcUrl(string url, CommonConfig configuration) returns string {

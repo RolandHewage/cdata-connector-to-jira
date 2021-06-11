@@ -29,6 +29,8 @@ public client class Client {
         self.cdataConnectorToJira = check new (jdbcUrl);
     }
 
+    // Generic Objects
+
     isolated remote function getObjects(string objectName) returns stream<record{}, error> {
         string selectQuery = cdata:generateSelectAllQuery(objectName);
         stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
@@ -61,12 +63,116 @@ public client class Client {
         return;
     }
 
-    isolated remote function getConditionalObjects(string objectName, cdata:WhereCondition[]? whereCondition = ()) 
+    // Generic Conditional Objects
+
+    isolated remote function getConditionalObjects(string objectName, cdata:WhereCondition[]? whereConditions = ()) 
                                                    returns stream<record{}, error> {
-        string selectQuery = cdata:generateConditionalSelectAllQuery(objectName, whereCondition);
+        string selectQuery = cdata:generateConditionalSelectAllQuery(objectName, whereConditions);
         io:println(selectQuery);
         stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
         return resultStream;
+    }
+
+    isolated remote function getConditionalObject(string objectName, string[] fields, 
+                                                  cdata:WhereCondition[]? whereConditions = ()) 
+                                                  returns record {|record{} value;|}|error? {
+        string selectQuery = cdata:generateConditionalSelectQuery(objectName, fields, whereConditions);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function updateConditionalObject(string objectName, map<anydata> payload, 
+                                                     cdata:WhereCondition[] whereConditions) 
+                                                     returns (string|int)?|error {
+        string updateQuery = cdata:generateConditionalUpdateQuery(objectName, payload, whereConditions);
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function deleteConditionalObject(string objectName, cdata:WhereCondition[] whereConditions) 
+                                                     returns error? {
+        string deleteQuery = cdata:generateConditionalDeleteQuery(objectName, whereConditions);
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
+        return;
+    }
+
+    // Projects
+
+    isolated remote function getProjects() returns stream<record{}, error> {
+        string selectQuery = cdata:generateConditionalSelectAllQuery(PROJECTS);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream;
+    }
+
+    isolated remote function createProject(map<anydata> payload) returns (string|int)?|error {
+        string insertQuery = cdata:generateInsertQuery(PROJECTS, payload);
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getProjectById(int projectId, string... fields) returns record {|record{} value;|}|error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: projectId,
+            operator: "="
+        };
+        string selectQuery = cdata:generateConditionalSelectQuery(PROJECTS, fields, [whereCondition]);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function updateProjectById(int projectId, map<anydata> payload) returns (string|int)?|error {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: projectId,
+            operator: "="
+        };
+        string updateQuery = cdata:generateConditionalUpdateQuery(PROJECTS, payload, [whereCondition]);
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function updateProjectByKey(string projectKey, map<anydata> payload) returns (string|int)?|error {
+        cdata:WhereCondition whereCondition = {
+            'key: "Key",
+            value: projectKey,
+            operator: "="
+        };
+        string updateQuery = cdata:generateConditionalUpdateQuery(PROJECTS, payload, [whereCondition]);
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function deleteProjectById(int projectId) returns error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: projectId,
+            operator: "="
+        };
+        string deleteQuery = cdata:generateConditionalDeleteQuery(PROJECTS, [whereCondition]);
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
+        return;
+    }
+
+    isolated remote function deleteProjectByKey(string projectKey) returns error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Key",
+            value: projectKey,
+            operator: "="
+        };
+        string deleteQuery = cdata:generateConditionalDeleteQuery(PROJECTS, [whereCondition]);
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
+        return;
     }
 
     isolated remote function close() returns error? {
