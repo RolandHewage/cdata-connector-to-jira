@@ -175,6 +175,86 @@ public client class Client {
         return;
     }
 
+    // Project Components
+
+    isolated remote function getProjectComponents() returns stream<record{}, error> {
+        string selectQuery = cdata:generateConditionalSelectAllQuery(PROJECT_COMPONENTS);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream;
+    }
+
+    isolated remote function createProjectComponent(map<anydata> payload) returns (string|int)?|error {
+        string insertQuery = cdata:generateInsertQuery(PROJECT_COMPONENTS, payload);
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getProjectComponentById(int projectComponentId, string... fields) 
+                                                     returns record {|record{} value;|}|error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: projectComponentId,
+            operator: "="
+        };
+        string selectQuery = cdata:generateConditionalSelectQuery(PROJECT_COMPONENTS, fields, [whereCondition]);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function getProjectComponentByProjectId(int projectId, string... fields) 
+                                                            returns record {|record{} value;|}|error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "ProjectId",
+            value: projectId,
+            operator: "="
+        };
+        string selectQuery = cdata:generateConditionalSelectQuery(PROJECT_COMPONENTS, fields, [whereCondition]);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function getProjectComponentByProjectKey(string projectKey, string... fields) 
+                                                             returns record {|record{} value;|}|error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "ProjectKey",
+            value: projectKey,
+            operator: "="
+        };
+        string selectQuery = cdata:generateConditionalSelectQuery(PROJECT_COMPONENTS, fields, [whereCondition]);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function updateProjectComponentById(int projectComponentId, map<anydata> payload) 
+                                                        returns (string|int)?|error {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: projectComponentId,
+            operator: "="
+        };
+        string updateQuery = cdata:generateConditionalUpdateQuery(PROJECT_COMPONENTS, payload, [whereCondition]);
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function deleteProjectComponentById(int projectComponentId) returns error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: projectComponentId,
+            operator: "="
+        };
+        string deleteQuery = cdata:generateConditionalDeleteQuery(PROJECT_COMPONENTS, [whereCondition]);
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataConnectorToJira.close();
     }

@@ -22,6 +22,7 @@ import cdata as cdata;
 
 (string|int)? projectId = ();
 (string|int)? projectKey = ();
+(string|int)? projectComponentId = ();
 string objectName = "Projects";
 
 // Connection Configurations
@@ -103,7 +104,7 @@ function getObject() {
 
 @test:Config {
     dependsOn: [getObject],
-    enable: true
+    enable: false
 }
 function updateObject() {
     map<anydata> project = {
@@ -355,6 +356,173 @@ function deleteProjectById() {
 }
 function deleteProjectByKey() {
     error? deleteAccountResponse = cdataConnectorToJira->deleteProjectByKey(<string> projectKey);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Project ID: ", projectId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+// Project Components
+
+@test:Config {
+    dependsOn: [deleteProjectByKey],
+    enable: true
+}
+function createProject_PC() {
+    map<anydata> project = {
+        Key: "EXE7",
+        Name: "Inserted Project 4", 
+        LeadAccountId: "60bd94c8d5dde800712d9772",
+        LeadDisplayName: "admin", 
+        ProjectTypeKey: "business",
+        Description: "New business project"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Project ID: ", createObjectResponse);
+        projectId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createProject],
+    enable: true
+}
+function createProjectComponent() {
+    map<anydata> projectComponent = {
+        ProjectKey: "EXE7",
+        Name: "Testing Component", 
+        AssigneeType: "PROJECT_LEAD"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProjectComponent(projectComponent);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Project Component ID: ", createObjectResponse);
+        projectComponentId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createProjectComponent],
+    enable: true
+}
+function getProjectComponents() {
+    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getProjectComponents();
+    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+        io:println("Project Components details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectComponents],
+    enable: true
+}
+function getProjectComponentById() {
+    string Id = "Id";
+    string Name = "Name";
+    string ProjectId = "ProjectId";
+    string ProjectKey = "ProjectKey";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentById(
+        <int> projectComponentId, Id, Name, ProjectId, ProjectKey);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
+        projectId = <int> getObjectResponse.value["ProjectId"];
+        projectKey = <string> getObjectResponse.value["ProjectKey"];
+    } else if (getObjectResponse is ()) {
+        io:println("Project Component table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectComponentById],
+    enable: true
+}
+function getProjectComponentByProjectId() {
+    string Id = "Id";
+    string Name = "Name";
+    string ProjectId = "ProjectId";
+    string ProjectKey = "ProjectKey";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectId(
+        <int> projectId, Id, Name, ProjectId, ProjectKey);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
+        projectId = <int> getObjectResponse.value["ProjectId"];
+        projectKey = <string> getObjectResponse.value["ProjectKey"];
+    } else if (getObjectResponse is ()) {
+        io:println("Project Component table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectComponentByProjectId],
+    enable: true
+}
+function getProjectComponentByProjectKey() {
+    string Id = "Id";
+    string Name = "Name";
+    string ProjectId = "ProjectId";
+    string ProjectKey = "ProjectKey";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectKey(
+        <string> projectKey, Id, Name, ProjectId, ProjectKey);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
+        projectId = <int> getObjectResponse.value["ProjectId"];
+        projectKey = <string> getObjectResponse.value["ProjectKey"];
+    } else if (getObjectResponse is ()) {
+        io:println("Project Component table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+// TODO: 'accountId' must be the only user identifying query parameter in GDPR strict mode.
+@test:Config {
+    dependsOn: [getProjectComponentByProjectKey],
+    enable: false
+}
+function updateProjectComponentById() { 
+    map<anydata> project = {
+        LeadKey: "newlead"
+    };
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectComponentById(
+        <int> projectComponentId, project);
+    if (updateRecordResponse is (string|int)?) {
+        io:println("Updated Project Component ID: ", updateRecordResponse);
+    } else {
+        test:assertFail(updateRecordResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectComponentByProjectKey],
+    enable: true
+}
+function deleteProjectComponentById() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectComponentById(<int> projectComponentId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Project Component ID: ", projectComponentId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [deleteProjectComponentById],
+    enable: true
+}
+function deleteProjectById_PC() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
     } else {
