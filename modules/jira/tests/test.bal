@@ -23,6 +23,7 @@ import cdata as cdata;
 (string|int)? projectId = ();
 (string|int)? projectKey = ();
 (string|int)? projectComponentId = ();
+(string|int)? projectVersionId = ();
 string objectName = "Projects";
 
 // Connection Configurations
@@ -522,6 +523,150 @@ function deleteProjectComponentById() {
     enable: true
 }
 function deleteProjectById_PC() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Project ID: ", projectId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+// Project Versions
+
+@test:Config {
+    dependsOn: [deleteProjectById_PC],
+    enable: true
+}
+function createProject_PV() {
+    map<anydata> project = {
+        Key: "EXE8",
+        Name: "Inserted Project 5", 
+        LeadAccountId: "60bd94c8d5dde800712d9772",
+        LeadDisplayName: "admin", 
+        ProjectTypeKey: "business",
+        Description: "New business project"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Project ID: ", createObjectResponse);
+        projectId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createProject_PV],
+    enable: true
+}
+function createProjectVersion() {
+    map<anydata> projectVersion = {
+        ProjectId: projectId,
+        Name: "HR Component", 
+        Description: "Example version description",
+        ReleaseDate: "2018-04-04",
+        StartDate: "2018-02-02"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProjectVersion(projectVersion);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Project Version ID: ", createObjectResponse);
+        projectVersionId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createProjectVersion],
+    enable: true
+}
+function getProjectVersions() {
+    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getProjectVersions();
+    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+        io:println("Project Versions details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectVersions],
+    enable: true
+}
+function getProjectVersionById() {
+    string Id = "Id";
+    string Name = "Name";
+    string ProjectId = "ProjectId";
+    string ProjectKey = "ProjectKey";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionById(
+        <int> projectVersionId, Id, Name, ProjectId, ProjectKey);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
+        projectId = <int> getObjectResponse.value["ProjectId"];
+    } else if (getObjectResponse is ()) {
+        io:println("Project Version table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectVersionById],
+    enable: true
+}
+function getProjectVersionByProjectId() {
+    string Id = "Id";
+    string Name = "Name";
+    string ProjectId = "ProjectId";
+    string ProjectKey = "ProjectKey";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionByProjectId(
+        <int> projectId, Id, Name, ProjectId, ProjectKey);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
+        projectId = <int> getObjectResponse.value["ProjectId"];
+    } else if (getObjectResponse is ()) {
+        io:println("Project Version table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectVersionByProjectId],
+    enable: true
+}
+function updateProjectVersionById() { 
+    map<anydata> project = {
+        Released: true
+    };
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectVersionById(
+        <int> projectVersionId, project);
+    if (updateRecordResponse is (string|int)?) {
+        io:println("Updated Project Version ID: ", updateRecordResponse);
+    } else {
+        test:assertFail(updateRecordResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [updateProjectVersionById],
+    enable: true
+}
+function deleteProjectVersionById() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectVersionById(<int> projectVersionId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Project Version ID: ", projectComponentId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [deleteProjectVersionById],
+    enable: true
+}
+function deleteProjectById_PV() {
     error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
