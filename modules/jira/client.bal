@@ -335,6 +335,60 @@ public client class Client {
         return;
     }
 
+    // Issue Types
+
+    isolated remote function getIssueTypes() returns stream<record{}, error> {
+        string selectQuery = cdata:generateConditionalSelectAllQuery(ISSUE_TYPES);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream;
+    }
+
+    isolated remote function createIssueType(map<anydata> payload) returns (string|int)?|error {
+        string insertQuery = cdata:generateInsertQuery(ISSUE_TYPES, payload);
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getIssueTypeById(string issueTypeId, string... fields) 
+                                              returns record {|record{} value;|}|error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: issueTypeId,
+            operator: "="
+        };
+        string selectQuery = cdata:generateConditionalSelectQuery(ISSUE_TYPES, fields, [whereCondition]);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function updateIssueTypeById(string issueTypeId, map<anydata> payload) 
+                                                 returns (string|int)?|error {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: issueTypeId,
+            operator: "="
+        };
+        string updateQuery = cdata:generateConditionalUpdateQuery(ISSUE_TYPES, payload, [whereCondition]);
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function deleteIssueTypeById(string issueTypeId) returns error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: issueTypeId,
+            operator: "="
+        };
+        string deleteQuery = cdata:generateConditionalDeleteQuery(ISSUE_TYPES, [whereCondition]);
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataConnectorToJira.close();
     }

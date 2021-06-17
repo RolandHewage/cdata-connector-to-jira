@@ -24,6 +24,7 @@ import cdata as cdata;
 (string|int)? projectKey = ();
 (string|int)? projectComponentId = ();
 (string|int)? projectVersionId = ();
+(string|int)? issueTypeId = ();
 string objectName = "Projects";
 
 // Connection Configurations
@@ -637,11 +638,11 @@ function getProjectVersionByProjectId() {
     enable: true
 }
 function updateProjectVersionById() { 
-    map<anydata> project = {
+    map<anydata> projectVersion = {
         Released: true
     };
     (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectVersionById(
-        <int> projectVersionId, project);
+        <int> projectVersionId, projectVersion);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project Version ID: ", updateRecordResponse);
     } else {
@@ -656,7 +657,7 @@ function updateProjectVersionById() {
 function deleteProjectVersionById() {
     error? deleteAccountResponse = cdataConnectorToJira->deleteProjectVersionById(<int> projectVersionId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project Version ID: ", projectComponentId);
+        io:println("Deleted Project Version ID: ", projectVersionId);
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -667,6 +668,126 @@ function deleteProjectVersionById() {
     enable: true
 }
 function deleteProjectById_PV() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Project ID: ", projectId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+// Issue Types
+
+@test:Config {
+    dependsOn: [deleteProjectById_PV],
+    enable: true
+}
+function createProject_IT() {
+    map<anydata> project = {
+        Key: "EXE9",
+        Name: "Inserted Project 6", 
+        LeadAccountId: "60bd94c8d5dde800712d9772",
+        LeadDisplayName: "admin", 
+        ProjectTypeKey: "business",
+        Description: "New business project"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Project ID: ", createObjectResponse);
+        projectId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createProject_IT],
+    enable: true
+}
+function createIssueType() {
+    map<anydata> issueType = {
+        Name: "Issue type name 3", 
+        Description: "test description",
+        Subtask: false
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createIssueType(issueType);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Issue Type ID: ", createObjectResponse);
+        issueTypeId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createIssueType],
+    enable: true
+}
+function getIssueTypes() {
+    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getIssueTypes();
+    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+        io:println("Issue Types details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getIssueTypes],
+    enable: true
+}
+function getIssueTypeById() {
+    string Id = "Id";
+    string Name = "Name";
+    string Description = "Description";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueTypeById(
+        <string> issueTypeId, Id, Name, Description);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Issue Type ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Issue Type table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getIssueTypeById],
+    enable: true
+}
+function updateIssueTypeById() { 
+    map<anydata> issueType = {
+        Name: "Updated Name 3",
+        Description: "Updated description"
+    };
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateIssueTypeById(
+        <string> issueTypeId, issueType);
+    if (updateRecordResponse is (string|int)?) {
+        io:println("Updated Issue Type ID: ", updateRecordResponse);
+    } else {
+        test:assertFail(updateRecordResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [updateIssueTypeById],
+    enable: true
+}
+function deleteIssueTypeById() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteIssueTypeById(<string> issueTypeId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Issue Type ID: ", issueTypeId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [deleteIssueTypeById],
+    enable: true
+}
+function deleteProjectById_IT() {
     error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
