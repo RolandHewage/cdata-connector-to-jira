@@ -682,28 +682,6 @@ function deleteProjectById_PV() {
     dependsOn: [deleteProjectById_PV],
     enable: true
 }
-function createProject_IT() {
-    map<anydata> project = {
-        Key: "EXE9",
-        Name: "Inserted Project 6", 
-        LeadAccountId: "60bd94c8d5dde800712d9772",
-        LeadDisplayName: "admin", 
-        ProjectTypeKey: "business",
-        Description: "New business project"
-    };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
-    if (createObjectResponse is (string|int)?) {
-        io:println("Created Project ID: ", createObjectResponse);
-        projectId = createObjectResponse;
-    } else {
-        test:assertFail(createObjectResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [createProject_IT],
-    enable: true
-}
 function createIssueType() {
     map<anydata> issueType = {
         Name: "Issue type name 3", 
@@ -783,16 +761,38 @@ function deleteIssueTypeById() {
     }
 }
 
+// Roles
+
 @test:Config {
     dependsOn: [deleteIssueTypeById],
     enable: true
 }
-function deleteProjectById_IT() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
-    if (deleteAccountResponse is ()) {
-        io:println("Deleted Project ID: ", projectId);
+function getRoles() {
+    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getRoles();
+    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+        io:println("Roles details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getRoles],
+    enable: true
+}
+function getRoleById() {
+    string Id = "Id";
+    string Name = "Name";
+    string Description = "Description";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getRoleById(
+        10002, Id, Name, Description);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Role ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Role table is empty");
     } else {
-        test:assertFail(deleteAccountResponse.message());
+        test:assertFail(getObjectResponse.message());
     }
 }
 

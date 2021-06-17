@@ -389,6 +389,63 @@ public client class Client {
         return;
     }
 
+    // Roles
+
+    isolated remote function getRoles() returns stream<record{}, error> {
+        string selectQuery = cdata:generateConditionalSelectAllQuery(ROLES);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream;
+    }
+
+    // Project roles aren't editable in Jira Software Free. Upgrade for advanced team configuration.
+    isolated remote function createRole(map<anydata> payload) returns (string|int)?|error {
+        string insertQuery = cdata:generateInsertQuery(ROLES, payload);
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getRoleById(int roleId, string... fields) 
+                                         returns record {|record{} value;|}|error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: roleId,
+            operator: "="
+        };
+        string selectQuery = cdata:generateConditionalSelectQuery(ROLES, fields, [whereCondition]);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    // Project roles aren't editable in Jira Software Free. Upgrade for advanced team configuration.
+    isolated remote function updateRoleById(int roleId, map<anydata> payload) 
+                                            returns (string|int)?|error {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: roleId,
+            operator: "="
+        };
+        string updateQuery = cdata:generateConditionalUpdateQuery(ROLES, payload, [whereCondition]);
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    // Project roles aren't editable in Jira Software Free. Upgrade for advanced team configuration.
+    isolated remote function deleteRoleById(int roleId) returns error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: roleId,
+            operator: "="
+        };
+        string deleteQuery = cdata:generateConditionalDeleteQuery(ROLES, [whereCondition]);
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataConnectorToJira.close();
     }
