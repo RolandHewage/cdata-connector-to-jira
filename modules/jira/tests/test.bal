@@ -27,6 +27,7 @@ import cdata as cdata;
 (string|int)? issueTypeId = ();
 (string|int)? roleId = ();
 (string|int)? boardId = ();
+(string|int)? sprintId = ();
 string objectName = "Projects";
 
 // Connection Configurations
@@ -909,6 +910,92 @@ function deleteProjectById_B() {
     error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+// Sprints
+
+@test:Config {
+    dependsOn: [deleteProjectById_PV],
+    enable: true
+}
+function createSprint() {
+    map<anydata> sprint = {
+        OriginBoardId: 1, 
+        Name: "Inserted Sprint",
+        Goal: "Complete target",
+        StartDate: "2018-02-02",
+        EndDate: "2018-04-04"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createSprint(sprint);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Sprint ID: ", createObjectResponse);
+        sprintId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createSprint],
+    enable: true
+}
+function getSprints() {
+    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getSprints();
+    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+        io:println("Sprints details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getSprints],
+    enable: true
+}
+function getSprintId() {
+    string Id = "Id";
+    string Name = "Name";
+    string Goal = "Goal";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getSprintById(
+        <int> sprintId, Id, Name, Goal);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Sprint ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Sprint table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getSprintId],
+    enable: true
+}
+function updateSprintById() { 
+    map<anydata> sprint = {
+        State: "active"
+    };
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateSprintById(
+        <int> sprintId, sprint);
+    if (updateRecordResponse is (string|int)?) {
+        io:println("Updated Sprint ID: ", updateRecordResponse);
+    } else {
+        test:assertFail(updateRecordResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [updateSprintById],
+    enable: true
+}
+function deleteSprintById() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteSprintById(<int> sprintId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Sprint ID: ", sprintId);
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
