@@ -25,6 +25,8 @@ import cdata as cdata;
 (string|int)? projectComponentId = ();
 (string|int)? projectVersionId = ();
 (string|int)? issueTypeId = ();
+(string|int)? roleId = ();
+(string|int)? boardId = ();
 string objectName = "Projects";
 
 // Connection Configurations
@@ -793,6 +795,122 @@ function getRoleById() {
         io:println("Role table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
+    }
+}
+
+// Boards
+
+@test:Config {
+    dependsOn: [getRoleById],
+    enable: true
+}
+function createProject_B() {
+    map<anydata> project = {
+        Key: "EXE9",
+        Name: "Inserted Project 6", 
+        LeadAccountId: "60bd94c8d5dde800712d9772",
+        LeadDisplayName: "admin", 
+        ProjectTypeKey: "business",
+        Description: "New business project"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Project ID: ", createObjectResponse);
+        projectId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    enable: false
+}
+function createBoard() {
+    map<anydata> board = {
+        Name: "New board", 
+        Type: "kanban",
+        FilterId: 10001
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createBoard(board);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Board ID: ", createObjectResponse);
+        boardId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createProject_B],
+    enable: true
+}
+function getBoards() {
+    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getBoards();
+    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+        io:println("Boards details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getBoards],
+    enable: true
+}
+function getBoardById() {
+    string Id = "Id";
+    string Name = "Name";
+    string Type = "Type";
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getBoardById(
+        1, Id, Name, Type);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("board table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getBoardById],
+    enable: true
+}
+function getBoard() {
+    string[] fields = ["Id", "Name", "Type"];
+    cdata:WhereCondition whereCondition1 = {
+        'key: "ProjectKeyOrId",
+        value: "ROL",
+        operator: "=",
+        operation: cdata:AND
+    };
+    cdata:WhereCondition whereCondition2 = {
+        'key: "Type",
+        value: "simple",
+        operator: "="
+    };
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getBoard(fields, 
+        [whereCondition1, whereCondition2]);
+    if (getObjectResponse is record {|record{} value;|}) {
+        io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("board table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getBoard],
+    enable: true
+}
+function deleteProjectById_B() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Project ID: ", projectId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
     }
 }
 

@@ -446,6 +446,56 @@ public client class Client {
         return;
     }
 
+    // Boards
+
+    isolated remote function getBoards() returns stream<record{}, error> {
+        string selectQuery = cdata:generateConditionalSelectAllQuery(BOARDS);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream;
+    }
+
+    // API doesnt provide much information about how to obtain the required parameter `FilterId`
+    isolated remote function createBoard(map<anydata> payload) returns (string|int)?|error {
+        string insertQuery = cdata:generateInsertQuery(BOARDS, payload);
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getBoardById(int boardId, string... fields) 
+                                          returns record {|record{} value;|}|error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: boardId,
+            operator: "="
+        };
+        string selectQuery = cdata:generateConditionalSelectQuery(BOARDS, fields, [whereCondition]);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function getBoard(string[] fields, cdata:WhereCondition[]? whereConditions = ()) 
+                                      returns record {|record{} value;|}|error? {
+        string selectQuery = cdata:generateConditionalSelectQuery(BOARDS, fields, whereConditions);
+        io:println(selectQuery);
+        stream<record{}, error> resultStream = self.cdataConnectorToJira->query(selectQuery);
+        return resultStream.next();
+    }
+
+    isolated remote function deleteBoardById(int boardId) returns error? {
+        cdata:WhereCondition whereCondition = {
+            'key: "Id",
+            value: boardId,
+            operator: "="
+        };
+        string deleteQuery = cdata:generateConditionalDeleteQuery(BOARDS, [whereCondition]);
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataConnectorToJira->execute(deleteQuery);
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataConnectorToJira.close();
     }

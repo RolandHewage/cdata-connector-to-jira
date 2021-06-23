@@ -20,3 +20,4 @@ public const string PROJECT_COMPONENTS = "ProjectComponents";
 public const string PROJECT_VERSIONS = "ProjectVersions";
 public const string ISSUE_TYPES = "IssueTypes";
 public const string ROLES = "Roles";
+public const string BOARDS = "Boards";
