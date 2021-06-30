@@ -574,3 +574,27 @@ public type BoardIssues record {
     readonly string Created?;
     readonly string Updated?;
 };
+
+# BoardSprints view representation in Jira. The agile Sprints related to a Jira Board. 
+#
+# + Id - The Id of the sprint
+# + BoardId - The board Id the sprint is in 
+# + Name - The name of the sprint
+# + State - The state of the sprint. The sprint state can only transition from 'future' to 'active', and 
+#           from 'active' to 'close'. The allowed values are future, active, closed. 
+# + Goal - The goal assigned for the sprint
+# + OriginBoardId - The board Id the sprint originated from. This field cannot be updated 
+# + StartDate - The date when the sprint was started
+# + EndDate - The date when the sprint has ended
+# + CompleteDate - The date when the sprint was completed
+public type BoardSprints record {
+    readonly int Id?;
+    readonly int BoardId?;
+    readonly string Name?;
+    readonly string State?;
+    readonly string Goal?;
+    readonly int OriginBoardId?;
+    readonly string StartDate?;
+    readonly string EndDate?;
+    readonly string CompleteDate?;
+};

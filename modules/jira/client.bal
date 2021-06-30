@@ -629,6 +629,24 @@ public client class Client {
         return resultStream;
     }
 
+    // BoardSprints
+
+    isolated remote function getBoardSprints(int boardId) returns stream<BoardSprints, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM BoardSprints WHERE BoardId = ${boardId}`;
+        io:println(selectQuery);
+        stream<BoardSprints, error> resultStream = self.cdataClient->query(selectQuery, BoardSprints);
+        return resultStream;
+    }
+
+    isolated remote function getSprintsOfAllBoards() returns stream<BoardSprints, error> {
+        // Boards of type 'kanban' do not support sprints, so you can retrieve all the sprints faster using this query 
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM BoardSprints WHERE BoardId IN (SELECT Id FROM Boards 
+                                              WHERE Type != 'kanban')`;
+        io:println(selectQuery);
+        stream<BoardSprints, error> resultStream = self.cdataClient->query(selectQuery, BoardSprints);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

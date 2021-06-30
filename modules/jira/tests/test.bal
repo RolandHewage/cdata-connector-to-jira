@@ -1137,6 +1137,36 @@ function getBoardIssues() {
     }
 }
 
+// BoardSprints
+
+@test:Config {
+    dependsOn: [getBoardIssues],
+    enable: true
+}
+function getBoardSprints() {
+    stream<BoardSprints, error> objectStreamResponse = cdataConnectorToJira->getBoardSprints(1);
+    error? e = objectStreamResponse.forEach(isolated function(BoardSprints jobject) {
+        io:println("BoardSprints details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getBoardSprints],
+    enable: true
+}
+function getSprintsOfAllBoards() {
+    stream<BoardSprints, error> objectStreamResponse = cdataConnectorToJira->getSprintsOfAllBoards();
+    error? e = objectStreamResponse.forEach(isolated function(BoardSprints jobject) {
+        io:println("BoardSprints details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
