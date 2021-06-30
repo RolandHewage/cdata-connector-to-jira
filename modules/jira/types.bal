@@ -543,3 +543,34 @@ public type Audit record {
     readonly string ChangedFrom?;
     readonly string ChangedTo?;
 };
+
+# BoardIssues view representation in Jira. The agile Board Issues in Jira. 
+#
+# + Id - The Id of the issue
+# + Key - The key of the issue
+# + BoardId - The board the issue is included in
+# + IssueTypeId - The issue type Id
+# + IssueTypeName - The issue type name
+# + StatusId - The issue status Id
+# + StatusName - The issue status name
+# + ProjectId - The project Id of the issue
+# + ProjectKey - The project key of the issue
+# + ProjectName - The project name of the issue
+# + ClosedSprintsAggregate - The issue's previous sprints that have been closed
+# + Created - The creation date of the issue
+# + Updated - The updated date of the issue
+public type BoardIssues record {
+    readonly int Id?;
+    readonly string Key?;
+    readonly int BoardId?;
+    readonly string IssueTypeId?;
+    readonly string IssueTypeName?;
+    readonly int StatusId?;
+    readonly string StatusName?;
+    readonly int ProjectId?;
+    readonly string ProjectKey?;
+    readonly string ProjectName?;
+    readonly string ClosedSprintsAggregate?;
+    readonly string Created?;
+    readonly string Updated?;
+};

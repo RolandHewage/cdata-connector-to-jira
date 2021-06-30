@@ -620,6 +620,15 @@ public client class Client {
         return resultStream;
     }
 
+    // BoardIssues
+
+    isolated remote function getBoardIssues(int boardId) returns stream<BoardIssues, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM BoardIssues WHERE BoardId = ${boardId}`;
+        io:println(selectQuery);
+        stream<BoardIssues, error> resultStream = self.cdataClient->query(selectQuery, BoardIssues);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
