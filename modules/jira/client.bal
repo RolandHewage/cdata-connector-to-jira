@@ -647,6 +647,15 @@ public client class Client {
         return resultStream;
     }
 
+    // Configuration
+
+    isolated remote function getConfiguration() returns stream<Configuration, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Configuration`;
+        io:println(selectQuery);
+        stream<Configuration, error> resultStream = self.cdataClient->query(selectQuery, Configuration);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

@@ -586,7 +586,7 @@ public type BoardIssues record {
 # + OriginBoardId - The board Id the sprint originated from. This field cannot be updated 
 # + StartDate - The date when the sprint was started
 # + EndDate - The date when the sprint has ended
-# + CompleteDate - The date when the sprint was completed
+# + CompleteDate - Field Description  
 public type BoardSprints record {
     readonly int Id?;
     readonly int BoardId?;
@@ -597,4 +597,31 @@ public type BoardSprints record {
     readonly string StartDate?;
     readonly string EndDate?;
     readonly string CompleteDate?;
+};
+
+# Configuration view representation in Jira. The available Configurations in JIRA. 
+#
+# + VotingEnabled - Configuration for voting
+# + WatchingEnabled - Configuration for watching
+# + UnassignedIssuesAllowed - Configuration to allow unassigned issues 
+# + SubTasksEnabled - Configuration to enable subtasks
+# + IssueLinkingEnabled - Configuration to enable issue linking
+# + TimeTrackingEnabled - Configuration to enable time tracking 
+# + AttachmentsEnabled - Configuration to enable attachments
+# + WorkingHoursPerDay - Configuration of the working hours per day
+# + WorkingDaysPerWeek - Configuration of the working days per week
+# + TimeFormat - Configuration of the time format
+# + DefaultUnit - Configuration of the default unit
+public type Configuration record {
+    readonly boolean VotingEnabled?;
+    readonly boolean WatchingEnabled?;
+    readonly boolean UnassignedIssuesAllowed?;
+    readonly boolean SubTasksEnabled?;
+    readonly boolean IssueLinkingEnabled?;
+    readonly boolean TimeTrackingEnabled?;
+    readonly boolean AttachmentsEnabled?;
+    readonly float WorkingHoursPerDay?;
+    readonly float WorkingDaysPerWeek?;
+    readonly string TimeFormat?;
+    readonly string DefaultUnit?;
 };

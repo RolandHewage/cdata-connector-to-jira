@@ -1167,6 +1167,22 @@ function getSprintsOfAllBoards() {
     }
 }
 
+// Configuration
+
+@test:Config {
+    dependsOn: [getSprintsOfAllBoards],
+    enable: true
+}
+function getConfiguration() {
+    stream<Configuration, error> objectStreamResponse = cdataConnectorToJira->getConfiguration();
+    error? e = objectStreamResponse.forEach(isolated function(Configuration jobject) {
+        io:println("Configuration details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
