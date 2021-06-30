@@ -18,7 +18,6 @@ import ballerina/io;
 import ballerina/os;
 import ballerina/sql;
 import ballerina/test;
-import cdata as cdata;
 
 (string|int)? projectId = ();
 (string|int)? projectKey = ();
@@ -28,7 +27,8 @@ import cdata as cdata;
 (string|int)? roleId = ();
 (string|int)? boardId = ();
 (string|int)? sprintId = ();
-string objectName = "Projects";
+(string|int)? issueId = ();
+(string|int)? commentId = ();
 
 // Connection Configurations
 configurable string user = os:getEnv("USER");
@@ -51,214 +51,14 @@ JiraConfig config = {
 
 Client cdataConnectorToJira = check new (config);
 
-// Generic Objects
-
-@test:Config {
-    enable: true
-}
-function getObjects() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getObjects(objectName);
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
-        io:println("Object details: ", jobject);
-    });
-    if (e is error) {
-        test:assertFail(e.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [getObjects],
-    enable: true
-}
-function createObject() {
-    map<anydata> project = {
-        Key: "EXE4",
-        Name: "Inserted Project 1", 
-        LeadAccountId: "60bd94c8d5dde800712d9772",
-        LeadDisplayName: "admin", 
-        ProjectTypeKey: "business",
-        Description: "New business project"
-    };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createObject(objectName, project);
-    if (createObjectResponse is (string|int)?) {
-        io:println("Created Object ID: ", createObjectResponse);
-        projectId = createObjectResponse;
-    } else {
-        test:assertFail(createObjectResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [createObject],
-    enable: true
-}
-function getObject() {
-    string Id = "Id";
-    string Name = "Name";
-    string Key = "Key";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getObject(objectName, 
-        <int> projectId, Id, Name, Key);
-    if (getObjectResponse is record {|record{} value;|}) {
-        io:println("Selected Object ID: ", getObjectResponse.value["Id"]);
-    } else if (getObjectResponse is ()) {
-        io:println("Object table is empty");
-    } else {
-        test:assertFail(getObjectResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [getObject],
-    enable: false
-}
-function updateObject() {
-    map<anydata> project = {
-        Description: "Updated description",
-        AssigneeType: "UNASSIGNED"
-    };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateObject(objectName, <int> projectId, 
-        project);
-    if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Object ID: ", updateRecordResponse);
-    } else {
-        test:assertFail(updateRecordResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [getObject],
-    enable: true
-}
-function deleteObject() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteObject(objectName, <int> projectId);
-    if (deleteAccountResponse is ()) {
-        io:println("Deleted Object ID: ", projectId);
-    } else {
-        test:assertFail(deleteAccountResponse.message());
-    }
-}
-
-// Generic Conditional Objects
-
-@test:Config {
-    dependsOn: [deleteObject],
-    enable: true
-}
-function getConditionalObjects() {
-    cdata:WhereCondition one = {
-        'key: "Id",
-        value: <int> projectId,
-        operator: "=",
-        operation: "OR"
-    };
-    cdata:WhereCondition two = {
-        'key: "Name",
-        value: "RolyProject1",
-        operator: "="
-    };
-    stream<record{}, error> conditionalObjectStreamResponse = cdataConnectorToJira->getConditionalObjects(objectName, 
-        [one, two]);
-    error? e = conditionalObjectStreamResponse.forEach(isolated function(record{} jobject) {
-        io:println("Conditional Object details: ", jobject);
-    });
-    if (e is error) {
-        test:assertFail(e.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [getConditionalObjects],
-    enable: true
-}
-function createConditionalObject() {
-    map<anydata> project = {
-        Key: "EXE5",
-        Name: "Inserted Project 2", 
-        LeadAccountId: "60bd94c8d5dde800712d9772",
-        LeadDisplayName: "admin", 
-        ProjectTypeKey: "business",
-        Description: "New business project"
-    };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createObject(objectName, project);
-    if (createObjectResponse is (string|int)?) {
-        io:println("Created Conditional Object ID: ", createObjectResponse);
-        projectId = createObjectResponse;
-    } else {
-        test:assertFail(createObjectResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [createConditionalObject],
-    enable: true
-}
-function getConditionalObject() {
-    cdata:WhereCondition whereCondition = {
-        'key: "Id",
-        value: <int> projectId,
-        operator: "="
-    };
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getConditionalObject(objectName, 
-        ["Id", "Name", "Key"], [whereCondition]);
-    if (getObjectResponse is record {|record{} value;|}) {
-        io:println("Selected Conditional Object ID: ", getObjectResponse.value["Id"]);
-    } else if (getObjectResponse is ()) {
-        io:println("Conditional Object table is empty");
-    } else {
-        test:assertFail(getObjectResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [getConditionalObject],
-    enable: true
-}
-function updateConditionalObject() {
-    cdata:WhereCondition whereCondition = {
-        'key: "Key",
-        value: "ROL",
-        operator: "="
-    };
-    map<anydata> project = {
-        Description: "Updated description",
-        AssigneeType: "UNASSIGNED"
-    };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateConditionalObject(objectName, 
-        project, [whereCondition]);
-    if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Conditional Object ID: ", updateRecordResponse);
-    } else {
-        test:assertFail(updateRecordResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [updateConditionalObject],
-    enable: true
-}
-function deleteConditionalObject() {
-    cdata:WhereCondition whereCondition = {
-        'key: "Id",
-        value: <int> projectId,
-        operator: "="
-    };
-    error? deleteAccountResponse = cdataConnectorToJira->deleteConditionalObject(objectName, [whereCondition]);
-    if (deleteAccountResponse is ()) {
-        io:println("Deleted Conditional Object ID: ", projectId);
-    } else {
-        test:assertFail(deleteAccountResponse.message());
-    }
-}
-
 // Projects
 
 @test:Config {
-    dependsOn: [deleteConditionalObject],
     enable: true
 }
 function getProjects() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getProjects();
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+    stream<Projects, error> objectStreamResponse = cdataConnectorToJira->getProjects();
+    error? e = objectStreamResponse.forEach(isolated function(Projects jobject) {
         io:println("Project details: ", jobject);
     });
     if (e is error) {
@@ -271,13 +71,13 @@ function getProjects() {
     enable: true
 }
 function createProject() {
-    map<anydata> project = {
+    Projects project = {
         Key: "EXE6",
         Name: "Inserted Project 3", 
+        Description: "New business project",
         LeadAccountId: "60bd94c8d5dde800712d9772",
         LeadDisplayName: "admin", 
-        ProjectTypeKey: "business",
-        Description: "New business project"
+        ProjectTypeKey: "business"
     };
     (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
     if (createObjectResponse is (string|int)?) {
@@ -293,12 +93,8 @@ function createProject() {
     enable: true
 }
 function getProjectById() {
-    string Id = "Id";
-    string Name = "Name";
-    string Key = "Key";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectById(<int> projectId, 
-        Id, Name, Key);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|Projects value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectById(<int> projectId);
+    if (getObjectResponse is record {|Projects value;|}) {
         io:println("Selected Project ID: ", getObjectResponse.value["Id"]);
         projectKey = <string> getObjectResponse.value["Key"];
     } else if (getObjectResponse is ()) {
@@ -313,11 +109,12 @@ function getProjectById() {
     enable: false
 }
 function updateProjectById() {
-    map<anydata> project = {
+    Projects project = {
+        Id: <int> projectId,
         Description: "Updated description",
         AssigneeType: "UNASSIGNED"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectById(<int> projectId, project);
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectById(project);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project ID: ", updateRecordResponse);
     } else {
@@ -330,11 +127,12 @@ function updateProjectById() {
     enable: true
 }
 function updateProjectByKey() {
-    map<anydata> project = {
+    Projects project = {
+        Key: "ROL",
         Description: "Updated description",
         AssigneeType: "PROJECT_LEAD"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectByKey("ROL", project);
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectByKey(project);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project ID: ", updateRecordResponse);
     } else {
@@ -375,7 +173,7 @@ function deleteProjectByKey() {
     enable: true
 }
 function createProject_PC() {
-    map<anydata> project = {
+    Projects project = {
         Key: "EXE7",
         Name: "Inserted Project 4", 
         LeadAccountId: "60bd94c8d5dde800712d9772",
@@ -397,7 +195,7 @@ function createProject_PC() {
     enable: true
 }
 function createProjectComponent() {
-    map<anydata> projectComponent = {
+    ProjectComponents projectComponent = {
         ProjectKey: "EXE7",
         Name: "Testing Component", 
         AssigneeType: "PROJECT_LEAD"
@@ -416,8 +214,8 @@ function createProjectComponent() {
     enable: true
 }
 function getProjectComponents() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getProjectComponents();
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+    stream<ProjectComponents, error> objectStreamResponse = cdataConnectorToJira->getProjectComponents();
+    error? e = objectStreamResponse.forEach(isolated function(ProjectComponents jobject) {
         io:println("Project Components details: ", jobject);
     });
     if (e is error) {
@@ -430,13 +228,9 @@ function getProjectComponents() {
     enable: true
 }
 function getProjectComponentById() {
-    string Id = "Id";
-    string Name = "Name";
-    string ProjectId = "ProjectId";
-    string ProjectKey = "ProjectKey";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentById(
-        <int> projectComponentId, Id, Name, ProjectId, ProjectKey);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|ProjectComponents value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentById(
+        <int> projectComponentId);
+    if (getObjectResponse is record {|ProjectComponents value;|}) {
         io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
         projectId = <int> getObjectResponse.value["ProjectId"];
         projectKey = <string> getObjectResponse.value["ProjectKey"];
@@ -452,13 +246,9 @@ function getProjectComponentById() {
     enable: true
 }
 function getProjectComponentByProjectId() {
-    string Id = "Id";
-    string Name = "Name";
-    string ProjectId = "ProjectId";
-    string ProjectKey = "ProjectKey";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectId(
-        <int> projectId, Id, Name, ProjectId, ProjectKey);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|ProjectComponents value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectId(
+        <int> projectId);
+    if (getObjectResponse is record {|ProjectComponents value;|}) {
         io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
         projectId = <int> getObjectResponse.value["ProjectId"];
         projectKey = <string> getObjectResponse.value["ProjectKey"];
@@ -474,13 +264,9 @@ function getProjectComponentByProjectId() {
     enable: true
 }
 function getProjectComponentByProjectKey() {
-    string Id = "Id";
-    string Name = "Name";
-    string ProjectId = "ProjectId";
-    string ProjectKey = "ProjectKey";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectKey(
-        <string> projectKey, Id, Name, ProjectId, ProjectKey);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|ProjectComponents value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectKey(
+        <string> projectKey);
+    if (getObjectResponse is record {|ProjectComponents value;|}) {
         io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
         projectId = <int> getObjectResponse.value["ProjectId"];
         projectKey = <string> getObjectResponse.value["ProjectKey"];
@@ -497,11 +283,10 @@ function getProjectComponentByProjectKey() {
     enable: false
 }
 function updateProjectComponentById() { 
-    map<anydata> project = {
+    ProjectComponents project = {
         LeadKey: "newlead"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectComponentById(
-        <int> projectComponentId, project);
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectComponentById(project);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project Component ID: ", updateRecordResponse);
     } else {
@@ -542,7 +327,7 @@ function deleteProjectById_PC() {
     enable: true
 }
 function createProject_PV() {
-    map<anydata> project = {
+    Projects project = {
         Key: "EXE8",
         Name: "Inserted Project 5", 
         LeadAccountId: "60bd94c8d5dde800712d9772",
@@ -564,8 +349,8 @@ function createProject_PV() {
     enable: true
 }
 function createProjectVersion() {
-    map<anydata> projectVersion = {
-        ProjectId: projectId,
+    ProjectVersions projectVersion = {
+        ProjectId: <int> projectId,
         Name: "HR Component", 
         Description: "Example version description",
         ReleaseDate: "2018-04-04",
@@ -585,8 +370,8 @@ function createProjectVersion() {
     enable: true
 }
 function getProjectVersions() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getProjectVersions();
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+    stream<ProjectVersions, error> objectStreamResponse = cdataConnectorToJira->getProjectVersions();
+    error? e = objectStreamResponse.forEach(isolated function(ProjectVersions jobject) {
         io:println("Project Versions details: ", jobject);
     });
     if (e is error) {
@@ -599,13 +384,9 @@ function getProjectVersions() {
     enable: true
 }
 function getProjectVersionById() {
-    string Id = "Id";
-    string Name = "Name";
-    string ProjectId = "ProjectId";
-    string ProjectKey = "ProjectKey";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionById(
-        <int> projectVersionId, Id, Name, ProjectId, ProjectKey);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|ProjectVersions value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionById(
+        <int> projectVersionId);
+    if (getObjectResponse is record {|ProjectVersions value;|}) {
         io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
         projectId = <int> getObjectResponse.value["ProjectId"];
     } else if (getObjectResponse is ()) {
@@ -620,13 +401,9 @@ function getProjectVersionById() {
     enable: true
 }
 function getProjectVersionByProjectId() {
-    string Id = "Id";
-    string Name = "Name";
-    string ProjectId = "ProjectId";
-    string ProjectKey = "ProjectKey";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionByProjectId(
-        <int> projectId, Id, Name, ProjectId, ProjectKey);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|ProjectVersions value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionByProjectId(
+        <int> projectId);
+    if (getObjectResponse is record {|ProjectVersions value;|}) {
         io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
         projectId = <int> getObjectResponse.value["ProjectId"];
     } else if (getObjectResponse is ()) {
@@ -641,11 +418,11 @@ function getProjectVersionByProjectId() {
     enable: true
 }
 function updateProjectVersionById() { 
-    map<anydata> projectVersion = {
-        Released: true
+    ProjectVersions projectVersion = {
+        Id: <int> projectVersionId,
+        ReleaseDate: "2019-04-04"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectVersionById(
-        <int> projectVersionId, projectVersion);
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectVersionById(projectVersion);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project Version ID: ", updateRecordResponse);
     } else {
@@ -686,7 +463,7 @@ function deleteProjectById_PV() {
     enable: true
 }
 function createIssueType() {
-    map<anydata> issueType = {
+    IssueTypes issueType = {
         Name: "Issue type name 3", 
         Description: "test description",
         Subtask: false
@@ -705,8 +482,8 @@ function createIssueType() {
     enable: true
 }
 function getIssueTypes() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getIssueTypes();
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+    stream<IssueTypes, error> objectStreamResponse = cdataConnectorToJira->getIssueTypes();
+    error? e = objectStreamResponse.forEach(isolated function(IssueTypes jobject) {
         io:println("Issue Types details: ", jobject);
     });
     if (e is error) {
@@ -719,12 +496,9 @@ function getIssueTypes() {
     enable: true
 }
 function getIssueTypeById() {
-    string Id = "Id";
-    string Name = "Name";
-    string Description = "Description";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueTypeById(
-        <string> issueTypeId, Id, Name, Description);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|IssueTypes value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueTypeById(
+        <string> issueTypeId);
+    if (getObjectResponse is record {|IssueTypes value;|}) {
         io:println("Selected Issue Type ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
         io:println("Issue Type table is empty");
@@ -738,12 +512,12 @@ function getIssueTypeById() {
     enable: true
 }
 function updateIssueTypeById() { 
-    map<anydata> issueType = {
+    IssueTypes issueType = {
+        Id: <string> issueTypeId,
         Name: "Updated Name 3",
         Description: "Updated description"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateIssueTypeById(
-        <string> issueTypeId, issueType);
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateIssueTypeById(issueType);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Issue Type ID: ", updateRecordResponse);
     } else {
@@ -771,8 +545,8 @@ function deleteIssueTypeById() {
     enable: true
 }
 function getRoles() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getRoles();
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+    stream<Roles, error> objectStreamResponse = cdataConnectorToJira->getRoles();
+    error? e = objectStreamResponse.forEach(isolated function(Roles jobject) {
         io:println("Roles details: ", jobject);
     });
     if (e is error) {
@@ -785,12 +559,8 @@ function getRoles() {
     enable: true
 }
 function getRoleById() {
-    string Id = "Id";
-    string Name = "Name";
-    string Description = "Description";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getRoleById(
-        10002, Id, Name, Description);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|Roles value;|}|error? getObjectResponse = cdataConnectorToJira->getRoleById(10002);
+    if (getObjectResponse is record {|Roles value;|}) {
         io:println("Selected Role ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
         io:println("Role table is empty");
@@ -806,7 +576,7 @@ function getRoleById() {
     enable: true
 }
 function createProject_B() {
-    map<anydata> project = {
+    Projects project = {
         Key: "EXE9",
         Name: "Inserted Project 6", 
         LeadAccountId: "60bd94c8d5dde800712d9772",
@@ -827,10 +597,10 @@ function createProject_B() {
     enable: false
 }
 function createBoard() {
-    map<anydata> board = {
+    Boards board = {
         Name: "New board", 
         Type: "kanban",
-        FilterId: 10001
+        FilterId: "10001"
     };
     (string|int)?|error createObjectResponse = cdataConnectorToJira->createBoard(board);
     if (createObjectResponse is (string|int)?) {
@@ -846,8 +616,8 @@ function createBoard() {
     enable: true
 }
 function getBoards() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getBoards();
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+    stream<Boards, error> objectStreamResponse = cdataConnectorToJira->getBoards();
+    error? e = objectStreamResponse.forEach(isolated function(Boards jobject) {
         io:println("Boards details: ", jobject);
     });
     if (e is error) {
@@ -860,12 +630,8 @@ function getBoards() {
     enable: true
 }
 function getBoardById() {
-    string Id = "Id";
-    string Name = "Name";
-    string Type = "Type";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getBoardById(
-        1, Id, Name, Type);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|Boards value;|}|error? getObjectResponse = cdataConnectorToJira->getBoardById(1);
+    if (getObjectResponse is record {|Boards value;|}) {
         io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
         io:println("board table is empty");
@@ -879,20 +645,7 @@ function getBoardById() {
     enable: true
 }
 function getBoard() {
-    string[] fields = ["Id", "Name", "Type"];
-    cdata:WhereCondition whereCondition1 = {
-        'key: "ProjectKeyOrId",
-        value: "ROL",
-        operator: "=",
-        operation: cdata:AND
-    };
-    cdata:WhereCondition whereCondition2 = {
-        'key: "Type",
-        value: "simple",
-        operator: "="
-    };
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getBoard(fields, 
-        [whereCondition1, whereCondition2]);
+    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getBoard("ROL");
     if (getObjectResponse is record {|record{} value;|}) {
         io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -918,11 +671,11 @@ function deleteProjectById_B() {
 // Sprints
 
 @test:Config {
-    dependsOn: [deleteProjectById_PV],
+    dependsOn: [deleteProjectById_B],
     enable: true
 }
 function createSprint() {
-    map<anydata> sprint = {
+    Sprints sprint = {
         OriginBoardId: 1, 
         Name: "Inserted Sprint",
         Goal: "Complete target",
@@ -943,8 +696,8 @@ function createSprint() {
     enable: true
 }
 function getSprints() {
-    stream<record{}, error> objectStreamResponse = cdataConnectorToJira->getSprints();
-    error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+    stream<Sprints, error> objectStreamResponse = cdataConnectorToJira->getSprints();
+    error? e = objectStreamResponse.forEach(isolated function(Sprints jobject) {
         io:println("Sprints details: ", jobject);
     });
     if (e is error) {
@@ -957,12 +710,8 @@ function getSprints() {
     enable: true
 }
 function getSprintId() {
-    string Id = "Id";
-    string Name = "Name";
-    string Goal = "Goal";
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getSprintById(
-        <int> sprintId, Id, Name, Goal);
-    if (getObjectResponse is record {|record{} value;|}) {
+    record {|Sprints value;|}|error? getObjectResponse = cdataConnectorToJira->getSprintById(<int> sprintId);
+    if (getObjectResponse is record {|Sprints value;|}) {
         io:println("Selected Sprint ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
         io:println("Sprint table is empty");
@@ -976,11 +725,11 @@ function getSprintId() {
     enable: true
 }
 function updateSprintById() { 
-    map<anydata> sprint = {
+    Sprints sprint = {
+        Id: <int> sprintId,
         State: "active"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateSprintById(
-        <int> sprintId, sprint);
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateSprintById(sprint);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Sprint ID: ", updateRecordResponse);
     } else {

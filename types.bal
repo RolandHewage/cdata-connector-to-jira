@@ -16,9 +16,9 @@
 
 # Common configuration.
 public type CommonConfig record {
-    *Sso;
+    *SSO;
     *OAuth;
-    *Ssl;
+    *SSL;
     *Firewall;
     *Proxy;
     *Logging;
@@ -35,7 +35,7 @@ public type CommonConfig record {
 # + ssoLoginUrl - The identity provider's login URL  
 # + ssoProperties - Additional properties required to connect to the identity provider in a semicolon-separated list  
 # + ssoExchangeUrl - The url used for consuming the SAML response and exchanging it with JIRA specific credentials
-public type Sso record {
+public type SSO record {
     boolean enableSso?;
     string ssoLoginUrl?;
     string ssoProperties?;
@@ -95,7 +95,7 @@ public type OAuth record {
 # + sslClientCertPassword - The password for the TLS/SSL client certificate  
 # + sslClientCertSubject - The subject of the TLS/SSL client certificate  
 # + sslServerCert - The certificate to be accepted from the server when connecting using TLS/SSL
-public type Ssl record {
+public type SSL record {
     boolean enableSsl?;
     string sslClientCert?;
     string sslClientCertType?;
@@ -243,34 +243,6 @@ public type Miscellaneous record {
     boolean useConnectionPooling?;
     boolean useDefaultOrderBy?;
 };
-
-# Condition used with the SQL `WHERE` clause.
-#
-# + 'key - condition key  
-# + value - condition value    
-# + operator - condition operator 
-# + operation - condition operation
-public type WhereCondition record {
-    string 'key;
-    (int|float|decimal|string|boolean) value;
-    Operator operator;
-    Operation operation?;
-};
-
-public enum Operator {
-    EQUALS = "=",
-    GREATER_THAN = ">",
-    LESS_THAN = "<",
-    GREATER_THAN_OR_EQUAL = ">=",
-    LESS_THAN_OR_EQUAL = "<=",
-    NOT_EQUAL = "<>"
-}
-
-public enum Operation {
-    AND,
-    OR,
-    NOT
-}
 
 // OAuth Connection String Options
 

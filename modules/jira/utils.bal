@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import cdata as cdata;
+import cdata;
 
 isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     string jdbcUrl = "jdbc:cdata:jira:";
