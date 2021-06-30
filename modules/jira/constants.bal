@@ -22,3 +22,4 @@ public const string ISSUE_TYPES = "IssueTypes";
 public const string ROLES = "Roles";
 public const string BOARDS = "Boards";
 public const string SPRINTS = "Sprints";
+public const string ISSUES = "Issues";

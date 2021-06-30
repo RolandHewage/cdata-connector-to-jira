@@ -410,6 +410,66 @@ public client class Client {
         return;
     }
 
+    // Issues
+
+    isolated remote function getIssues() returns stream<Issues, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Issues`;
+        io:println(selectQuery);
+        stream<Issues, error> resultStream = self.cdataClient->query(selectQuery, Issues);
+        return resultStream;
+    }
+
+    isolated remote function getIssuesByJql(string jqlQuery) returns stream<Issues, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Issues WHERE JQL = ${jqlQuery}`;
+        io:println(selectQuery);
+        stream<Issues, error> resultStream = self.cdataClient->query(selectQuery, Issues);
+        return resultStream;
+    }
+
+    isolated remote function createIssue(Issues issues) returns (string|int)?|error {
+        sql:ParameterizedQuery insertQuery = `INSERT INTO Issues (IssueTypeId, ProjectId, ProjectKey, ParentId, 
+                                              PriorityId, RemainingEstimate, OriginalEstimate, AssigneeName, 
+                                              Description, Summary, ReporterName, DueDate, Labels, Environment, 
+                                              SecurityLevel, FixVersionsAggregate, ComponentsAggregate, 
+                                              IssueLinksAggregate, AffectedVersionsAggregate, AssigneeAccountId)
+                                              VALUES (${issues?.IssueTypeId}, ${issues?.ProjectId}, 
+                                              ${issues?.ProjectKey}, ${issues?.ParentId}, ${issues?.PriorityId}, 
+                                              ${issues?.RemainingEstimate}, ${issues?.OriginalEstimate}, 
+                                              ${issues?.AssigneeName}, ${issues?.Description}, ${issues?.Summary},
+                                              ${issues?.ReporterName}, ${issues?.DueDate}, ${issues?.Labels}, 
+                                              ${issues?.Environment}, ${issues?.SecurityLevel}, 
+                                              ${issues?.FixVersionsAggregate}, ${issues?.ComponentsAggregate}, 
+                                              ${issues?.IssueLinksAggregate}, ${issues?.AffectedVersionsAggregate},
+                                              ${issues?.AssigneeAccountId})`;
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getIssueById(int issueId) returns record {|Issues value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Issues WHERE Id = ${issueId}`;
+        io:println(selectQuery);
+        stream<Issues, error> resultStream = self.cdataClient->query(selectQuery, Issues);
+        return resultStream.next();
+    }
+
+    isolated remote function updateIssueById(Issues issues) returns (string|int)?|error {
+        sql:ParameterizedQuery updateQuery = `UPDATE Issues SET
+                                              Description = ${issues?.Description}, Summary = ${issues?.Summary},
+                                              Labels = ${issues?.Labels}
+                                              WHERE Id = ${issues?.Id}`;
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function deleteIssueById(int issueId) returns error? {
+        sql:ParameterizedQuery deleteQuery = `DELETE FROM Issues WHERE Id = ${issueId}`;
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

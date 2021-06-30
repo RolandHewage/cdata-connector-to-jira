@@ -225,3 +225,128 @@ public type Sprints record {
     string EndDate?;
     readonly string CompleteDate?;
 };
+
+# Issues table representation in Jira.
+#
+# + Id - The Id of the issue 
+# + Key - The key of the issue
+# + IssueTypeId - The issue type Id
+# + IssueTypeName - The issue type name
+# + ProjectId - The project Id of the issue 
+# + ProjectName - The project name of the issue
+# + ProjectKey - The project key of the issue
+# + ParentId - The Id of the issue's parent if the issue is a subtask
+# + ParentKey - The key of the issue's parent if the issue is a subtask
+# + ResolutionId - The resolution Id of the issue
+# + ResolutionName - The resolution name of the issue
+# + ResolutionDescription - The resolution description of the issue
+# + ResolutionDate - The resolution date of the issue
+# + Workratio - The work ratio of the issue
+# + LastViewed - The last time that the issue was viewed
+# + WatchCount - The number of watches of the issue
+# + IsWatching - Whether the currently authenticated user is watching the issue
+# + Created - The creation date of the issue
+# + PriorityId - The priority Id of the issue
+# + PriorityName - The priority name of the issue
+# + TimeSpentSeconds - The time spent in seconds on the issue
+# + TimeSpent - The time spent on the issue
+# + RemainingEstimateSeconds - The time estimate in seconds of the issue
+# + RemainingEstimate - The time estimate of the issue
+# + OriginalEstimateSeconds - The original time estimate in seconds of the issue
+# + OriginalEstimate - The original time estimate of the issue
+# + AggregateTimeSpent - The aggregate time spent of the issue
+# + AggregateTimeOriginalEstimate - The original aggregate time estimate of the issue
+# + AggregateTimeEstimate - The aggregate time estimate of the issue
+# + AssigneeDisplayName - Assignee display name
+# + AssigneeKey - The assignee key of the issue
+# + AssigneeName - The assignee name of the issue
+# + AssigneeEmail - The assignee email of the issue
+# + Updated - The updated date of the issue
+# + StatusId - The status Id of the issue
+# + StatusName - The status name of the issue
+# + Description - The description of the issue
+# + Summary - The summary of the issue
+# + CreatorDisplayName - Issue creator display name
+# + CreatorName - The creator name of the issue
+# + CreatorKey - The creator key of the issue
+# + CreatorEmail - The creator email of the issue 
+# + ReporterDisplayName - Issue reporter display name
+# + ReporterName - The reporter name of the issue
+# + ReporterKey - The reporter key of the issue
+# + ReporterEmail - The reporter email of the issue
+# + AggregateProgress - The aggregate progress of the issue
+# + TotalProgress - The aggregate total progress of the issue 
+# + Votes - Votes of the issue
+# + HasVotes - The vote status of the issue
+# + DueDate - The due date of the issue
+# + Labels - The labels of an issue
+# + Environment - The environment of an issue
+# + SecurityLevel - The security level of an issue
+# + FixVersionsAggregate - The fix versions of the issue
+# + ComponentsAggregate - Aggregate list of components included in the issue
+# + IssueLinksAggregate - The issue links of the issue
+# + AffectedVersionsAggregate - The affected versions of the issue
+# + SubtasksAggregate - The subtasks of the issue
+# + AssigneeAccountId - The account ID of the assignee
+public type Issues record {
+    readonly int Id?;
+    readonly string Key?;
+    string IssueTypeId?;
+    readonly string IssueTypeName?;
+    string ProjectId?;
+    readonly string ProjectName?;
+    string ProjectKey?;
+    int ParentId?;
+    readonly string ParentKey?;
+    readonly string ResolutionId?;
+    readonly string ResolutionName?;
+    readonly string ResolutionDescription?;
+    readonly string ResolutionDate?;
+    readonly int Workratio?;
+    readonly string LastViewed?;
+    readonly int WatchCount?;
+    readonly boolean IsWatching?;
+    readonly string Created?;
+    string PriorityId?;
+    readonly string PriorityName?;
+    readonly int TimeSpentSeconds?;
+    readonly string TimeSpent?;
+    readonly int RemainingEstimateSeconds?;
+    string RemainingEstimate?;
+    readonly int OriginalEstimateSeconds?;
+    string OriginalEstimate?;
+    readonly int AggregateTimeSpent?;
+    readonly int AggregateTimeOriginalEstimate?;
+    readonly int AggregateTimeEstimate?;
+    readonly string AssigneeDisplayName?;
+    readonly string AssigneeKey?;
+    string AssigneeName?;
+    readonly string AssigneeEmail?;
+    readonly string Updated?;
+    readonly string StatusId?;
+    readonly string StatusName?;
+    string Description?;
+    string Summary?;
+    readonly string CreatorDisplayName?;
+    readonly string CreatorName?;
+    readonly string CreatorKey?;
+    readonly string CreatorEmail?;
+    readonly string ReporterDisplayName?;
+    string ReporterName?;
+    readonly string ReporterKey?;
+    readonly string ReporterEmail?;
+    readonly int AggregateProgress?;
+    readonly int TotalProgress?;
+    readonly int Votes?;
+    readonly boolean HasVotes?;
+    string DueDate?;
+    string Labels?;
+    string Environment?;
+    string SecurityLevel?;
+    string FixVersionsAggregate?;
+    string ComponentsAggregate?;
+    string IssueLinksAggregate?;
+    string AffectedVersionsAggregate?;
+    readonly string SubtasksAggregate?;
+    string AssigneeAccountId?; // Not available in docs
+};

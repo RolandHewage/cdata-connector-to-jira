@@ -750,6 +750,102 @@ function deleteSprintById() {
     }
 }
 
+// Issues
+
+@test:Config {
+    dependsOn: [deleteSprintById],
+    enable: true
+}
+function createIssue() {
+    Issues issue = {
+        ProjectId: "10000", 
+        Description: "My Description",
+        Summary: "Desc from prod",
+        IssueTypeId: "10001"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createIssue(issue);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Issue ID: ", createObjectResponse);
+        issueId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createIssue],
+    enable: true
+}
+function getIssues() {
+    stream<Issues, error> objectStreamResponse = cdataConnectorToJira->getIssues();
+    error? e = objectStreamResponse.forEach(isolated function(Issues jobject) {
+        io:println("Issues details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getIssues],
+    enable: true
+}
+function getIssueId() {
+    record {|Issues value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueById(<int> issueId);
+    if (getObjectResponse is record {|Issues value;|}) {
+        io:println("Selected Issue ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Issues table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getIssueId],
+    enable: true
+}
+function updateIssueById() { 
+    Issues issue = {
+        Id: <int> issueId,
+        Summary: "Updated Desc FROM prod"
+    };
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateIssueById(issue);
+    if (updateRecordResponse is (string|int)?) {
+        io:println("Updated Issue ID: ", updateRecordResponse);
+    } else {
+        test:assertFail(updateRecordResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [updateIssueById],
+    enable: true
+}
+function deleteIssueById() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteIssueById(<int> issueId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Issue ID: ", issueId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [deleteIssueById],
+    enable: true
+}
+function getIssuesByJql() {
+    string jqlQuery = "project = 'RolyProject1' AND Status = 'In Progress'";
+    stream<Issues, error> objectStreamResponse = cdataConnectorToJira->getIssuesByJql(jqlQuery);
+    error? e = objectStreamResponse.forEach(isolated function(Issues jobject) {
+        io:println("Issues details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
