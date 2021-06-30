@@ -601,6 +601,15 @@ public client class Client {
         return resultStream;
     }
 
+    // ApplicationRoles
+
+    isolated remote function getApplicationRoles() returns stream<ApplicationRoles, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM ApplicationRoles`;
+        io:println(selectQuery);
+        stream<ApplicationRoles, error> resultStream = self.cdataClient->query(selectQuery, ApplicationRoles);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

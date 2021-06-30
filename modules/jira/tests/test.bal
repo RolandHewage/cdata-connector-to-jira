@@ -1090,6 +1090,22 @@ function getAdvancedSettings() {
     }
 }
 
+// ApplicationRoles
+
+@test:Config {
+    dependsOn: [getAdvancedSettings],
+    enable: true
+}
+function getApplicationRoles() {
+    stream<ApplicationRoles, error> objectStreamResponse = cdataConnectorToJira->getApplicationRoles();
+    error? e = objectStreamResponse.forEach(isolated function(ApplicationRoles jobject) {
+        io:println("ApplicationRoles details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

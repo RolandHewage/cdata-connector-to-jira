@@ -478,3 +478,31 @@ public type AdvancedSettings record {
     readonly string DefaultValue?;
     readonly string AllowedValues?;
 };
+
+# ApplicationRoles view representation in Jira. All application roles. 
+# In Jira, application roles are managed using the Application access configuration page. 
+#
+# + Key - The key of the application role
+# + Name - The display name of the application role
+# + Groups - The groups associated with the application role
+# + DefaultGroups - The groups that are granted default access for this application role
+# + SelectedByDefault - Determines whether this application role should be selected by default on user creation
+# + NumberOfSeats - The maximum count of users on your license
+# + RemainingSeats - The count of users remaining on your license
+# + UserCount - The number of users counting against your license
+# + UserCountDescription - The type of users being counted against your license
+# + HasUnlimitedSeats - Determines whether this application role has unlimited seats
+# + Platform - Indicates if the application role belongs to Jira platform (jira-core)
+public type ApplicationRoles record {
+    readonly string Key?;
+    readonly string Name?;
+    readonly string Groups?;
+    readonly string DefaultGroups?;
+    readonly boolean SelectedByDefault?;
+    readonly int NumberOfSeats?;
+    readonly int RemainingSeats?;
+    readonly int UserCount?;
+    readonly string UserCountDescription?;
+    readonly boolean HasUnlimitedSeats?;
+    readonly boolean Platform?;
+};
