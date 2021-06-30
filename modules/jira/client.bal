@@ -384,8 +384,7 @@ public client class Client {
         return result.lastInsertId;
     }
 
-    isolated remote function getSprintById(int sprintId) 
-                                           returns record {|Sprints value;|}|error? {
+    isolated remote function getSprintById(int sprintId) returns record {|Sprints value;|}|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Sprints WHERE Id = ${sprintId}`;
         io:println(selectQuery);
         stream<Sprints, error> resultStream = self.cdataClient->query(selectQuery, Sprints);
@@ -654,6 +653,29 @@ public client class Client {
         io:println(selectQuery);
         stream<Configuration, error> resultStream = self.cdataClient->query(selectQuery, Configuration);
         return resultStream;
+    }
+
+    // Dashboards
+
+    isolated remote function getDashboards() returns stream<Dashboards, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Dashboards`;
+        io:println(selectQuery);
+        stream<Dashboards, error> resultStream = self.cdataClient->query(selectQuery, Dashboards);
+        return resultStream;
+    }
+
+    isolated remote function getDashboardsByFilter(string filter) returns stream<Dashboards, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Dashboards WHERE Filter = ${filter}`;
+        io:println(selectQuery);
+        stream<Dashboards, error> resultStream = self.cdataClient->query(selectQuery, Dashboards);
+        return resultStream;
+    }
+
+    isolated remote function getDashboardById(string dashboardId) returns record {|Dashboards value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Dashboards WHERE Id = ${dashboardId}`;
+        io:println(selectQuery);
+        stream<Dashboards, error> resultStream = self.cdataClient->query(selectQuery, Dashboards);
+        return resultStream.next();
     }
 
     isolated remote function close() returns error? {

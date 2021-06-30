@@ -625,3 +625,14 @@ public type Configuration record {
     readonly string TimeFormat?;
     readonly string DefaultUnit?;
 };
+
+# Dashboards view representation in Jira. The available Dashboards in JIRA. 
+#
+# + Id - The Id of the dashboard
+# + Name - The name of the dashboard
+# + View - The view URL of the dashboard
+public type Dashboards record {
+    readonly string Id?;
+    readonly string Name?;
+    readonly string View?;
+};

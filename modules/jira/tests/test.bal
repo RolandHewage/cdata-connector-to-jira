@@ -791,7 +791,7 @@ function getIssues() {
     dependsOn: [getIssues],
     enable: true
 }
-function getIssueId() {
+function getIssueById() {
     record {|Issues value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueById(<int> issueId);
     if (getObjectResponse is record {|Issues value;|}) {
         io:println("Selected Issue ID: ", getObjectResponse.value["Id"]);
@@ -803,7 +803,7 @@ function getIssueId() {
 }
 
 @test:Config {
-    dependsOn: [getIssueId],
+    dependsOn: [getIssueById],
     enable: true
 }
 function updateIssueById() { 
@@ -1112,7 +1112,7 @@ function getApplicationRoles() {
     enable: false
 }
 function getAudit() {
-    stream<Audit, error> objectStreamResponse = cdataConnectorToJira->getAudit("'up'");
+    stream<Audit, error> objectStreamResponse = cdataConnectorToJira->getAudit("up");
     error? e = objectStreamResponse.forEach(isolated function(Audit jobject) {
         io:println("Audit details: ", jobject);
     });
@@ -1180,6 +1180,51 @@ function getConfiguration() {
     });
     if (e is error) {
         test:assertFail(e.message());
+    }
+}
+
+// Dashboards
+
+@test:Config {
+    dependsOn: [getConfiguration],
+    enable: true
+}
+function getDashboards() {
+    stream<Dashboards, error> objectStreamResponse = cdataConnectorToJira->getDashboards();
+    error? e = objectStreamResponse.forEach(isolated function(Dashboards jobject) {
+        io:println("Dashboards details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getDashboards],
+    enable: true
+}
+function getDashboardsByFilter() {
+    stream<Dashboards, error> objectStreamResponse = cdataConnectorToJira->getDashboardsByFilter("favourite");
+    error? e = objectStreamResponse.forEach(isolated function(Dashboards jobject) {
+        io:println("Dashboards details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getDashboardsByFilter],
+    enable: true
+}
+function getDashboardById() {
+    record {|Dashboards value;|}|error? getObjectResponse = cdataConnectorToJira->getDashboardById("10000");
+    if (getObjectResponse is record {|Dashboards value;|}) {
+        io:println("Selected Dashboard ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Dashboards table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
     }
 }
 
