@@ -610,6 +610,16 @@ public client class Client {
         return resultStream;
     }
 
+    // Audit
+
+    // Audit logs aren't available for this site as all of its Jira Cloud products are on Free plans.
+    isolated remote function getAudit(string filter) returns stream<Audit, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Audit WHERE Filter = ${filter}`;
+        io:println(selectQuery);
+        stream<Audit, error> resultStream = self.cdataClient->query(selectQuery, Audit);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

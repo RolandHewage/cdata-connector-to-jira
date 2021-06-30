@@ -1106,6 +1106,21 @@ function getApplicationRoles() {
     }
 }
 
+// Audit
+
+@test:Config {
+    enable: false
+}
+function getAudit() {
+    stream<Audit, error> objectStreamResponse = cdataConnectorToJira->getAudit("'up'");
+    error? e = objectStreamResponse.forEach(isolated function(Audit jobject) {
+        io:println("Audit details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

@@ -506,3 +506,40 @@ public type ApplicationRoles record {
     readonly boolean HasUnlimitedSeats?;
     readonly boolean Platform?;
 };
+
+# Audit view representation in Jira. The audit log of your JIRA account. 
+#
+# + RecordId - The Id of the audit record 
+# + Summary - Summary of the change
+# + RemoteAddress - The remote address of the record
+# + AuthorKey - Key of the author that made the change
+# + Created - Date on when the change was made
+# + Category - Category of the change
+# + EventSource - What triggered the event
+# + Description - Description of the change
+# + ItemId - Unique identifier of the object item
+# + ItemName - Name of the object item
+# + ItemTypeName - Typename of the object item 
+# + ItemParentId - Identifier of the parent of the object item
+# + ItemParentName - Parent name of the object item
+# + FieldName - The name of the changed field
+# + ChangedFrom - The updated value
+# + ChangedTo - The previous value
+public type Audit record {
+    readonly int RecordId?;
+    readonly string Summary?;
+    readonly string RemoteAddress?;
+    readonly string AuthorKey?;
+    readonly string Created?;
+    readonly string Category?;
+    readonly string EventSource?;
+    readonly string Description?;
+    readonly string ItemId?;
+    readonly string ItemName?;
+    readonly string ItemTypeName?;
+    readonly string ItemParentId?;
+    readonly string ItemParentName?;
+    readonly string FieldName?;
+    readonly string ChangedFrom?;
+    readonly string ChangedTo?;
+};
