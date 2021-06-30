@@ -350,3 +350,50 @@ public type Issues record {
     readonly string SubtasksAggregate?;
     string AssigneeAccountId?; // Not available in docs
 };
+
+# Comments table representation in Jira.
+#
+# + Id - The Id of the comment
+# + IssueId - The Id of the issue
+# + IssueKey - The key of the issue
+# + IssueCreatedDate - The date the comment's issue was created 
+# + IssueUpdatedDate - The date the comment's issue was last updated 
+# + AuthorDisplayName - The display name of the author who made the comment
+# + AuthorEmail - The email address of the author who made the comment
+# + UpdateDisplayName - The display name of the author who changed the comment 
+# + UpdateAuthorEmail - The email address of the author who edited the comment
+# + Body - The body of the comment
+# + RenderedBody - The rendered body of the comment 
+# + Created - The date the comment was created
+# + Updated - The date the comment was updated
+# + VisibilityType - The visibility type of the comment
+# + VisibilityValue - The visibility value of the comment
+# + AuthorAccountName - The name of the author who made the comment
+# + AuthorAccountKey - The key of the author who made the comment
+# + UpdateAuthorAccountKey - The Id of the author who edited the comment
+# + UpdateAuthorAccountName - The name of the author who edited the comment
+# + AuthorAccountId - The name of the author who made the comment
+# + UpdateAuthorAccountId - The Id of the author who edited the comment  
+public type Comments record {
+    readonly int Id?;
+    int IssueId ?;
+    string IssueKey?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string AuthorDisplayName?;
+    readonly string AuthorEmail?;
+    readonly string UpdateDisplayName?;
+    readonly string UpdateAuthorEmail?;
+    string Body?;
+    readonly string RenderedBody?;
+    readonly string Created?;
+    readonly string Updated?;
+    string VisibilityType?;
+    string VisibilityValue?;
+    readonly string AuthorAccountName?;
+    readonly string AuthorAccountKey?;
+    readonly string UpdateAuthorAccountKey?;
+    readonly string UpdateAuthorAccountName?;
+    readonly string AuthorAccountId?;
+    readonly string UpdateAuthorAccountId?;
+};

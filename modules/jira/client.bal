@@ -470,6 +470,48 @@ public client class Client {
         return;
     }
 
+    // Comments
+
+    isolated remote function getComments() returns stream<Comments, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Comments`;
+        io:println(selectQuery);
+        stream<Comments, error> resultStream = self.cdataClient->query(selectQuery, Comments);
+        return resultStream;
+    }
+
+    isolated remote function createComment(Comments comments) returns (string|int)?|error {
+        sql:ParameterizedQuery insertQuery = `INSERT INTO Comments (IssueId, IssueKey, Body, VisibilityType, 
+                                              VisibilityValue)
+                                              VALUES (${comments?.IssueId}, ${comments?.IssueKey}, 
+                                              ${comments?.Body}, ${comments?.VisibilityType}, 
+                                              ${comments?.VisibilityValue})`;
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getCommentsByIssueId(int issueId) returns stream<Comments, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Comments WHERE IssueId = ${issueId}`;
+        io:println(selectQuery);
+        stream<Comments, error> resultStream = self.cdataClient->query(selectQuery, Comments);
+        return resultStream;
+    }
+
+    isolated remote function updateCommentByIssueId(Comments comments) returns (string|int)?|error {
+        sql:ParameterizedQuery updateQuery = `UPDATE Comments SET Body = ${comments?.Body}
+                                              WHERE Id = ${comments?.Id} AND IssueId = ${comments?.IssueId}`;
+        io:println(updateQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function deleteCommentByIssueId(int commentId, int issueId) returns error? {
+        sql:ParameterizedQuery deleteQuery = `DELETE FROM Comments WHERE Id = ${commentId} AND IssueId = ${issueId}`;
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
+        return;
+    }    
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

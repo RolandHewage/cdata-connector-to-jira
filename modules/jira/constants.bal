@@ -23,3 +23,4 @@ public const string ROLES = "Roles";
 public const string BOARDS = "Boards";
 public const string SPRINTS = "Sprints";
 public const string ISSUES = "Issues";
+public const string COMMENTS = "Comments";

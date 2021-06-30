@@ -846,6 +846,85 @@ function getIssuesByJql() {
     }
 }
 
+// Comments
+
+@test:Config {
+    dependsOn: [getIssuesByJql],
+    enable: true
+}
+function createComment() {
+    Comments comment = {
+        IssueId: 10004, 
+        Body: "Test Comment"
+    };
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->createComment(comment);
+    if (createObjectResponse is (string|int)?) {
+        io:println("Created Comment ID: ", createObjectResponse);
+        commentId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [createComment],
+    enable: true
+}
+function getComments() {
+    stream<Comments, error> objectStreamResponse = cdataConnectorToJira->getComments();
+    error? e = objectStreamResponse.forEach(isolated function(Comments jobject) {
+        io:println("Comments details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getComments],
+    enable: true
+}
+function getCommentsByIssueId() {
+    stream<Comments, error> objectStreamResponse = cdataConnectorToJira->getCommentsByIssueId(10004);
+    error? e = objectStreamResponse.forEach(isolated function(Comments jobject) {
+        io:println("Comments details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getCommentsByIssueId],
+    enable: true
+}
+function updateCommentsById() { 
+    Comments comment = {
+        Id: <int> commentId,
+        IssueId: 10004,
+        Body: "Updated Comment"
+    };
+    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateCommentByIssueId(comment);
+    if (updateRecordResponse is (string|int)?) {
+        io:println("Updated Comment ID: ", updateRecordResponse);
+    } else {
+        test:assertFail(updateRecordResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [updateCommentsById],
+    enable: true
+}
+function deleteCommentByIssueId() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteCommentByIssueId(<int> commentId, 10004);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Comment ID: ", commentId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
