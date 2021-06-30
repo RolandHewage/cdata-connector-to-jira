@@ -512,6 +512,29 @@ public client class Client {
         return;
     }    
 
+    // Users
+
+    isolated remote function getUsers() returns stream<Users, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Users`;
+        io:println(selectQuery);
+        stream<Users, error> resultStream = self.cdataClient->query(selectQuery, Users);
+        return resultStream;
+    }
+
+    isolated remote function getUsersOfAllGroups() returns stream<Users, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Users WHERE GroupName IN (SELECT Name FROM Groups)`;
+        io:println(selectQuery);
+        stream<Users, error> resultStream = self.cdataClient->query(selectQuery, Users);
+        return resultStream;
+    }
+
+    isolated remote function getUsersOfGroup(string groupName) returns stream<Users, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Users WHERE GroupName = ${groupName}`;
+        io:println(selectQuery);
+        stream<Users, error> resultStream = self.cdataClient->query(selectQuery, Users);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

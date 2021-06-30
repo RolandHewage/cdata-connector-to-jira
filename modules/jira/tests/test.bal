@@ -925,6 +925,50 @@ function deleteCommentByIssueId() {
     }
 }
 
+// Users
+
+@test:Config {
+    dependsOn: [deleteCommentByIssueId],
+    enable: true
+}
+function getUsers() {
+    stream<Users, error> objectStreamResponse = cdataConnectorToJira->getUsers();
+    error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
+        io:println("Users details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getUsers],
+    enable: true
+}
+function getUsersOfAllGroups() {
+    stream<Users, error> objectStreamResponse = cdataConnectorToJira->getUsersOfAllGroups();
+    error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
+        io:println("Users details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getUsersOfAllGroups],
+    enable: true
+}
+function getUsersOfGroup() {
+    stream<Users, error> objectStreamResponse = cdataConnectorToJira->getUsersOfGroup("administrators");
+    error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
+        io:println("Users details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

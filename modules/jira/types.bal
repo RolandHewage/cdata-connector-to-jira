@@ -397,3 +397,28 @@ public type Comments record {
     readonly string AuthorAccountId?;
     readonly string UpdateAuthorAccountId?;
 };
+
+# Users table representation in Jira.
+#
+# + GroupName - The group the user is part of
+# + DisplayName - The display name of the user
+# + EmailAddress - The email address of the user
+# + Active - Indicates whether the user is active
+# + TimeZone - The time zone specified in the user's profile
+# + Locale - The locale of the user
+# + AccountId - The accountId of the user, which uniquely identifies the user across all Atlassian products 
+# + AccountType - The accountType of the user
+# + Key - The key of the user
+# + Name - The name of the user
+public type Users record {
+    readonly string GroupName?;
+    string DisplayName?;
+    string EmailAddress?;
+    readonly boolean Active?;
+    readonly string TimeZone?;
+    readonly string Locale?;
+    readonly string AccountId?;
+    string AccountType?;
+    readonly string Key?;
+    string Name?;
+};
