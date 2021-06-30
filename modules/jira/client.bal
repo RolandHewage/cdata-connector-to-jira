@@ -588,7 +588,18 @@ public client class Client {
         io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
-    }    
+    }  
+
+    /// Views
+
+    // AdvancedSettings
+
+    isolated remote function getAdvancedSettings() returns stream<AdvancedSettings, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM AdvancedSettings`;
+        io:println(selectQuery);
+        stream<AdvancedSettings, error> resultStream = self.cdataClient->query(selectQuery, AdvancedSettings);
+        return resultStream;
+    }
 
     isolated remote function close() returns error? {
         check self.cdataClient.close();

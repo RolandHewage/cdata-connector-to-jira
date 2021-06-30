@@ -1072,6 +1072,24 @@ function deleteAttachmentById() {
     }
 }
 
+//// Views
+
+// AdvancedSettings
+
+@test:Config {
+    dependsOn: [deleteAttachmentById],
+    enable: true
+}
+function getAdvancedSettings() {
+    stream<AdvancedSettings, error> objectStreamResponse = cdataConnectorToJira->getAdvancedSettings();
+    error? e = objectStreamResponse.forEach(isolated function(AdvancedSettings jobject) {
+        io:println("AdvancedSettings details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

@@ -457,3 +457,24 @@ public type Attachments record {
     string AuthorAccountId?;
     string AuthorKey?;
 };
+
+// Views
+
+# AdvancedSettings view representation in Jira. The application properties that are accessible on the Advanced Settings page. 
+#
+# + Id - The ID of the application property
+# + Name - The name of the application property
+# + Description - The description of the application property
+# + Type - The data type of the application property
+# + Value - The new value
+# + DefaultValue - The default value of the application property
+# + AllowedValues - The allowed values, if applicable
+public type AdvancedSettings record {
+    readonly string Id?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly string Type?;
+    readonly string Value?;
+    readonly string DefaultValue?;
+    readonly string AllowedValues?;
+};
