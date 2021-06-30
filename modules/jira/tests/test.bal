@@ -29,6 +29,7 @@ import ballerina/test;
 (string|int)? sprintId = ();
 (string|int)? issueId = ();
 (string|int)? commentId = ();
+(string|int)? attachmentId = ();
 
 // Connection Configurations
 configurable string user = os:getEnv("USER");
@@ -966,6 +967,108 @@ function getUsersOfGroup() {
     });
     if (e is error) {
         test:assertFail(e.message());
+    }
+}
+
+// Attachments
+
+@test:Config {
+    enable: false
+}
+function uploadAttachmentToIssueByFilePath() {
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->uploadAttachmentToIssueByFilePath(
+        "/home/roland/Documents/Notes/test25.txt", "ROL-23");
+    if (createObjectResponse is (string|int)?) {
+        io:println("Uploaded Attachment ID: ", createObjectResponse);
+        attachmentId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getUsersOfGroup],
+    enable: true
+}
+function uploadAttachmentToIssueByEncodedContent() {
+    (string|int)?|error createObjectResponse = cdataConnectorToJira->uploadAttachmentToIssueByEncodedContent(
+        "U29tZSBjb250ZW50IGhlcmU=", "Uploaded File", "ROL-23");
+    if (createObjectResponse is (string|int)?) {
+        io:println("Uploaded Attachment ID: ", createObjectResponse);
+        attachmentId = createObjectResponse;
+    } else {
+        test:assertFail(createObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [uploadAttachmentToIssueByEncodedContent],
+    enable: true
+}
+function getAttachments() {
+    stream<Attachments, error> objectStreamResponse = cdataConnectorToJira->getAttachments();
+    error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
+        io:println("Attachments details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getAttachments],
+    enable: true
+}
+function getAttachmentById() {
+    record {|Attachments value;|}|error? getObjectResponse = cdataConnectorToJira->getAttachmentById(<int> attachmentId);
+    if (getObjectResponse is record {|Attachments value;|}) {
+        io:println("Selected Attachment ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Attachments table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getAttachmentById],
+    enable: true
+}
+function getAttachmentsByIssueId() {
+    stream<Attachments, error> objectStreamResponse = cdataConnectorToJira->getAttachmentsByIssueId(10022);
+    error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
+        io:println("Attachments details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getAttachmentsByIssueId],
+    enable: true
+}
+function getAttachmentsByJql() {
+    string jqlQuery = "created > 2018-01-07";
+    stream<Attachments, error> objectStreamResponse = cdataConnectorToJira->getAttachmentsByJql(jqlQuery);
+    error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
+        io:println("Attachments details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getAttachmentsByJql],
+    enable: true
+}
+function deleteAttachmentById() {
+    error? deleteAccountResponse = cdataConnectorToJira->deleteAttachmentById(<int> attachmentId);
+    if (deleteAccountResponse is ()) {
+        io:println("Deleted Attachment ID: ", attachmentId);
+    } else {
+        test:assertFail(deleteAccountResponse.message());
     }
 }
 

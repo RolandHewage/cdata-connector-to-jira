@@ -422,3 +422,38 @@ public type Users record {
     readonly string Key?;
     string Name?;
 };
+
+# Attachments table representation in Jira.
+#
+# + Id - The Id of the attachment
+# + IssueId - The Id of the issue
+# + IssueKey - The key of the issue
+# + IssueCreatedDate - The date the attachment's issue was created 
+# + IssueUpdatedDate - The date the attachment's issue was last updated
+# + Filename - The filename of the attachment
+# + AuthorName - The name of the author of the attachment
+# + AuthorDisplayName - The display name of the author of the attachment
+# + Created - The creation date of the attachment
+# + Size - The size of the attachment
+# + MimeType - The MIME type of the attachment
+# + Content - The URI of the actual attached file
+# + Thumbnail - The thumbnail of the attachment
+# + AuthorAccountId - The account Id of the author of the attachment
+# + AuthorKey - The author key of the attachment
+public type Attachments record {
+    int Id?;
+    int IssueId?;
+    string IssueKey?;
+    string IssueCreatedDate?;
+    string IssueUpdatedDate?;
+    string Filename?;
+    string AuthorName?;
+    string AuthorDisplayName?;
+    string Created?;
+    int Size?;
+    string MimeType?;
+    string Content?;
+    string Thumbnail?;
+    string AuthorAccountId?;
+    string AuthorKey?;
+};

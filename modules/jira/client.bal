@@ -535,6 +535,61 @@ public client class Client {
         return resultStream;
     }
 
+    // Attachments
+
+    isolated remote function getAttachments() returns stream<Attachments, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments`;
+        io:println(selectQuery);
+        stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
+        return resultStream;
+    }
+
+    isolated remote function uploadAttachmentToIssueByFilePath(string filePath, string issueKey) 
+                                                               returns (string|int)?|error {
+        sql:ParameterizedQuery insertQuery = `INSERT INTO Attachments (FilePath, IssueKey)
+                                              VALUES (${filePath}, ${issueKey})`;
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function uploadAttachmentToIssueByEncodedContent(string contentEncoded, string name, 
+                                                                     string issueKey) returns (string|int)?|error {
+        sql:ParameterizedQuery insertQuery = `INSERT INTO Attachments (ContentEncoded, Name, IssueKey)
+                                              VALUES (${contentEncoded}, ${name}, ${issueKey})`;
+        io:println(insertQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
+        return result.lastInsertId;
+    }
+
+    isolated remote function getAttachmentById(int attachmentId) returns record {|Attachments value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments WHERE Id = ${attachmentId}`;
+        io:println(selectQuery);
+        stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
+        return resultStream.next();
+    }
+
+    isolated remote function getAttachmentsByIssueId(int issueId) returns stream<Attachments, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments WHERE IssueId = ${issueId}`;
+        io:println(selectQuery);
+        stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
+        return resultStream;
+    }
+
+    isolated remote function getAttachmentsByJql(string jqlQuery) returns stream<Attachments, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments WHERE JQL = ${jqlQuery}`;
+        io:println(selectQuery);
+        stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
+        return resultStream;
+    }
+
+    isolated remote function deleteAttachmentById(int attachmentId) returns error? {
+        sql:ParameterizedQuery deleteQuery = `DELETE FROM Attachments WHERE Id = ${attachmentId}`;
+        io:println(deleteQuery);
+        sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
+        return;
+    }    
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

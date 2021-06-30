@@ -25,3 +25,4 @@ public const string SPRINTS = "Sprints";
 public const string ISSUES = "Issues";
 public const string COMMENTS = "Comments";
 public const string USERS = "Users";
+public const string ATTACHMENTS = "Attachments";
