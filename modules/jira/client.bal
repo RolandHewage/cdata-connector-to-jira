@@ -1049,6 +1049,30 @@ public client class Client {
         return resultStream;
     }
 
+    // SprintIssues
+
+    isolated remote function getSprintIssues() returns stream<SprintIssues, error> {
+        sql:ParameterizedQuery selectQuery = `Select * FROM SprintIssues`;
+        io:println(selectQuery);
+        stream<SprintIssues, error> resultStream = self.cdataClient->query(selectQuery, SprintIssues);
+        return resultStream;
+    }
+
+    isolated remote function getSprintIssuesBySprintId(int sprintId) returns stream<SprintIssues, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM SprintIssues WHERE SprintId = ${sprintId}`;
+        io:println(selectQuery);
+        stream<SprintIssues, error> resultStream = self.cdataClient->query(selectQuery, SprintIssues);
+        return resultStream;
+    }
+
+    isolated remote function getSprintIssuesOfAllBoards() returns stream<SprintIssues, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM SprintIssues WHERE SprintId IN (SELECT Id FROM BoardSprints 
+                                              WHERE BoardId IN (SELECT Id FROM Boards WHERE Type != 'kanban'))`;
+        io:println(selectQuery);
+        stream<SprintIssues, error> resultStream = self.cdataClient->query(selectQuery, SprintIssues);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

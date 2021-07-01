@@ -1804,6 +1804,22 @@ function getSecuritySchemes() {
     }
 }
 
+// SprintIssues
+
+@test:Config {
+    dependsOn: [getSecuritySchemes],
+    enable: true
+}
+function getSprintIssues() {
+    stream<SprintIssues, error> objectStreamResponse = cdataConnectorToJira->getSprintIssues();
+    error? e = objectStreamResponse.forEach(isolated function(SprintIssues jobject) {
+        io:println("SprintIssues details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

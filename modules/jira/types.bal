@@ -1143,3 +1143,34 @@ public type SecuritySchemes record {
     readonly string Description?;
     readonly int DefaultSecurityLevelId?;
 };
+
+# SprintIssues view representation in Jira. The agile Sprint Issues in Jira. 
+#
+# + Id - The Id of the issue
+# + Key - The key of the issue
+# + SprintId - The sprint the issue is assigned to
+# + IssueTypeId - The issue type Id
+# + IssueTypeName - The issue type name
+# + StatusId - The issue status Id
+# + StatusName - The issue status name 
+# + ProjectId - The project Id of the issue
+# + ProjectKey - The project key of the issue
+# + ProjectName - The project name of the issue
+# + ClosedSprintsAggregate - The issue's previous sprints that have been closed
+# + Created - The creation date of the issue
+# + Updated - The updated date of the issue
+public type SprintIssues record {
+    readonly int Id?;
+    readonly string Key?;
+    readonly int SprintId?;
+    readonly string IssueTypeId?;
+    readonly string IssueTypeName?;
+    readonly int StatusId?;
+    readonly string StatusName?;
+    readonly int ProjectId?;
+    readonly string ProjectKey?;
+    readonly string ProjectName?;
+    readonly string ClosedSprintsAggregate?;
+    readonly string Created?;
+    readonly string Updated?;
+};
