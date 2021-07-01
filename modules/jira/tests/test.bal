@@ -1556,6 +1556,37 @@ function getIssuePriorityById() {
     }
 }
 
+// IssueResolutions
+
+@test:Config {
+    dependsOn: [getIssuePriorityById],
+    enable: true
+}
+function getIssueResolutions() {
+    stream<IssueResolutions, error> objectStreamResponse = cdataConnectorToJira->getIssueResolutions();
+    error? e = objectStreamResponse.forEach(isolated function(IssueResolutions jobject) {
+        io:println("IssueResolutions details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getIssueResolutions],
+    enable: true
+}
+function getIssueResolutionById() {
+    record {|IssueResolutions value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueResolutionById("10000");
+    if (getObjectResponse is record {|IssueResolutions value;|}) {
+        io:println("Selected IssueResolution ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("IssueResolutions table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

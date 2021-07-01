@@ -931,3 +931,16 @@ public type IssuePriorities record {
     readonly string StatusColor?;
     readonly string IconUrl?;
 };
+
+# IssueResolutions view representation in Jira. The list of all issue resolution values. 
+#
+# + Id - The ID of the issue resolution
+# + Name - The name of the issue resolution 
+# + Description - The description of the issue resolution
+# + URL - The URL of the issue resolution
+public type IssueResolutions record {
+    readonly string Id?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly string URL?;
+};
