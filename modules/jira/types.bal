@@ -636,3 +636,22 @@ public type Dashboards record {
     readonly string Name?;
     readonly string View?;
 };
+
+# Epics view representation in Jira. All the Epics. 
+#
+# + Id - The Id of the Epic
+# + Key - The key of the Epic
+# + BoardId - The board Id the Epic is in
+# + Name - The name of the Epic
+# + Done - Whether or not the Epic is done. The allowed values are true, false.
+# + ColorKey - The key of the Epic's color 
+# + Summary - A brief summary for the Epic
+public type Epics record {
+    readonly int Id?;
+    readonly string Key?;
+    readonly int BoardId?;
+    readonly string Name?;
+    readonly boolean Done?;
+    readonly string ColorKey?;
+    readonly string Summary?;
+};

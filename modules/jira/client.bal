@@ -678,6 +678,42 @@ public client class Client {
         return resultStream.next();
     }
 
+    // Epics
+
+    isolated remote function getEpics() returns stream<Epics, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics`;
+        io:println(selectQuery);
+        stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
+        return resultStream;
+    }
+
+    isolated remote function getEpicsOfBoard(int boardId) returns stream<Epics, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics WHERE BoardId = ${boardId}`;
+        io:println(selectQuery);
+        stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
+        return resultStream;
+    }
+
+    // The request contains a next-gen issue. This operation cant add next-gen issues to epics. To add a next-gen issue 
+    // to an epic, use the Edit issue operation and set the parent property (i.e., `"parent":{"key":"PROJ-123"}` 
+    // where `PROJ-123` has an issue type at level one of the issue type hierarchy).
+    isolated remote function getEpicById(int epicId) returns record {|Epics value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics WHERE Id = ${epicId}`;
+        io:println(selectQuery);
+        stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
+        return resultStream.next();
+    }
+
+    // The request contains a next-gen issue. This operation cant add next-gen issues to epics. To add a next-gen issue 
+    // to an epic, use the Edit issue operation and set the parent property (i.e., `"parent":{"key":"PROJ-123"}` 
+    // where `PROJ-123` has an issue type at level one of the issue type hierarchy).
+    isolated remote function getEpicByKey(string epicKey) returns record {|Epics value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics WHERE Key = ${epicKey}`;
+        io:println(selectQuery);
+        stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
+        return resultStream.next();
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

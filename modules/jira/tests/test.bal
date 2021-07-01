@@ -1228,6 +1228,64 @@ function getDashboardById() {
     }
 }
 
+// Epics
+
+@test:Config {
+    dependsOn: [getDashboardById],
+    enable: true
+}
+function getEpics() {
+    stream<Epics, error> objectStreamResponse = cdataConnectorToJira->getEpics();
+    error? e = objectStreamResponse.forEach(isolated function(Epics jobject) {
+        io:println("Epics details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getEpics],
+    enable: true
+}
+function getEpicsOfBoard() {
+    stream<Epics, error> objectStreamResponse = cdataConnectorToJira->getEpicsOfBoard(1);
+    error? e = objectStreamResponse.forEach(isolated function(Epics jobject) {
+        io:println("Epics details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    enable: false
+}
+function getEpicById() {
+    record {|Epics value;|}|error? getObjectResponse = cdataConnectorToJira->getEpicById(10001);
+    if (getObjectResponse is record {|Epics value;|}) {
+        io:println("Selected Epic ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Epics table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    enable: false
+}
+function getEpicByKey() {
+    record {|Epics value;|}|error? getObjectResponse = cdataConnectorToJira->getEpicByKey("ROL-2");
+    if (getObjectResponse is record {|Epics value;|}) {
+        io:println("Selected Epic ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Epics table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
