@@ -879,6 +879,23 @@ public client class Client {
         return resultStream;
     }
 
+    // IssuePriorities
+
+    isolated remote function getIssuePriorities() returns stream<IssuePriorities, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssuePriorities`;
+        io:println(selectQuery);
+        stream<IssuePriorities, error> resultStream = self.cdataClient->query(selectQuery, IssuePriorities);
+        return resultStream;
+    }
+
+    isolated remote function getIssuePriorityById(string issuePrioritiesId) 
+                                                  returns record {|IssuePriorities value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssuePriorities WHERE Id = ${issuePrioritiesId}`;
+        io:println(selectQuery);
+        stream<IssuePriorities, error> resultStream = self.cdataClient->query(selectQuery, IssuePriorities);
+        return resultStream.next();
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

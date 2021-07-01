@@ -914,3 +914,20 @@ public type IssueNavigatorDefaultColumns record {
     readonly string Label?;
     readonly string Value?;
 };
+
+# IssuePriorities view representation in Jira. The list of all issue priorities.
+#
+# + Id - The ID of the issue priority
+# + Name - The name of the issue priority
+# + Description - The description of the issue priority
+# + URL - The URL of the issue priority
+# + StatusColor - The color used to indicate the issue priority
+# + IconUrl - The URL of the icon for the issue priority
+public type IssuePriorities record {
+    readonly string Id?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly string URL?;
+    readonly string StatusColor?;
+    readonly string IconUrl?;
+};
