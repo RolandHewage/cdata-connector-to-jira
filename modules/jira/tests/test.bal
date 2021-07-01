@@ -1772,6 +1772,22 @@ function getRoleDetails() {
     }
 }
 
+// SecurityLevels
+
+@test:Config {
+    dependsOn: [getProjectTypesByKey],
+    enable: true
+}
+function getSecurityLevels() {
+    stream<SecurityLevels, error> objectStreamResponse = cdataConnectorToJira->getSecurityLevels();
+    error? e = objectStreamResponse.forEach(isolated function(SecurityLevels jobject) {
+        io:println("SecurityLevels details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

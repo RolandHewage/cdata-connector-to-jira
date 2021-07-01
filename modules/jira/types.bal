@@ -1117,3 +1117,16 @@ public type RoleDetails record {
     readonly string Name?;
     readonly string Description?;
 };
+
+# SecurityLevels view representation in Jira. All the created security levels. 
+#
+# + Id - The ID of the issue level security item
+# + SecuritySchemeId - Link to this security level
+# + Name - The name of the issue level security item
+# + Description - The description of the issue level security item
+public type SecurityLevels record {
+    readonly int Id?;
+    readonly int SecuritySchemeId?;
+    readonly string Name?;
+    readonly string Description?;
+};

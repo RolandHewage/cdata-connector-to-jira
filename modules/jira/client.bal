@@ -1031,6 +1031,15 @@ public client class Client {
         return resultStream;
     }
 
+    // SecurityLevels
+
+    isolated remote function getSecurityLevels() returns stream<SecurityLevels, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM SecurityLevels`;
+        io:println(selectQuery);
+        stream<SecurityLevels, error> resultStream = self.cdataClient->query(selectQuery, SecurityLevels);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
