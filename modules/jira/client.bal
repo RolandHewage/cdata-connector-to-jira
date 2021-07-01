@@ -774,6 +774,15 @@ public client class Client {
         return resultStream;
     }
 
+    // IssueChangelogs
+
+    isolated remote function getIssueChangelogs() returns stream<IssueChangelogs, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueChangelogs`;
+        io:println(selectQuery);
+        stream<IssueChangelogs, error> resultStream = self.cdataClient->query(selectQuery, IssueChangelogs);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

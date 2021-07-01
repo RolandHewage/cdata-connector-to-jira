@@ -732,15 +732,15 @@ public type Groups record {
 
 # IssueAffectedVersions view representation in Jira. The Affected Versions of an issue in JIRA. 
 #
-# + VersionId - Field Description  
-# + IssueId - Field Description  
-# + IssueKey - Field Description  
-# + IssueCreatedDate - Field Description  
-# + IssueUpdatedDate - Field Description  
-# + Name - Field Description  
-# + Archived - Field Description  
-# + Released - Field Description  
-# + ReleaseDate - Field Description  
+# + VersionId - The Id of the affected version
+# + IssueId - The issue Id of the affected version 
+# + IssueKey - The issue key of the affected version
+# + IssueCreatedDate - The date the affected version's issue was created
+# + IssueUpdatedDate - The date the affected version's issue was last updated
+# + Name - The name of the affected version
+# + Archived - A boolean indicating if the affected is archived
+# + Released - A boolean indicating if the affected is released
+# + ReleaseDate - The release date
 public type IssueAffectedVersions record {
     readonly string VersionId?;
     readonly int IssueId?;
@@ -751,4 +751,43 @@ public type IssueAffectedVersions record {
     readonly boolean Archived?;
     readonly boolean Released?;
     readonly string ReleaseDate?;
+};
+
+# IssueChangelogs view representation in Jira. The available IssueChangelogs in JIRA. 
+#
+# + HistoryId - Field Description  
+# + IssueId - Field Description  
+# + IssueKey - Field Description  
+# + Created - Field Description  
+# + IssueCreatedDate - Field Description  
+# + IssueUpdatedDate - Field Description  
+# + ItemField - Field Description  
+# + ItemFieldType - Field Description  
+# + ItemFrom - Field Description  
+# + ItemFromString - Field Description  
+# + ItemTo - Field Description  
+# + ItemToString - Field Description  
+# + AuthorDisplayName - Field Description  
+# + AuthorAccountId - Field Description  
+# + AuthorName - Field Description  
+# + AuthorAccountKey - Field Description  
+# + AuthorAccountName - Field Description  
+public type IssueChangelogs record {
+    readonly int HistoryId?;
+    readonly int IssueId?;
+    readonly string IssueKey?;
+    readonly string Created?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string ItemField?;
+    readonly string ItemFieldType?;
+    readonly string ItemFrom?;
+    readonly string ItemFromString?;
+    readonly string ItemTo?;
+    readonly string ItemToString?;
+    readonly string AuthorDisplayName?;
+    readonly string AuthorAccountId?;
+    readonly string AuthorName?;
+    readonly string AuthorAccountKey?;
+    readonly string AuthorAccountName?;
 };
