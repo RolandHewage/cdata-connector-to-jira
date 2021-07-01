@@ -1176,6 +1176,31 @@ public client class Client {
         return resultStream.next();
     }
 
+    // WorkflowStatuses
+
+    isolated remote function getWorkflowStatuses() returns stream<WorkflowStatuses, error> {
+        sql:ParameterizedQuery selectQuery = `Select * FROM WorkflowStatuses`;
+        io:println(selectQuery);
+        stream<WorkflowStatuses, error> resultStream = self.cdataClient->query(selectQuery, WorkflowStatuses);
+        return resultStream;
+    }
+
+    isolated remote function getWorkflowStatusById(int workflowStatusId) 
+                                                     returns record {|WorkflowStatuses value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM WorkflowStatuses WHERE Id = ${workflowStatusId}`;
+        io:println(selectQuery);
+        stream<WorkflowStatuses, error> resultStream = self.cdataClient->query(selectQuery, WorkflowStatuses);
+        return resultStream.next();
+    }
+
+    isolated remote function getWorkflowStatusByKey(string workflowStatusName) 
+                                                      returns record {|WorkflowStatuses value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM WorkflowStatuses WHERE Name = ${workflowStatusName}`;
+        io:println(selectQuery);
+        stream<WorkflowStatuses, error> resultStream = self.cdataClient->query(selectQuery, WorkflowStatuses);
+        return resultStream.next();
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

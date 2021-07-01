@@ -1260,3 +1260,20 @@ public type WorkflowStatusCategories record {
     readonly string ColorName?;
     readonly string URL?;
 };
+
+# WorkflowStatuses view representation in Jira. The list of all statuses associated with workflows. 
+#
+# + Id - The ID of the status 
+# + StatusCategoryId - The ID of the status category 
+# + Name - The name of the status
+# + Description - The description of the status
+# + URL - The description of the status
+# + IconUrl - The URL of the icon used to represent the status
+public type WorkflowStatuses record {
+    readonly string Id?;
+    readonly int StatusCategoryId?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly string URL?;
+    readonly string IconUrl?;
+};
