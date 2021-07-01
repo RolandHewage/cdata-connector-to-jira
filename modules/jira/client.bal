@@ -748,6 +748,15 @@ public client class Client {
         return resultStream.next();
     }
 
+    // Groups
+
+    isolated remote function getGroups() returns stream<Groups, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Groups`;
+        io:println(selectQuery);
+        stream<Groups, error> resultStream = self.cdataClient->query(selectQuery, Groups);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

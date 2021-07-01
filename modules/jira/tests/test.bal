@@ -1349,6 +1349,21 @@ function getFilterById() {
     }
 }
 
+// Groups
+
+@test:Config {
+    enable: true
+}
+function getGroups() {
+    stream<Groups, error> objectStreamResponse = cdataConnectorToJira->getGroups();
+    error? e = objectStreamResponse.forEach(isolated function(Groups jobject) {
+        io:println("Groups details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

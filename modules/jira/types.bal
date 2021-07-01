@@ -706,7 +706,7 @@ public type Fields record {
 # + Favourite - Whether you have set this filter as a favourite
 # + FavouritedCount - How many users have this filter as a favourite 
 # + SubscriptionsAggregate - Collection of user subscriptions to the filter
-# + SharePermissionsAggregate - Aggregate of share permissions to the filter
+# + SharePermissionsAggregate - Aggregate of share permissions to the filter 
 public type Filters record {
     readonly string Id?;
     readonly string Name?;
@@ -717,4 +717,15 @@ public type Filters record {
     readonly int FavouritedCount?;
     readonly string SubscriptionsAggregate?;
     readonly string SharePermissionsAggregate?;
+};
+
+# Groups representation in Jira. The available Groups in JIRA. 
+#
+# + Name - The name of the group 
+# + Html - The HTML of the group
+# + LabelsAggregate - The labels of the group
+public type Groups record {
+    readonly string Name?;
+    readonly string Html?;
+    readonly string LabelsAggregate?;
 };
