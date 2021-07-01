@@ -1318,6 +1318,37 @@ function getFields() {
     }
 }
 
+// Filters
+
+@test:Config {
+    dependsOn: [getFields],
+    enable: true
+}
+function getFilters() {
+    stream<Filters, error> objectStreamResponse = cdataConnectorToJira->getFilters();
+    error? e = objectStreamResponse.forEach(isolated function(Filters jobject) {
+        io:println("Filters details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getFilters],
+    enable: true
+}
+function getFilterById() {
+    record {|Filters value;|}|error? getObjectResponse = cdataConnectorToJira->getFilterById("10001");
+    if (getObjectResponse is record {|Filters value;|}) {
+        io:println("Selected Filter ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("Filters table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

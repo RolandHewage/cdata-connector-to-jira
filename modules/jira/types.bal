@@ -685,7 +685,7 @@ public type FavouriteFilters record {
 # + Custom - A boolean indicating if the field is custom
 # + Orderable - A boolean indicating if the field is orderable
 # + Navigable - A boolean indicating if the field is navigable
-# + Searchable - A boolean indicating if the field is searchable
+# + Searchable - A boolean indicating if the field is searchable 
 public type Fields record {
     readonly string Id?;
     readonly string Key?;
@@ -694,4 +694,27 @@ public type Fields record {
     readonly boolean Orderable?;
     readonly boolean Navigable?;
     readonly boolean Searchable?;
+};
+
+# Filters view representation in Jira. The set up Filters in JIRA. 
+#
+# + Id - The Id of the filter
+# + Name - The name assigned to the filter
+# + JQLExpression - The JQL by which the filter will search issues by
+# + Description - The description given to the filter
+# + OwnerDisplayName - The board Id the sprint originated from
+# + Favourite - Whether you have set this filter as a favourite
+# + FavouritedCount - How many users have this filter as a favourite 
+# + SubscriptionsAggregate - Collection of user subscriptions to the filter
+# + SharePermissionsAggregate - Aggregate of share permissions to the filter
+public type Filters record {
+    readonly string Id?;
+    readonly string Name?;
+    readonly string JQLExpression?;
+    readonly string Description?;
+    readonly string OwnerDisplayName?;
+    readonly boolean Favourite?;
+    readonly int FavouritedCount?;
+    readonly string SubscriptionsAggregate?;
+    readonly string SharePermissionsAggregate?;
 };
