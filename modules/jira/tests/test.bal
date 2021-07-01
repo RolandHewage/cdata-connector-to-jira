@@ -1884,6 +1884,22 @@ function getWatchers() {
     }
 }
 
+// Workflows
+
+@test:Config {
+    dependsOn: [getWatchers],
+    enable: true
+}
+function getWorkflows() {
+    stream<Workflows, error> objectStreamResponse = cdataConnectorToJira->getWorkflows();
+    error? e = objectStreamResponse.forEach(isolated function(Workflows jobject) {
+        io:println("Workflows details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

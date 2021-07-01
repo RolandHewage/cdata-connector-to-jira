@@ -1228,3 +1228,20 @@ public type Watchers record {
     readonly string Key?;
     readonly string Name?;
 };
+
+# Workflows view representation in Jira. The available Workflows in Jira. 
+#
+# + Name - The name of the workflow
+# + Description - The description of the workflow
+# + LastModifiedDate - The last modified date of the workflow
+# + LastModifiedUser - The user who last modified the workflow
+# + Steps - The steps of the workflow  
+# + IsDefault - Boolean indicating if the workflow is set as the default
+public type Workflows record {
+    readonly string Name?;
+    readonly string Description?;
+    readonly string LastModifiedDate?;
+    readonly string LastModifiedUser?;
+    readonly int Steps?;
+    readonly boolean IsDefault?;
+};

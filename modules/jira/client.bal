@@ -1130,6 +1130,22 @@ public client class Client {
         return resultStream;
     }
 
+    // Workflows
+
+    isolated remote function getWorkflows() returns stream<Workflows, error> {
+        sql:ParameterizedQuery selectQuery = `Select * FROM Workflows`;
+        io:println(selectQuery);
+        stream<Workflows, error> resultStream = self.cdataClient->query(selectQuery, Workflows);
+        return resultStream;
+    }
+
+    isolated remote function getWorkflowByName(string workflowName) returns record {|Workflows value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Workflows WHERE Name = ${workflowName}`;
+        io:println(selectQuery);
+        stream<Workflows, error> resultStream = self.cdataClient->query(selectQuery, Workflows);
+        return resultStream.next();
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
