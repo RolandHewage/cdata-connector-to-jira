@@ -1617,6 +1617,22 @@ function getIssueSubtasksByIssueId() {
     }
 }
 
+// IssueTransitions
+
+@test:Config {
+    dependsOn: [getIssueSubtasksByIssueId],
+    enable: true
+}
+function getIssueTransitions() {
+    stream<IssueTransitions, error> objectStreamResponse = cdataConnectorToJira->getIssueTransitions();
+    error? e = objectStreamResponse.forEach(isolated function(IssueTransitions jobject) {
+        io:println("IssueTransitions details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

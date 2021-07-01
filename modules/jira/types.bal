@@ -977,3 +977,34 @@ public type IssueSubtasks record {
     readonly string PriorityName?;
     readonly string StatusId?;
 };
+
+# IssueTransitions view representation in Jira. The available IssueTransitions in JIRA. 
+#
+# + Id - The Id of the transition
+# + IssueId - The Id of the issue
+# + IssueKey - The key of the issue
+# + IssueCreatedDate - The date the transition's issue was created
+# + IssueUpdatedDate - The date the transition's issue was last updated
+# + HasScreen - Whether the transition has a screen
+# + Name - The name of the transition
+# + ToDescription - The description of the status the issue is transitioning to 
+# + ToId - The Id of the status the issue is transitioning to
+# + ToName - The name of the status the issue is transitioning to
+# + StatusCategoryId - The status category Id of the transition
+# + StatusCategoryKey - The status category key of the transition
+# + StatusCategoryName - The status category name of the transition
+public type IssueTransitions record {
+    readonly string Id?;
+    readonly int IssueId?;
+    readonly string IssueKey?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string HasScreen?;
+    readonly string Name?;
+    readonly string ToDescription?;
+    readonly string ToId?;
+    readonly string ToName?;
+    readonly string StatusCategoryId?;
+    readonly string StatusCategoryKey?;
+    readonly string StatusCategoryName?;
+};

@@ -929,10 +929,26 @@ public client class Client {
         return resultStream;
     }
 
-    isolated remote function getIssueSubtaskssByJql(string jqlQuery) returns stream<IssueSubtasks, error> {
+    isolated remote function getIssueSubtasksByJql(string jqlQuery) returns stream<IssueSubtasks, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueSubtasks WHERE JQL = ${jqlQuery}`;
         io:println(selectQuery);
         stream<IssueSubtasks, error> resultStream = self.cdataClient->query(selectQuery, IssueSubtasks);
+        return resultStream;
+    }
+
+    // IssueTransitions
+
+    isolated remote function getIssueTransitions() returns stream<IssueTransitions, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueTransitions`;
+        io:println(selectQuery);
+        stream<IssueTransitions, error> resultStream = self.cdataClient->query(selectQuery, IssueTransitions);
+        return resultStream;
+    }
+
+    isolated remote function getIssueTransitionsByJql(string jqlQuery) returns stream<IssueTransitions, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueTransitions WHERE JQL = ${jqlQuery}`;
+        io:println(selectQuery);
+        stream<IssueTransitions, error> resultStream = self.cdataClient->query(selectQuery, IssueTransitions);
         return resultStream;
     }
 
