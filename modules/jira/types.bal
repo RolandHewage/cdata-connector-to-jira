@@ -821,3 +821,24 @@ public type IssueCustomFieldOptions record {
     readonly int CustomFieldId?;
     readonly string Name?;
 };
+
+# IssueCustomFields view representation in Jira. The available Custom Fields in JIRA. 
+#
+# + Id - The Id of the custom field
+# + Key - The key of the custom field
+# + CustomId - The custom ID of the field
+# + Name - The name of the custom field
+# + CDataName - The name of the custom field on the Issues table provided by CData, when IncludeCustomFields=true
+# + Orderable - A boolean indicating if the field is orderable
+# + Navigable - A boolean indicating if the field is navigable
+# + Searchable - A boolean indicating if the field is searchable
+public type IssueCustomFields record {
+    readonly string Id?;
+    readonly string Key?;
+    readonly int CustomId?;
+    readonly string Name?;
+    readonly string CDataName?;
+    readonly boolean Orderable?;
+    readonly boolean Navigable?;
+    readonly boolean Searchable?;
+};

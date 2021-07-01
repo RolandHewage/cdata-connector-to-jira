@@ -811,6 +811,15 @@ public client class Client {
         return resultStream;
     }
 
+    // IssueCustomFields
+
+    isolated remote function getIssueCustomFields() returns stream<IssueCustomFields, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueCustomFields`;
+        io:println(selectQuery);
+        stream<IssueCustomFields, error> resultStream = self.cdataClient->query(selectQuery, IssueCustomFields);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

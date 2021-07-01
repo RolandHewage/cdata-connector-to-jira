@@ -1419,9 +1419,26 @@ function getIssueComponents() {
     enable: true
 }
 function getIssueCustomFieldOptions() {
-    stream<IssueCustomFieldOptions, error> objectStreamResponse = cdataConnectorToJira->getIssueCustomFieldOptions(1000);
+    stream<IssueCustomFieldOptions, error> objectStreamResponse = 
+        cdataConnectorToJira->getIssueCustomFieldOptions(10020);
     error? e = objectStreamResponse.forEach(isolated function(IssueCustomFieldOptions jobject) {
         io:println("IssueCustomFieldOptions details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+// IssueCustomFields
+
+@test:Config {
+    dependsOn: [getIssueCustomFieldOptions],
+    enable: true
+}
+function getIssueCustomFields() {
+    stream<IssueCustomFields, error> objectStreamResponse = cdataConnectorToJira->getIssueCustomFields();
+    error? e = objectStreamResponse.forEach(isolated function(IssueCustomFields jobject) {
+        io:println("IssueCustomFields details: ", jobject);
     });
     if (e is error) {
         test:assertFail(e.message());
