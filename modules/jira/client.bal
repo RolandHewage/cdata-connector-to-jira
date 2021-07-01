@@ -1089,6 +1089,15 @@ public client class Client {
         return resultStream.next();
     }
 
+    // TimeTrackingProviders
+
+    isolated remote function getTimeTrackingProviders() returns stream<TimeTrackingProviders, error> {
+        sql:ParameterizedQuery selectQuery = `Select * FROM TimeTrackingProviders`;
+        io:println(selectQuery);
+        stream<TimeTrackingProviders, error> resultStream = self.cdataClient->query(selectQuery, TimeTrackingProviders);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

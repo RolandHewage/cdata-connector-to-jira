@@ -1836,6 +1836,22 @@ function getStatuses() {
     }
 }
 
+// TimeTrackingProviders
+
+@test:Config {
+    dependsOn: [getStatuses],
+    enable: true
+}
+function getTimeTrackingProviders() {
+    stream<TimeTrackingProviders, error> objectStreamResponse = cdataConnectorToJira->getTimeTrackingProviders();
+    error? e = objectStreamResponse.forEach(isolated function(TimeTrackingProviders jobject) {
+        io:println("TimeTrackingProviders details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

@@ -1189,3 +1189,14 @@ public type Statuses record {
     readonly int CategoryId?;
     readonly string CategoryKey?;
 };
+
+# TimeTrackingProviders view representation in Jira. The list of all time tracking providers. 
+#
+# + Key - The key for the time tracking provider. For example, JIRA
+# + Name - The name of the time tracking provider. For example, JIRA provided time tracking
+# + URL - The URL of the configuration page for the time tracking provider app. For example, /example/config/url. This property is only returned if the adminPageKey property is set in the module descriptor of the time tracking provider app
+public type TimeTrackingProviders record {
+    readonly string Key?;
+    readonly string Name?;
+    readonly string URL?;
+};
