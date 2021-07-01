@@ -1040,6 +1040,15 @@ public client class Client {
         return resultStream;
     }
 
+    // SecuritySchemes
+
+    isolated remote function getSecuritySchemes() returns stream<SecuritySchemes, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM SecuritySchemes`;
+        io:println(selectQuery);
+        stream<SecuritySchemes, error> resultStream = self.cdataClient->query(selectQuery, SecuritySchemes);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

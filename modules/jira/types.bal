@@ -1130,3 +1130,16 @@ public type SecurityLevels record {
     readonly string Name?;
     readonly string Description?;
 };
+
+# SecuritySchemes view representation in Jira. All the created security schemes. 
+#
+# + Id - The ID of the issue security scheme
+# + Name - The name of the issue security scheme
+# + Description - The description of the issue security scheme
+# + DefaultSecurityLevelId - The ID of the default security level
+public type SecuritySchemes record {
+    readonly int Id?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly int DefaultSecurityLevelId?;
+};

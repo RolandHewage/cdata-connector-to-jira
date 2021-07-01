@@ -1788,6 +1788,22 @@ function getSecurityLevels() {
     }
 }
 
+// SecuritySchemes
+
+@test:Config {
+    dependsOn: [getSecurityLevels],
+    enable: true
+}
+function getSecuritySchemes() {
+    stream<SecuritySchemes, error> objectStreamResponse = cdataConnectorToJira->getSecuritySchemes();
+    error? e = objectStreamResponse.forEach(isolated function(SecuritySchemes jobject) {
+        io:println("SecuritySchemes details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
