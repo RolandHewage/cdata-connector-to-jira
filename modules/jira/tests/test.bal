@@ -1508,6 +1508,23 @@ function getIssueLinkTypesById() {
     }
 }
 
+// IssueNavigatorDefaultColumns
+
+@test:Config {
+    dependsOn: [getIssueLinkTypesById],
+    enable: true
+}
+function getIssueNavigatorDefaultColumns() {
+    stream<IssueNavigatorDefaultColumns, error> objectStreamResponse = 
+        cdataConnectorToJira->getIssueNavigatorDefaultColumns();
+    error? e = objectStreamResponse.forEach(isolated function(IssueNavigatorDefaultColumns jobject) {
+        io:println("IssueNavigatorDefaultColumns details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

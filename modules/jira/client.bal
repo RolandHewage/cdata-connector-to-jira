@@ -869,6 +869,16 @@ public client class Client {
         return resultStream.next();
     }
 
+    // IssueNavigatorDefaultColumns
+
+    isolated remote function getIssueNavigatorDefaultColumns() returns stream<IssueNavigatorDefaultColumns, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueNavigatorDefaultColumns`;
+        io:println(selectQuery);
+        stream<IssueNavigatorDefaultColumns, error> resultStream = 
+            self.cdataClient->query(selectQuery, IssueNavigatorDefaultColumns);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

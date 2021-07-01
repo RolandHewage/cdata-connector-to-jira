@@ -905,3 +905,12 @@ public type IssueLinkTypes record {
     readonly string Inward?;
     readonly string Outward?;
 };
+
+# IssueNavigatorDefaultColumns view representation in Jira. The default issue navigator columns.
+#
+# + Label - The issue navigator column label 
+# + Value - The issue navigator column value
+public type IssueNavigatorDefaultColumns record {
+    readonly string Label?;
+    readonly string Value?;
+};
