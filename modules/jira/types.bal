@@ -676,3 +676,22 @@ public type FavouriteFilters record {
     readonly int Count?;
     readonly string OwnerKey?;
 };
+
+# Fields view representation in Jira. The available System and Custom Fields in JIRA. 
+#
+# + Id - The Id of the field
+# + Key - The key of the field
+# + Name - The name of the field
+# + Custom - A boolean indicating if the field is custom
+# + Orderable - A boolean indicating if the field is orderable
+# + Navigable - A boolean indicating if the field is navigable
+# + Searchable - A boolean indicating if the field is searchable
+public type Fields record {
+    readonly string Id?;
+    readonly string Key?;
+    readonly string Name?;
+    readonly boolean Custom?;
+    readonly boolean Orderable?;
+    readonly boolean Navigable?;
+    readonly boolean Searchable?;
+};

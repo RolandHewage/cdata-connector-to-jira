@@ -1302,6 +1302,22 @@ function getFavouriteFilters() {
     }
 }
 
+// FavouriteFilters
+
+@test:Config {
+    dependsOn: [getFavouriteFilters],
+    enable: true
+}
+function getFields() {
+    stream<Fields, error> objectStreamResponse = cdataConnectorToJira->getFields();
+    error? e = objectStreamResponse.forEach(isolated function(Fields jobject) {
+        io:println("Fields details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
