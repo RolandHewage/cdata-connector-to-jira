@@ -783,6 +783,22 @@ public client class Client {
         return resultStream;
     }
 
+    // IssueComponents
+
+    isolated remote function getIssueComponents() returns stream<IssueComponents, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueComponents`;
+        io:println(selectQuery);
+        stream<IssueComponents, error> resultStream = self.cdataClient->query(selectQuery, IssueComponents);
+        return resultStream;
+    }
+
+    isolated remote function getIssueComponentsByJql(string jqlQuery) returns stream<IssueComponents, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueComponents WHERE JQL = ${jqlQuery}`;
+        io:println(selectQuery);
+        stream<IssueComponents, error> resultStream = self.cdataClient->query(selectQuery, IssueComponents);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

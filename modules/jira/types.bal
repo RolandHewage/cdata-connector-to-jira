@@ -791,3 +791,22 @@ public type IssueChangelogs record {
     readonly string AuthorAccountKey?;
     readonly string AuthorAccountName?;
 };
+
+# IssueComponents view representation in Jira. The available IssueComponents in JIRA. 
+#
+# + Id - The Id of the component
+# + Name - The name of the component
+# + IssueId - The issue Id of the component
+# + IssueKey - The issue key of the component
+# + IssueCreatedDate - The date the component's issue was created
+# + IssueUpdatedDate - The date the component's issue was last updated
+# + Description - The description of the component
+public type IssueComponents record {
+    readonly string Id?;
+    readonly string Name?;
+    readonly int IssueId?;
+    readonly string IssueKey?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string Description?;
+};

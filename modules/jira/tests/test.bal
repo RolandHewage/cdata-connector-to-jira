@@ -1396,6 +1396,22 @@ function getIssueChangelogs() {
     }
 }
 
+// IssueComponents
+
+@test:Config {
+    dependsOn: [getIssueChangelogs],
+    enable: true
+}
+function getIssueComponents() {
+    stream<IssueComponents, error> objectStreamResponse = cdataConnectorToJira->getIssueComponents();
+    error? e = objectStreamResponse.forEach(isolated function(IssueComponents jobject) {
+        io:println("IssueComponents details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
