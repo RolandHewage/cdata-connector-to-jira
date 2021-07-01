@@ -1245,3 +1245,18 @@ public type Workflows record {
     readonly int Steps?;
     readonly boolean IsDefault?;
 };
+
+# WorkflowStatusCategories view representation in Jira. The list of all status categories. 
+#
+# + Id - The ID of the status category
+# + Key - The key of the status category
+# + Name - The name of the status category
+# + ColorName - The name of the color used to represent the status category
+# + URL - The URL of the status category
+public type WorkflowStatusCategories record {
+    readonly int Id?;
+    readonly string Key?;
+    readonly string Name?;
+    readonly string ColorName?;
+    readonly string URL?;
+};

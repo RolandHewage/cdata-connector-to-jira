@@ -1900,6 +1900,22 @@ function getWorkflows() {
     }
 }
 
+// WorkflowStatusCategories
+
+@test:Config {
+    dependsOn: [getWorkflows],
+    enable: true
+}
+function getWorkflowStatusCategories() {
+    stream<WorkflowStatusCategories, error> objectStreamResponse = cdataConnectorToJira->getWorkflowStatusCategories();
+    error? e = objectStreamResponse.forEach(isolated function(WorkflowStatusCategories jobject) {
+        io:println("WorkflowStatusCategories details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
