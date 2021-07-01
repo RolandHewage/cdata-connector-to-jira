@@ -1364,6 +1364,22 @@ function getGroups() {
     }
 }
 
+// IssueAffectedVersions
+
+@test:Config {
+    dependsOn: [getGroups],
+    enable: true
+}
+function getIssueAffectedVersions() {
+    stream<IssueAffectedVersions, error> objectStreamResponse = cdataConnectorToJira->getIssueAffectedVersions();
+    error? e = objectStreamResponse.forEach(isolated function(IssueAffectedVersions jobject) {
+        io:println("IssueAffectedVersions details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

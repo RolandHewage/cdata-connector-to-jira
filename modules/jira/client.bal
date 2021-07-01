@@ -757,6 +757,23 @@ public client class Client {
         return resultStream;
     }
 
+    // IssueAffectedVersions
+
+    isolated remote function getIssueAffectedVersions() returns stream<IssueAffectedVersions, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueAffectedVersions`;
+        io:println(selectQuery);
+        stream<IssueAffectedVersions, error> resultStream = self.cdataClient->query(selectQuery, IssueAffectedVersions);
+        return resultStream;
+    }
+
+    isolated remote function getIssueAffectedVersionsByJql(string jqlQuery) 
+                                                           returns stream<IssueAffectedVersions, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueAffectedVersions WHERE JQL = ${jqlQuery}`;
+        io:println(selectQuery);
+        stream<IssueAffectedVersions, error> resultStream = self.cdataClient->query(selectQuery, IssueAffectedVersions);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

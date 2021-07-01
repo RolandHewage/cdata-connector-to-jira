@@ -719,7 +719,7 @@ public type Filters record {
     readonly string SharePermissionsAggregate?;
 };
 
-# Groups representation in Jira. The available Groups in JIRA. 
+# Groups view representation in Jira. The available Groups in JIRA. 
 #
 # + Name - The name of the group 
 # + Html - The HTML of the group
@@ -728,4 +728,27 @@ public type Groups record {
     readonly string Name?;
     readonly string Html?;
     readonly string LabelsAggregate?;
+};
+
+# IssueAffectedVersions view representation in Jira. The Affected Versions of an issue in JIRA. 
+#
+# + VersionId - Field Description  
+# + IssueId - Field Description  
+# + IssueKey - Field Description  
+# + IssueCreatedDate - Field Description  
+# + IssueUpdatedDate - Field Description  
+# + Name - Field Description  
+# + Archived - Field Description  
+# + Released - Field Description  
+# + ReleaseDate - Field Description  
+public type IssueAffectedVersions record {
+    readonly string VersionId?;
+    readonly int IssueId?;
+    readonly string IssueKey?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string Name?;
+    readonly boolean Archived?;
+    readonly boolean Released?;
+    readonly string ReleaseDate?;
 };
