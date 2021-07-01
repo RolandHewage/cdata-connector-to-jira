@@ -1008,3 +1008,24 @@ public type IssueTransitions record {
     readonly string StatusCategoryKey?;
     readonly string StatusCategoryName?;
 };
+
+# IssueTransitions view representation in Jira. The available Permissions of the current user in JIRA. 
+#
+# + Id - The Id of the permission
+# + Key - The key of the permission
+# + Name - The name of the permission
+# + Type - The type of the permission
+# + Description - The description of the permission
+# + HavePermission - Boolean indicating if the permission is set or not
+# + DeprecatedKey - Boolean indicating if the permission is deprecated
+# + Permissions - Permissions as comma seperated values
+public type MyPermissions record {
+    readonly int Id?;
+    readonly string Key?;
+    readonly string Name?;
+    readonly string Type?;
+    readonly string Description?;
+    readonly boolean HavePermission?;
+    readonly boolean DeprecatedKey?;
+    readonly string Permissions?;
+};

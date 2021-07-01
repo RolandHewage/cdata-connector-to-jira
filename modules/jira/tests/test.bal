@@ -1633,6 +1633,21 @@ function getIssueTransitions() {
     }
 }
 
+// MyPermissions
+
+@test:Config {
+    enable: false
+}
+function getMyPermissions() {
+    stream<MyPermissions, error> objectStreamResponse = cdataConnectorToJira->getMyPermissions();
+    error? e = objectStreamResponse.forEach(isolated function(MyPermissions jobject) {
+        io:println("MyPermissions details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

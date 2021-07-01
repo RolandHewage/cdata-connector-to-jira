@@ -952,6 +952,16 @@ public client class Client {
         return resultStream;
     }
 
+    // MyPermissions
+
+    // Error while executing SQL query: SELECT * FROM MyPermissions. The 'permissions' query parameter is required.
+    isolated remote function getMyPermissions() returns stream<MyPermissions, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM MyPermissions`;
+        io:println(selectQuery);
+        stream<MyPermissions, error> resultStream = self.cdataClient->query(selectQuery, MyPermissions);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
