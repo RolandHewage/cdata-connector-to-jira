@@ -1021,6 +1021,16 @@ public client class Client {
         return resultStream.next();
     }
 
+    // RoleDetails
+
+    // Error while executing SQL query: SELECT * FROM RoleDetails. Unable to retrieve columns for table [RoleDetails].
+    isolated remote function getRoleDetails() returns stream<RoleDetails, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM RoleDetails`;
+        io:println(selectQuery);
+        stream<RoleDetails, error> resultStream = self.cdataClient->query(selectQuery, RoleDetails);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

@@ -1757,6 +1757,21 @@ function getProjectTypesByKey() {
     }
 }
 
+// RoleDetails
+
+@test:Config {
+    enable: false
+}
+function getRoleDetails() {
+    stream<RoleDetails, error> objectStreamResponse = cdataConnectorToJira->getRoleDetails();
+    error? e = objectStreamResponse.forEach(isolated function(RoleDetails jobject) {
+        io:println("RoleDetails details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

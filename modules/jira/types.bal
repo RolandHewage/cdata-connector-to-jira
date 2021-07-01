@@ -1102,3 +1102,18 @@ public type ProjectTypes record {
     readonly string Icon?;
     readonly string Color?;
 };
+
+# RoleDetails view representation in Jira. Role Details in JIRA. 
+#
+# + Id - The Id of the details of the role 
+# + ProjectId - The Id of the project associated with the details of the role
+# + ProjectKey - The key of the project associated with the details of the role
+# + Name - The name of the details of the role
+# + Description - The description of the details of the role
+public type RoleDetails record {
+    readonly int Id?;
+    readonly int ProjectId?;
+    readonly string ProjectKey?;
+    readonly string Name?;
+    readonly string Description?;
+};
