@@ -1680,6 +1680,36 @@ function getProjectCategories() {
     }
 }
 
+// ProjectRoles
+
+@test:Config {
+    dependsOn: [getProjectCategories],
+    enable: true
+}
+function getProjectRoles() {
+    stream<ProjectRoles, error> objectStreamResponse = cdataConnectorToJira->getProjectRoles();
+    error? e = objectStreamResponse.forEach(isolated function(ProjectRoles jobject) {
+        io:println("ProjectRoles details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectRoles],
+    enable: true
+}
+function getProjectRolesByProjectId() {
+    stream<ProjectRoles, error> objectStreamResponse = cdataConnectorToJira->getProjectRolesByProjectId(10000);
+    error? e = objectStreamResponse.forEach(isolated function(ProjectRoles jobject) {
+        io:println("ProjectRoles details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

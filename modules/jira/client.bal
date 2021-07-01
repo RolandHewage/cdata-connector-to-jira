@@ -980,6 +980,22 @@ public client class Client {
         return resultStream;
     }
 
+    // ProjectRoles
+
+    isolated remote function getProjectRoles() returns stream<ProjectRoles, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectRoles`;
+        io:println(selectQuery);
+        stream<ProjectRoles, error> resultStream = self.cdataClient->query(selectQuery, ProjectRoles);
+        return resultStream;
+    }
+
+    isolated remote function getProjectRolesByProjectId(int projectId) returns stream<ProjectRoles, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectRoles WHERE ProjectId = ${projectId}`;
+        io:println(selectQuery);
+        stream<ProjectRoles, error> resultStream = self.cdataClient->query(selectQuery, ProjectRoles);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

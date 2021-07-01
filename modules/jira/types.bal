@@ -1055,3 +1055,16 @@ public type ProjectCategories record {
     readonly string Description?;
     readonly string Link?;
 };
+
+# ProjectRoles view representation in Jira. Roles for all projects in JIRA. 
+#
+# + RoleId - The Id of the role
+# + RoleName - The name of the role 
+# + ProjectId - The Id of the project associated with the role
+# + ProjectKey - The key of the project associated with the role
+public type ProjectRoles record {
+    readonly int RoleId?;
+    readonly string RoleName?;
+    readonly int ProjectId?;
+    readonly string ProjectKey?;
+};
