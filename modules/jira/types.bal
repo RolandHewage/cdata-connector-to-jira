@@ -1068,3 +1068,24 @@ public type ProjectRoles record {
     readonly int ProjectId?;
     readonly string ProjectKey?;
 };
+
+# ProjectRoles view representation in Jira. The available Issue Types of projects. 
+#
+# + Id - The Id of the issue type
+# + ProjectId - The Id of the project
+# + ProjectName - The name of the project
+# + Name - The name of the issue type
+# + Description - The description of the issue type
+# + Subtask - The subtask of the issue type. Not applicable for update
+# + IconUrl - The icon URL of the issue type
+# + AvatarId - The id of the avatar 
+public type ProjectsIssueTypes record {
+    readonly string Id?;
+    readonly int ProjectId?;
+    readonly string ProjectName?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly boolean Subtask?;
+    readonly string IconUrl?;
+    readonly string AvatarId?;
+};

@@ -1710,6 +1710,22 @@ function getProjectRolesByProjectId() {
     }
 }
 
+// ProjectsIssueTypes
+
+@test:Config {
+    dependsOn: [getProjectRolesByProjectId],
+    enable: true
+}
+function getProjectsIssueTypes() {
+    stream<ProjectsIssueTypes, error> objectStreamResponse = cdataConnectorToJira->getProjectsIssueTypes();
+    error? e = objectStreamResponse.forEach(isolated function(ProjectsIssueTypes jobject) {
+        io:println("ProjectsIssueTypes details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
