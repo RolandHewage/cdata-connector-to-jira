@@ -1073,6 +1073,22 @@ public client class Client {
         return resultStream;
     }
 
+    // Statuses
+
+    isolated remote function getStatuses() returns stream<Statuses, error> {
+        sql:ParameterizedQuery selectQuery = `Select * FROM Statuses`;
+        io:println(selectQuery);
+        stream<Statuses, error> resultStream = self.cdataClient->query(selectQuery, Statuses);
+        return resultStream;
+    }
+
+    isolated remote function getStatusesById(string statusId) returns record {|Statuses value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Statuses WHERE Id = ${statusId}`;
+        io:println(selectQuery);
+        stream<Statuses, error> resultStream = self.cdataClient->query(selectQuery, Statuses);
+        return resultStream.next();
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

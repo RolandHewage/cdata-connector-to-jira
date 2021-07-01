@@ -1820,6 +1820,22 @@ function getSprintIssues() {
     }
 }
 
+// Statuses
+
+@test:Config {
+    dependsOn: [getSprintIssues],
+    enable: true
+}
+function getStatuses() {
+    stream<Statuses, error> objectStreamResponse = cdataConnectorToJira->getStatuses();
+    error? e = objectStreamResponse.forEach(isolated function(Statuses jobject) {
+        io:println("Statuses details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

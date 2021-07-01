@@ -1174,3 +1174,18 @@ public type SprintIssues record {
     readonly string Created?;
     readonly string Updated?;
 };
+
+# Statuses view representation in Jira. The possible Statuses in Jira. 
+#
+# + Id - The Id of the status
+# + Name - The name of the status
+# + Description - The description of the status
+# + CategoryId - The Category Id of the status
+# + CategoryKey - The Category Key of the status
+public type Statuses record {
+    readonly int Id?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly int CategoryId?;
+    readonly string CategoryKey?;
+};
