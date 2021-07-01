@@ -962,6 +962,15 @@ public client class Client {
         return resultStream;
     }
 
+    // Permissions
+
+    isolated remote function getPermissions() returns stream<Permissions, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM Permissions`;
+        io:println(selectQuery);
+        stream<Permissions, error> resultStream = self.cdataClient->query(selectQuery, Permissions);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
