@@ -1868,6 +1868,22 @@ function getVotes() {
     }
 }
 
+// Watchers
+
+@test:Config {
+    dependsOn: [getVotes],
+    enable: true
+}
+function getWatchers() {
+    stream<Watchers, error> objectStreamResponse = cdataConnectorToJira->getWatchersByIssueKey("ROL-110");
+    error? e = objectStreamResponse.forEach(isolated function(Watchers jobject) {
+        io:println("Watchers details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

@@ -1114,6 +1114,22 @@ public client class Client {
         return resultStream;
     }
 
+    // Watchers
+
+    isolated remote function getWatchersByIssueId(string issueId) returns stream<Watchers, error> {
+        sql:ParameterizedQuery selectQuery = `Select * FROM Watchers WHERE IssueId = ${issueId}`;
+        io:println(selectQuery);
+        stream<Watchers, error> resultStream = self.cdataClient->query(selectQuery, Watchers);
+        return resultStream;
+    }
+
+    isolated remote function getWatchersByIssueKey(string issueKey) returns stream<Watchers, error> {
+        sql:ParameterizedQuery selectQuery = `Select * FROM Watchers WHERE IssueKey = ${issueKey}`;
+        io:println(selectQuery);
+        stream<Watchers, error> resultStream = self.cdataClient->query(selectQuery, Watchers);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

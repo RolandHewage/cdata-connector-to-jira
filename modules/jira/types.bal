@@ -1213,3 +1213,18 @@ public type Votes record {
     readonly string DisplayName?;
     readonly boolean Active?;
 };
+
+# Watchers view representation in Jira. The available Watchers in JIRA. 
+#
+# + DisplayName - The displayed name of the watcher
+# + EmailAddress - The email address of the watcher
+# + AccountId - The accountId of the watcher
+# + Key - The key of the watcher
+# + Name - The name of the watcher
+public type Watchers record {
+    readonly string DisplayName?;
+    readonly string EmailAddress?;
+    readonly string AccountId?;
+    readonly string Key?;
+    readonly string Name?;
+};
