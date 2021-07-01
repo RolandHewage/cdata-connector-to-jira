@@ -865,3 +865,30 @@ public type IssueFixVersions record {
     readonly boolean Released?;
     readonly string ReleaseDate?;
 };
+
+# IssueLinks view representation in Jira. The available IssueLinks in JIRA. 
+#
+# + Id - The Id of the link 
+# + InwardIssueId - The Id of the issue targeting this issue in the link
+# + InwardIssueKey - The Key of the issue targeting this issue in the link
+# + OutWardIssueId - The Id of the issue this link is targeting 
+# + OutwardIssueKey - The Key of the issue this link is targeting
+# + IssueId - The link's original issue Id
+# + IssueKey - The link's original issue Key
+# + IssueCreatedDate - The date the link's issue was created
+# + IssueUpdatedDate - The date the links's issue was last updated
+# + TypeId - The Id of the link type
+# + TypeName - The Name of the link type
+public type IssueLinks record {
+    readonly string Id?;
+    readonly int InwardIssueId?;
+    readonly string InwardIssueKey?;
+    readonly int OutWardIssueId?;
+    readonly string OutwardIssueKey?;
+    readonly int IssueId?;
+    readonly string IssueKey?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string TypeId?;
+    readonly string TypeName?;
+};

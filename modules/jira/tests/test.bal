@@ -1461,6 +1461,22 @@ function getIssueFixVersions() {
     }
 }
 
+// IssueLinks
+
+@test:Config {
+    dependsOn: [getIssueCustomFields],
+    enable: true
+}
+function getIssueLinks() {
+    stream<IssueLinks, error> objectStreamResponse = cdataConnectorToJira->getIssueLinks();
+    error? e = objectStreamResponse.forEach(isolated function(IssueLinks jobject) {
+        io:println("IssueLinks details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
