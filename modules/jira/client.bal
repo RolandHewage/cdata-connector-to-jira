@@ -799,6 +799,18 @@ public client class Client {
         return resultStream;
     }
 
+    // IssueCustomFieldOptions
+
+    isolated remote function getIssueCustomFieldOptions(int customFieldId) 
+                                                        returns stream<IssueCustomFieldOptions, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueCustomFieldOptions 
+                                              WHERE CustomFieldId = ${customFieldId}`;
+        io:println(selectQuery);
+        stream<IssueCustomFieldOptions, error> resultStream = self.cdataClient->query(selectQuery, 
+            IssueCustomFieldOptions);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

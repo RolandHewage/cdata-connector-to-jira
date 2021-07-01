@@ -1412,6 +1412,22 @@ function getIssueComponents() {
     }
 }
 
+// IssueCustomFieldOptions
+
+@test:Config {
+    dependsOn: [getIssueComponents],
+    enable: true
+}
+function getIssueCustomFieldOptions() {
+    stream<IssueCustomFieldOptions, error> objectStreamResponse = cdataConnectorToJira->getIssueCustomFieldOptions(1000);
+    error? e = objectStreamResponse.forEach(isolated function(IssueCustomFieldOptions jobject) {
+        io:println("IssueCustomFieldOptions details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

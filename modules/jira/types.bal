@@ -810,3 +810,14 @@ public type IssueComponents record {
     readonly string IssueUpdatedDate?;
     readonly string Description?;
 };
+
+# IssueCustomFieldOptions view representation in Jira. Issue Custom Field Options in JIRA. 
+#
+# + Id - The ID of the custom field option
+# + CustomFieldId - The ID of the custom field
+# + Name - The name of the custom field option
+public type IssueCustomFieldOptions record {
+    readonly int Id?;
+    readonly int CustomFieldId?;
+    readonly string Name?;
+};
