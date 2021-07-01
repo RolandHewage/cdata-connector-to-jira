@@ -842,3 +842,26 @@ public type IssueCustomFields record {
     readonly boolean Navigable?;
     readonly boolean Searchable?;
 };
+
+# IssueFixVersions view representation in Jira. The available IssueFixVersions in JIRA.  
+#
+# + VersionId - The Id of the fix version
+# + IssueId - The issue Id of the fix version
+# + IssueKey - The issue key of the fix version
+# + IssueCreatedDate - The date the fix version's issue was created
+# + IssueUpdatedDate - The date the fix version's issue was last updated
+# + Name - The name of the fix version
+# + Archived - A boolean indicating if the fix is archived
+# + Released - A boolean indicating if the fix is released
+# + ReleaseDate - The release date
+public type IssueFixVersions record {
+    readonly string VersionId?;
+    readonly int IssueId?;
+    readonly string IssueKey?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string Name?;
+    readonly boolean Archived?;
+    readonly boolean Released?;
+    readonly string ReleaseDate?;
+};
