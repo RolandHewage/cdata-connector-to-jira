@@ -1005,6 +1005,22 @@ public client class Client {
         return resultStream;
     }
 
+    // ProjectTypes
+
+    isolated remote function getProjectTypes() returns stream<ProjectTypes, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectTypes`;
+        io:println(selectQuery);
+        stream<ProjectTypes, error> resultStream = self.cdataClient->query(selectQuery, ProjectTypes);
+        return resultStream;
+    }
+
+    isolated remote function getProjectTypesByKey(string projectTypeKey) returns record {|ProjectTypes value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectTypes WHERE Key = ${projectTypeKey}`;
+        io:println(selectQuery);
+        stream<ProjectTypes, error> resultStream = self.cdataClient->query(selectQuery, ProjectTypes);
+        return resultStream.next();
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

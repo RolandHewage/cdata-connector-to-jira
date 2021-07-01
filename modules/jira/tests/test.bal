@@ -1726,6 +1726,37 @@ function getProjectsIssueTypes() {
     }
 }
 
+// ProjectTypes
+
+@test:Config {
+    dependsOn: [getProjectsIssueTypes],
+    enable: true
+}
+function getProjectTypes() {
+    stream<ProjectTypes, error> objectStreamResponse = cdataConnectorToJira->getProjectTypes();
+    error? e = objectStreamResponse.forEach(isolated function(ProjectTypes jobject) {
+        io:println("ProjectTypes details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getProjectTypes],
+    enable: true
+}
+function getProjectTypesByKey() {
+    record {|ProjectTypes value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectTypesByKey("software");
+    if (getObjectResponse is record {|ProjectTypes value;|}) {
+        io:println("Selected ProjectType Key: ", getObjectResponse.value["Key"]);
+    } else if (getObjectResponse is ()) {
+        io:println("ProjectTypes table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

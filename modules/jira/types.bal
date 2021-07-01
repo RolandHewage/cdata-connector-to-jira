@@ -1089,3 +1089,16 @@ public type ProjectsIssueTypes record {
     readonly string IconUrl?;
     readonly string AvatarId?;
 };
+
+# ProjectTypes view representation in Jira. The list of all project types. 
+#
+# + Key - The key of the project type 
+# + DescriptionKey - The key of the project type's description 
+# + Icon - The icon of the project type
+# + Color - The color of the project type
+public type ProjectTypes record {
+    readonly string Key?;
+    readonly string DescriptionKey?;
+    readonly string Icon?;
+    readonly string Color?;
+};
