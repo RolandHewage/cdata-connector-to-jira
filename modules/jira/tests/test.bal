@@ -1664,6 +1664,22 @@ function getPermissions() {
     }
 }
 
+// ProjectCategories
+
+@test:Config {
+    dependsOn: [getPermissions],
+    enable: true
+}
+function getProjectCategories() {
+    stream<ProjectCategories, error> objectStreamResponse = cdataConnectorToJira->getProjectCategories();
+    error? e = objectStreamResponse.forEach(isolated function(ProjectCategories jobject) {
+        io:println("ProjectCategories details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

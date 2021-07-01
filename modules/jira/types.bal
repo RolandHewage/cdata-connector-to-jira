@@ -1042,3 +1042,16 @@ public type Permissions record {
     readonly string Type?;
     readonly string Description?;
 };
+
+# ProjectCategories view representation in Jira. All the project categories. 
+#
+# + Id - Unique identifier of the project category
+# + Name - Name of the project category
+# + Description - Description of the project category
+# + Link - Link to this project category
+public type ProjectCategories record {
+    readonly int Id?;
+    readonly string Name?;
+    readonly string Description?;
+    readonly string Link?;
+};

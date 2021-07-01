@@ -971,6 +971,15 @@ public client class Client {
         return resultStream;
     }
 
+    // ProjectCategories
+
+    isolated remote function getProjectCategories() returns stream<ProjectCategories, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectCategories`;
+        io:println(selectQuery);
+        stream<ProjectCategories, error> resultStream = self.cdataClient->query(selectQuery, ProjectCategories);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
