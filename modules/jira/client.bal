@@ -852,6 +852,23 @@ public client class Client {
         return resultStream;
     }
 
+    // IssueLinkTypes
+
+    isolated remote function getIssueLinkTypes() returns stream<IssueLinkTypes, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueLinkTypes`;
+        io:println(selectQuery);
+        stream<IssueLinkTypes, error> resultStream = self.cdataClient->query(selectQuery, IssueLinkTypes);
+        return resultStream;
+    }
+
+    isolated remote function getIssueLinkTypesById(string issueLinkTypesId) 
+                                                   returns record {|IssueLinkTypes value;|}|error? {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueLinkTypes WHERE Id = ${issueLinkTypesId}`;
+        io:println(selectQuery);
+        stream<IssueLinkTypes, error> resultStream = self.cdataClient->query(selectQuery, IssueLinkTypes);
+        return resultStream.next();
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

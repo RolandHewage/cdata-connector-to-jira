@@ -1477,6 +1477,37 @@ function getIssueLinks() {
     }
 }
 
+// IssueLinkTypes
+
+@test:Config {
+    dependsOn: [getIssueLinks],
+    enable: true
+}
+function getIssueLinkTypes() {
+    stream<IssueLinkTypes, error> objectStreamResponse = cdataConnectorToJira->getIssueLinkTypes();
+    error? e = objectStreamResponse.forEach(isolated function(IssueLinkTypes jobject) {
+        io:println("IssueLinkTypes details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getIssueLinkTypes],
+    enable: true
+}
+function getIssueLinkTypesById() {
+    record {|IssueLinkTypes value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueLinkTypesById("10000");
+    if (getObjectResponse is record {|IssueLinkTypes value;|}) {
+        io:println("Selected IssueLinkType ID: ", getObjectResponse.value["Id"]);
+    } else if (getObjectResponse is ()) {
+        io:println("IssueLinkTypes table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");

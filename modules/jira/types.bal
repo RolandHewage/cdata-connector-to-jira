@@ -892,3 +892,16 @@ public type IssueLinks record {
     readonly string TypeId?;
     readonly string TypeName?;
 };
+
+# IssueLinkTypes view representation in Jira. All the issue link types. 
+#
+# + Id - Unique identifier of the issue link type
+# + Name - The name of the issue link type
+# + Inward - The description of the issue link type inward link
+# + Outward - The description of the issue link type outward link
+public type IssueLinkTypes record {
+    readonly string Id?;
+    readonly string Name?;
+    readonly string Inward?;
+    readonly string Outward?;
+};
