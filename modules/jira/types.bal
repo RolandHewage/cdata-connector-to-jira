@@ -1200,3 +1200,16 @@ public type TimeTrackingProviders record {
     readonly string Name?;
     readonly string URL?;
 };
+
+# Votes view representation in Jira. The available Votes in JIRA. 
+#
+# + Key - The key of the vote
+# + Name - The name of the vote
+# + DisplayName - The display name of the vote
+# + Active - Boolean indicating if the vote is active
+public type Votes record {
+    readonly string Key?;
+    readonly string Name?;
+    readonly string DisplayName?;
+    readonly boolean Active?;
+};

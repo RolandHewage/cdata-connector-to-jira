@@ -1852,6 +1852,22 @@ function getTimeTrackingProviders() {
     }
 }
 
+// Votes
+
+@test:Config {
+    dependsOn: [getTimeTrackingProviders],
+    enable: true
+}
+function getVotes() {
+    stream<Votes, error> objectStreamResponse = cdataConnectorToJira->getVotesByIssueKey("ROL-110");
+    error? e = objectStreamResponse.forEach(isolated function(Votes jobject) {
+        io:println("Votes details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
