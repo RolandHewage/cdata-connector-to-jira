@@ -944,3 +944,36 @@ public type IssueResolutions record {
     readonly string Description?;
     readonly string URL?;
 };
+
+# IssueSubtasks view representation in Jira. The available IssueSubtasks in JIRA. 
+#
+# + SubtaskId - The Id of the subtask
+# + SubtaskKey - The key of the subtask 
+# + IssueId - The Id of the parent issue
+# + IssueKey - The key of the parent issue
+# + IssueCreatedDate - The date the subtask's issue was created
+# + IssueUpdatedDate - The date the subtask's issue was last updated
+# + Summary - The summary of the subtask
+# + TypeId - The issue type Id of the subtask
+# + TypeName - The issue type name of the subtask
+# + TypeDescription - The issue type description of the subtask
+# + TypeSubtask - A boolean indicating if the issue is a subtask
+# + PriorityId - The priority Id of the subtask
+# + PriorityName - The priority name of the subtask
+# + StatusId - The status Id of the subtask
+public type IssueSubtasks record {
+    readonly string SubtaskId?;
+    readonly string SubtaskKey?;
+    readonly int IssueId?;
+    readonly string IssueKey?;
+    readonly string IssueCreatedDate?;
+    readonly string IssueUpdatedDate?;
+    readonly string Summary?;
+    readonly string TypeId?;
+    readonly string TypeName?;
+    readonly string TypeDescription?;
+    readonly boolean TypeSubtask?;
+    readonly string PriorityId?;
+    readonly string PriorityName?;
+    readonly string StatusId?;
+};

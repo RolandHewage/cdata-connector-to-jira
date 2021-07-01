@@ -913,6 +913,29 @@ public client class Client {
         return resultStream.next();
     }
 
+    // IssueSubtasks
+
+    isolated remote function getIssueSubtasks() returns stream<IssueSubtasks, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueSubtasks`;
+        io:println(selectQuery);
+        stream<IssueSubtasks, error> resultStream = self.cdataClient->query(selectQuery, IssueSubtasks);
+        return resultStream;
+    }
+
+    isolated remote function getIssueSubtasksByIssueId(int issueId) returns stream<IssueSubtasks, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueSubtasks WHERE IssueId = ${issueId}`;
+        io:println(selectQuery);
+        stream<IssueSubtasks, error> resultStream = self.cdataClient->query(selectQuery, IssueSubtasks);
+        return resultStream;
+    }
+
+    isolated remote function getIssueSubtaskssByJql(string jqlQuery) returns stream<IssueSubtasks, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueSubtasks WHERE JQL = ${jqlQuery}`;
+        io:println(selectQuery);
+        stream<IssueSubtasks, error> resultStream = self.cdataClient->query(selectQuery, IssueSubtasks);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

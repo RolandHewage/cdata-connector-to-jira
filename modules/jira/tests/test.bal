@@ -1587,6 +1587,36 @@ function getIssueResolutionById() {
     }
 }
 
+// IssueSubtasks
+
+@test:Config {
+    dependsOn: [getIssueResolutionById],
+    enable: true
+}
+function getIssueSubtasks() {
+    stream<IssueSubtasks, error> objectStreamResponse = cdataConnectorToJira->getIssueSubtasks();
+    error? e = objectStreamResponse.forEach(isolated function(IssueSubtasks jobject) {
+        io:println("IssueSubtasks details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
+@test:Config {
+    dependsOn: [getIssueSubtasks],
+    enable: true
+}
+function getIssueSubtasksByIssueId() {
+    stream<IssueSubtasks, error> objectStreamResponse = cdataConnectorToJira->getIssueSubtasksByIssueId(10109);
+    error? e = objectStreamResponse.forEach(isolated function(IssueSubtasks jobject) {
+        io:println("IssueSubtasks details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
