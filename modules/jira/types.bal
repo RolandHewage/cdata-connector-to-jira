@@ -655,3 +655,24 @@ public type Epics record {
     readonly string ColorKey?;
     readonly string Summary?;
 };
+
+# FavouriteFilters view representation in Jira. The favourite Filters in JIRA. 
+#
+# + Id - The Id of the favourite filter
+# + Name - The name assigned to the favourite filter
+# + JQLExpression - The JQL by which the favourite filter will search issues by
+# + Description - The description given to the favourite filter
+# + OwnerDisplayName - The display name of the user who owns the favourite filter
+# + OwnerAccountId - The account ID of the user who owns the favourite filter
+# + Count - How many users have this filter as a favourite
+# + OwnerKey - The key of the user who owns the favourite filter
+public type FavouriteFilters record {
+    readonly int Id?;
+    readonly string Name?;
+    readonly string JQLExpression?;
+    readonly string Description?;
+    readonly string OwnerDisplayName?;
+    readonly string OwnerAccountId?;
+    readonly int Count?;
+    readonly string OwnerKey?;
+};

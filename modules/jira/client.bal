@@ -714,6 +714,15 @@ public client class Client {
         return resultStream.next();
     }
 
+    // FavouriteFilters
+
+    isolated remote function getFavouriteFilters() returns stream<FavouriteFilters, error> {
+        sql:ParameterizedQuery selectQuery = `SELECT * FROM FavouriteFilters`;
+        io:println(selectQuery);
+        stream<FavouriteFilters, error> resultStream = self.cdataClient->query(selectQuery, FavouriteFilters);
+        return resultStream;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

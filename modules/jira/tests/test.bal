@@ -1286,6 +1286,22 @@ function getEpicByKey() {
     }
 }
 
+// FavouriteFilters
+
+@test:Config {
+    dependsOn: [getEpicsOfBoard],
+    enable: true
+}
+function getFavouriteFilters() {
+    stream<FavouriteFilters, error> objectStreamResponse = cdataConnectorToJira->getFavouriteFilters();
+    error? e = objectStreamResponse.forEach(isolated function(FavouriteFilters jobject) {
+        io:println("FavouriteFilters details: ", jobject);
+    });
+    if (e is error) {
+        test:assertFail(e.message());
+    }
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
