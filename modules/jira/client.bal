@@ -1201,6 +1201,41 @@ public client class Client {
         return resultStream.next();
     }
 
+    /// Stored Procedures
+
+    // UploadAttachment
+
+    // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
+    //                                           string? fileName = ()) returns stream<record {}, error>|error? {         
+    //     sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
+    //                                            ${fileLocation}, ${fileName})}`;
+    //     io:println(sqlQuery);
+    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
+    //     stream<record {}, error>? result = retCall.queryResult;
+    //     check retCall.close();
+    //     return result;
+    // }
+
+    isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
+                                              string? fileName = ()) returns (string|int)|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
+                                               ${fileLocation}, ${fileName})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
+        sql:ExecutionResult? result = retCall.executionResult;
+        check retCall.close();
+        return result?.lastInsertId;
+    }
+
+    // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
+    //                                           string? fileName = ()) returns stream<record {}, error> {     
+    //     sql:ParameterizedQuery sqlQuery = `EXEC UploadAttachment IssueId = ${issueId}, IssueKey = ${issueKey}, 
+    //                                        FileLocation = ${fileLocation}, FileName = ${fileName}`;
+    //     io:println(sqlQuery);
+    //     stream<record {}, error> result = self.cdataClient->query(sqlQuery);
+    //     return result;
+    // }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

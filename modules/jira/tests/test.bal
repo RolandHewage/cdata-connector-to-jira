@@ -1932,6 +1932,62 @@ function getWorkflowStatuses() {
     }
 }
 
+//// Stored Procedures
+
+// UploadAttachment
+
+// @test:Config {
+//     enable: true
+// }
+// function uploadAttachment() {
+//     stream<record{}, error>|error? objectStreamResponse = 
+//         cdataConnectorToJira->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
+//         fileName = "MyNote");
+//     if (objectStreamResponse is stream<record{}, error>) {
+//         error? e = objectStreamResponse.forEach(isolated function(record{} jobject) {
+//             io:println("UploadAttachment details: ", jobject);
+//         });
+//         if (e is error) {
+//             test:assertFail(e.message());
+//         }
+//     } else if (objectStreamResponse is ()) {
+//         io:println("Empty response");
+//     } else {
+//         test:assertFail(objectStreamResponse.message());
+//     } 
+// }
+
+@test:Config {
+    dependsOn: [getWorkflowStatuses],
+    enable: true
+}
+function uploadAttachment() {
+    (string|int)|error? objectResponse = 
+        cdataConnectorToJira->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
+        fileName = "MyNote");
+    if (objectResponse is (string|int)) {
+        io:println("UploadAttachment last insert ID: ", objectResponse);
+    } else if (objectResponse is ()) {
+        io:println("Empty response");
+    } else {
+        test:assertFail(objectResponse.message());
+    } 
+}
+
+// @test:Config {
+//     enable: true
+// }
+// function uploadAttachment() {
+//     stream<record {}, error> objectStreamResponse = 
+//         cdataConnectorToJira->uploadAttachment("/home/roland/Documents/Notes/test25.txt", "10112", "ROL-113", "MyName");  
+//     error? e = objectStreamResponse.forEach(isolated function(record {} jobject) {
+//         io:println("UploadAttachment details: ", jobject);
+//     });
+//     if (e is error) {
+//         test:assertFail(e.message());
+//     }
+// }
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
