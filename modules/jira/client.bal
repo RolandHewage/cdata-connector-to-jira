@@ -1236,6 +1236,19 @@ public client class Client {
     //     return result;
     // }
 
+    // DownloadAttachment
+
+    isolated remote function downloadAttachment(string attachmentId, string fileLocation, string? fileName = (), 
+                                                boolean? overwrite = ()) returns (string|int)|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL DownloadAttachment(${attachmentId}, ${fileLocation}, 
+                                               ${fileName}, ${overwrite})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
+        sql:ExecutionResult? result = retCall.executionResult;
+        check retCall.close();
+        return result?.lastInsertId;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

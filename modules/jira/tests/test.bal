@@ -1988,6 +1988,22 @@ function uploadAttachment() {
 //     }
 // }
 
+@test:Config {
+    dependsOn: [uploadAttachment],
+    enable: true
+}
+function downloadAttachment() {
+    (string|int)|error? objectResponse = 
+        cdataConnectorToJira->downloadAttachment("10088", "/home/roland/Documents/Notes1/", "MyDownloadedNote", true);
+    if (objectResponse is (string|int)) {
+        io:println("DownloadAttachment last insert ID: ", objectResponse);
+    } else if (objectResponse is ()) {
+        io:println("Empty response");
+    } else {
+        test:assertFail(objectResponse.message());
+    } 
+}
+
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
