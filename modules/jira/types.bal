@@ -1306,3 +1306,10 @@ public type TimeTrackingSettings record {
     readonly string TimeFormat?;
     readonly string DefaultUnit?;
 };
+
+# SetTimeTrackingSettings stored procedure result set representation in Jira. Sets the time tracking settings.  
+#
+# + Success - This value shows whether the operation was successful or not
+public type SetTimeTrackingSettingsResponse record {
+    readonly string Success?;
+};

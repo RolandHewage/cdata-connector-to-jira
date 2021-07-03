@@ -1316,6 +1316,26 @@ public client class Client {
     //     return;
     // }
 
+    // SetTimeTrackingSettings
+
+    isolated remote function setTimeTrackingSettings(int workingHoursPerDay, float workingDaysPerWeek, 
+                                                     string timeFormat, string defaultUnit) 
+                                                     returns SetTimeTrackingSettingsResponse|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL SetTimeTrackingSettings(${workingHoursPerDay}, 
+                                               ${workingDaysPerWeek}, ${timeFormat}, ${defaultUnit})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [SetTimeTrackingSettingsResponse]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<SetTimeTrackingSettingsResponse, sql:Error> resultStream = 
+                <stream<SetTimeTrackingSettingsResponse, sql:Error>> result;
+            record {|SetTimeTrackingSettingsResponse value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
+        check retCall.close();
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
