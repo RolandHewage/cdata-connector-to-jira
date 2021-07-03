@@ -1336,6 +1336,24 @@ public client class Client {
         return;
     }
 
+    // ChangeIssueStatus
+
+    isolated remote function changeIssueStatus(string transitionId, string? issueId = (), string? issueKey = ()) 
+                                               returns ChangeIssueStatusResponse|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL ChangeIssueStatus(${issueId}, ${issueKey}, ${transitionId})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [ChangeIssueStatusResponse]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<ChangeIssueStatusResponse, sql:Error> resultStream = 
+                <stream<ChangeIssueStatusResponse, sql:Error>> result;
+            record {|ChangeIssueStatusResponse value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
+        check retCall.close();
+        return;
+    }   
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }

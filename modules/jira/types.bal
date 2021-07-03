@@ -1313,3 +1313,10 @@ public type TimeTrackingSettings record {
 public type SetTimeTrackingSettingsResponse record {
     readonly string Success?;
 };
+
+# ChangeIssueStatus stored procedure result set representation in Jira. Perform a status transition on a specific issue.  
+#
+# + Success - This value shows whether the operation was successful or not
+public type ChangeIssueStatusResponse record {
+    readonly string Success?;
+};
