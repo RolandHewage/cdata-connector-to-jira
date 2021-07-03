@@ -94,10 +94,10 @@ function createProject() {
     enable: true
 }
 function getProjectById() {
-    record {|Projects value;|}|error? getObjectResponse = cdataJiraClient->getProjectById(<int> projectId);
-    if (getObjectResponse is record {|Projects value;|}) {
-        io:println("Selected Project ID: ", getObjectResponse.value["Id"]);
-        projectKey = <string> getObjectResponse.value["Key"];
+    Projects|error? getObjectResponse = cdataJiraClient->getProjectById(<int> projectId);
+    if (getObjectResponse is Projects) {
+        io:println("Selected Project ID: ", getObjectResponse?.Id);
+        projectKey = <string> getObjectResponse?.Key;
     } else if (getObjectResponse is ()) {
         io:println("Project table is empty");
     } else {
@@ -229,12 +229,11 @@ function getProjectComponents() {
     enable: true
 }
 function getProjectComponentById() {
-    record {|ProjectComponents value;|}|error? getObjectResponse = cdataJiraClient->getProjectComponentById(
-        <int> projectComponentId);
-    if (getObjectResponse is record {|ProjectComponents value;|}) {
-        io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
-        projectId = <int> getObjectResponse.value["ProjectId"];
-        projectKey = <string> getObjectResponse.value["ProjectKey"];
+    ProjectComponents|error? getObjectResponse = cdataJiraClient->getProjectComponentById(<int> projectComponentId);
+    if (getObjectResponse is ProjectComponents) {
+        io:println("Selected Project Component ID: ", getObjectResponse?.Id);
+        projectId = <int> getObjectResponse?.ProjectId;
+        projectKey = <string> getObjectResponse?.ProjectKey;
     } else if (getObjectResponse is ()) {
         io:println("Project Component table is empty");
     } else {
@@ -247,12 +246,11 @@ function getProjectComponentById() {
     enable: true
 }
 function getProjectComponentByProjectId() {
-    record {|ProjectComponents value;|}|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectId(
-        <int> projectId);
-    if (getObjectResponse is record {|ProjectComponents value;|}) {
-        io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
-        projectId = <int> getObjectResponse.value["ProjectId"];
-        projectKey = <string> getObjectResponse.value["ProjectKey"];
+    ProjectComponents|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectId(<int> projectId);
+    if (getObjectResponse is ProjectComponents) {
+        io:println("Selected Project Component ID: ", getObjectResponse?.Id);
+        projectId = <int> getObjectResponse?.ProjectId;
+        projectKey = <string> getObjectResponse?.ProjectKey;
     } else if (getObjectResponse is ()) {
         io:println("Project Component table is empty");
     } else {
@@ -265,12 +263,11 @@ function getProjectComponentByProjectId() {
     enable: true
 }
 function getProjectComponentByProjectKey() {
-    record {|ProjectComponents value;|}|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectKey(
-        <string> projectKey);
-    if (getObjectResponse is record {|ProjectComponents value;|}) {
-        io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
-        projectId = <int> getObjectResponse.value["ProjectId"];
-        projectKey = <string> getObjectResponse.value["ProjectKey"];
+    ProjectComponents|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectKey(<string> projectKey);
+    if (getObjectResponse is ProjectComponents) {
+        io:println("Selected Project Component ID: ", getObjectResponse?.Id);
+        projectId = <int> getObjectResponse?.ProjectId;
+        projectKey = <string> getObjectResponse?.ProjectKey;
     } else if (getObjectResponse is ()) {
         io:println("Project Component table is empty");
     } else {
@@ -385,11 +382,10 @@ function getProjectVersions() {
     enable: true
 }
 function getProjectVersionById() {
-    record {|ProjectVersions value;|}|error? getObjectResponse = cdataJiraClient->getProjectVersionById(
-        <int> projectVersionId);
-    if (getObjectResponse is record {|ProjectVersions value;|}) {
-        io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
-        projectId = <int> getObjectResponse.value["ProjectId"];
+    ProjectVersions|error? getObjectResponse = cdataJiraClient->getProjectVersionById(<int> projectVersionId);
+    if (getObjectResponse is ProjectVersions) {
+        io:println("Selected Project Version ID: ", getObjectResponse?.Id);
+        projectId = <int> getObjectResponse?.ProjectId;
     } else if (getObjectResponse is ()) {
         io:println("Project Version table is empty");
     } else {
@@ -402,11 +398,10 @@ function getProjectVersionById() {
     enable: true
 }
 function getProjectVersionByProjectId() {
-    record {|ProjectVersions value;|}|error? getObjectResponse = cdataJiraClient->getProjectVersionByProjectId(
-        <int> projectId);
-    if (getObjectResponse is record {|ProjectVersions value;|}) {
-        io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
-        projectId = <int> getObjectResponse.value["ProjectId"];
+    ProjectVersions|error? getObjectResponse = cdataJiraClient->getProjectVersionByProjectId(<int> projectId);
+    if (getObjectResponse is ProjectVersions) {
+        io:println("Selected Project Version ID: ", getObjectResponse?.Id);
+        projectId = <int> getObjectResponse?.ProjectId;
     } else if (getObjectResponse is ()) {
         io:println("Project Version table is empty");
     } else {
@@ -497,10 +492,10 @@ function getIssueTypes() {
     enable: true
 }
 function getIssueTypeById() {
-    record {|IssueTypes value;|}|error? getObjectResponse = cdataJiraClient->getIssueTypeById(
+    IssueTypes|error? getObjectResponse = cdataJiraClient->getIssueTypeById(
         <string> issueTypeId);
-    if (getObjectResponse is record {|IssueTypes value;|}) {
-        io:println("Selected Issue Type ID: ", getObjectResponse.value["Id"]);
+    if (getObjectResponse is IssueTypes) {
+        io:println("Selected Issue Type ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Issue Type table is empty");
     } else {
@@ -560,9 +555,9 @@ function getRoles() {
     enable: true
 }
 function getRoleById() {
-    record {|Roles value;|}|error? getObjectResponse = cdataJiraClient->getRoleById(10002);
-    if (getObjectResponse is record {|Roles value;|}) {
-        io:println("Selected Role ID: ", getObjectResponse.value["Id"]);
+    Roles|error? getObjectResponse = cdataJiraClient->getRoleById(10002);
+    if (getObjectResponse is Roles) {
+        io:println("Selected Role ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Role table is empty");
     } else {
@@ -631,9 +626,23 @@ function getBoards() {
     enable: true
 }
 function getBoardById() {
-    record {|Boards value;|}|error? getObjectResponse = cdataJiraClient->getBoardById(1);
-    if (getObjectResponse is record {|Boards value;|}) {
-        io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
+    Boards|error? getObjectResponse = cdataJiraClient->getBoardById(1);
+    if (getObjectResponse is Boards) {
+        io:println("Selected Board ID: ", getObjectResponse?.Id);
+    } else if (getObjectResponse is ()) {
+        io:println("board table is empty");
+    } else {
+        test:assertFail(getObjectResponse.message());
+    }
+}
+
+@test:Config {
+    enable: false
+}
+function getBoard() {
+    Boards|error? getObjectResponse = cdataJiraClient->getBoard("ROL");
+    if (getObjectResponse is Boards) {
+        io:println("Selected Board ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("board table is empty");
     } else {
@@ -643,21 +652,6 @@ function getBoardById() {
 
 @test:Config {
     dependsOn: [getBoardById],
-    enable: true
-}
-function getBoard() {
-    record {|record{} value;|}|error? getObjectResponse = cdataJiraClient->getBoard("ROL");
-    if (getObjectResponse is record {|record{} value;|}) {
-        io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
-    } else if (getObjectResponse is ()) {
-        io:println("board table is empty");
-    } else {
-        test:assertFail(getObjectResponse.message());
-    }
-}
-
-@test:Config {
-    dependsOn: [getBoard],
     enable: true
 }
 function deleteProjectById_B() {
@@ -711,9 +705,9 @@ function getSprints() {
     enable: true
 }
 function getSprintId() {
-    record {|Sprints value;|}|error? getObjectResponse = cdataJiraClient->getSprintById(<int> sprintId);
-    if (getObjectResponse is record {|Sprints value;|}) {
-        io:println("Selected Sprint ID: ", getObjectResponse.value["Id"]);
+    Sprints|error? getObjectResponse = cdataJiraClient->getSprintById(<int> sprintId);
+    if (getObjectResponse is Sprints) {
+        io:println("Selected Sprint ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Sprint table is empty");
     } else {
@@ -792,9 +786,9 @@ function getIssues() {
     enable: true
 }
 function getIssueById() {
-    record {|Issues value;|}|error? getObjectResponse = cdataJiraClient->getIssueById(<int> issueId);
-    if (getObjectResponse is record {|Issues value;|}) {
-        io:println("Selected Issue ID: ", getObjectResponse.value["Id"]);
+    Issues|error? getObjectResponse = cdataJiraClient->getIssueById(<int> issueId);
+    if (getObjectResponse is Issues) {
+        io:println("Selected Issue ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Issues table is empty");
     } else {
@@ -1020,9 +1014,9 @@ function getAttachments() {
     enable: true
 }
 function getAttachmentById() {
-    record {|Attachments value;|}|error? getObjectResponse = cdataJiraClient->getAttachmentById(<int> attachmentId);
-    if (getObjectResponse is record {|Attachments value;|}) {
-        io:println("Selected Attachment ID: ", getObjectResponse.value["Id"]);
+    Attachments|error? getObjectResponse = cdataJiraClient->getAttachmentById(<int> attachmentId);
+    if (getObjectResponse is Attachments) {
+        io:println("Selected Attachment ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Attachments table is empty");
     } else {
@@ -1218,9 +1212,9 @@ function getDashboardsByFilter() {
     enable: true
 }
 function getDashboardById() {
-    record {|Dashboards value;|}|error? getObjectResponse = cdataJiraClient->getDashboardById("10000");
-    if (getObjectResponse is record {|Dashboards value;|}) {
-        io:println("Selected Dashboard ID: ", getObjectResponse.value["Id"]);
+    Dashboards|error? getObjectResponse = cdataJiraClient->getDashboardById("10000");
+    if (getObjectResponse is Dashboards) {
+        io:println("Selected Dashboard ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Dashboards table is empty");
     } else {
@@ -1262,9 +1256,9 @@ function getEpicsOfBoard() {
     enable: false
 }
 function getEpicById() {
-    record {|Epics value;|}|error? getObjectResponse = cdataJiraClient->getEpicById(10001);
-    if (getObjectResponse is record {|Epics value;|}) {
-        io:println("Selected Epic ID: ", getObjectResponse.value["Id"]);
+    Epics|error? getObjectResponse = cdataJiraClient->getEpicById(10001);
+    if (getObjectResponse is Epics) {
+        io:println("Selected Epic ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Epics table is empty");
     } else {
@@ -1276,9 +1270,9 @@ function getEpicById() {
     enable: false
 }
 function getEpicByKey() {
-    record {|Epics value;|}|error? getObjectResponse = cdataJiraClient->getEpicByKey("ROL-2");
-    if (getObjectResponse is record {|Epics value;|}) {
-        io:println("Selected Epic ID: ", getObjectResponse.value["Id"]);
+    Epics|error? getObjectResponse = cdataJiraClient->getEpicByKey("ROL-2");
+    if (getObjectResponse is Epics) {
+        io:println("Selected Epic ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Epics table is empty");
     } else {
@@ -1339,9 +1333,9 @@ function getFilters() {
     enable: true
 }
 function getFilterById() {
-    record {|Filters value;|}|error? getObjectResponse = cdataJiraClient->getFilterById("10001");
-    if (getObjectResponse is record {|Filters value;|}) {
-        io:println("Selected Filter ID: ", getObjectResponse.value["Id"]);
+    Filters|error? getObjectResponse = cdataJiraClient->getFilterById("10001");
+    if (getObjectResponse is Filters) {
+        io:println("Selected Filter ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("Filters table is empty");
     } else {
@@ -1498,9 +1492,9 @@ function getIssueLinkTypes() {
     enable: true
 }
 function getIssueLinkTypesById() {
-    record {|IssueLinkTypes value;|}|error? getObjectResponse = cdataJiraClient->getIssueLinkTypesById("10000");
-    if (getObjectResponse is record {|IssueLinkTypes value;|}) {
-        io:println("Selected IssueLinkType ID: ", getObjectResponse.value["Id"]);
+    IssueLinkTypes|error? getObjectResponse = cdataJiraClient->getIssueLinkTypesById("10000");
+    if (getObjectResponse is IssueLinkTypes) {
+        io:println("Selected IssueLinkType ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("IssueLinkTypes table is empty");
     } else {
@@ -1546,9 +1540,9 @@ function getIssuePriorities() {
     enable: true
 }
 function getIssuePriorityById() {
-    record {|IssuePriorities value;|}|error? getObjectResponse = cdataJiraClient->getIssuePriorityById("1");
-    if (getObjectResponse is record {|IssuePriorities value;|}) {
-        io:println("Selected IssuePriority ID: ", getObjectResponse.value["Id"]);
+    IssuePriorities|error? getObjectResponse = cdataJiraClient->getIssuePriorityById("1");
+    if (getObjectResponse is IssuePriorities) {
+        io:println("Selected IssuePriority ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("IssuePriorities table is empty");
     } else {
@@ -1577,9 +1571,9 @@ function getIssueResolutions() {
     enable: true
 }
 function getIssueResolutionById() {
-    record {|IssueResolutions value;|}|error? getObjectResponse = cdataJiraClient->getIssueResolutionById("10000");
-    if (getObjectResponse is record {|IssueResolutions value;|}) {
-        io:println("Selected IssueResolution ID: ", getObjectResponse.value["Id"]);
+    IssueResolutions|error? getObjectResponse = cdataJiraClient->getIssueResolutionById("10000");
+    if (getObjectResponse is IssueResolutions) {
+        io:println("Selected IssueResolution ID: ", getObjectResponse?.Id);
     } else if (getObjectResponse is ()) {
         io:println("IssueResolutions table is empty");
     } else {
@@ -1747,9 +1741,9 @@ function getProjectTypes() {
     enable: true
 }
 function getProjectTypesByKey() {
-    record {|ProjectTypes value;|}|error? getObjectResponse = cdataJiraClient->getProjectTypesByKey("software");
-    if (getObjectResponse is record {|ProjectTypes value;|}) {
-        io:println("Selected ProjectType Key: ", getObjectResponse.value["Key"]);
+    ProjectTypes|error? getObjectResponse = cdataJiraClient->getProjectTypesByKey("software");
+    if (getObjectResponse is ProjectTypes) {
+        io:println("Selected ProjectType Key: ", getObjectResponse?.Key);
     } else if (getObjectResponse is ()) {
         io:println("ProjectTypes table is empty");
     } else {
