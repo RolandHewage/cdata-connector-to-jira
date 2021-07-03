@@ -16,7 +16,6 @@
 
 import ballerina/sql;
 import ballerina/io;
-// import ballerinax/java.jdbc;
 import cdata;
 
 # CData Client connector to Jira.  

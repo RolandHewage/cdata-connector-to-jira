@@ -50,7 +50,7 @@ JiraConfig config = {
     basicAuth: basicAuth
 };
 
-Client cdataConnectorToJira = check new (config);
+Client cdataJiraClient = check new (config);
 
 // Projects
 
@@ -58,7 +58,7 @@ Client cdataConnectorToJira = check new (config);
     enable: true
 }
 function getProjects() {
-    stream<Projects, error> objectStreamResponse = cdataConnectorToJira->getProjects();
+    stream<Projects, error> objectStreamResponse = cdataJiraClient->getProjects();
     error? e = objectStreamResponse.forEach(isolated function(Projects jobject) {
         io:println("Project details: ", jobject);
     });
@@ -80,7 +80,7 @@ function createProject() {
         LeadDisplayName: "admin", 
         ProjectTypeKey: "business"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Project ID: ", createObjectResponse);
         projectId = createObjectResponse;
@@ -94,7 +94,7 @@ function createProject() {
     enable: true
 }
 function getProjectById() {
-    record {|Projects value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectById(<int> projectId);
+    record {|Projects value;|}|error? getObjectResponse = cdataJiraClient->getProjectById(<int> projectId);
     if (getObjectResponse is record {|Projects value;|}) {
         io:println("Selected Project ID: ", getObjectResponse.value["Id"]);
         projectKey = <string> getObjectResponse.value["Key"];
@@ -115,7 +115,7 @@ function updateProjectById() {
         Description: "Updated description",
         AssigneeType: "UNASSIGNED"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectById(project);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectById(project);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project ID: ", updateRecordResponse);
     } else {
@@ -133,7 +133,7 @@ function updateProjectByKey() {
         Description: "Updated description",
         AssigneeType: "PROJECT_LEAD"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectByKey(project);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectByKey(project);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project ID: ", updateRecordResponse);
     } else {
@@ -146,7 +146,7 @@ function updateProjectByKey() {
     enable: false
 }
 function deleteProjectById() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
+    error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
     } else {
@@ -159,7 +159,7 @@ function deleteProjectById() {
     enable: true
 }
 function deleteProjectByKey() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectByKey(<string> projectKey);
+    error? deleteAccountResponse = cdataJiraClient->deleteProjectByKey(<string> projectKey);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
     } else {
@@ -182,7 +182,7 @@ function createProject_PC() {
         ProjectTypeKey: "business",
         Description: "New business project"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Project ID: ", createObjectResponse);
         projectId = createObjectResponse;
@@ -201,7 +201,7 @@ function createProjectComponent() {
         Name: "Testing Component", 
         AssigneeType: "PROJECT_LEAD"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProjectComponent(projectComponent);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createProjectComponent(projectComponent);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Project Component ID: ", createObjectResponse);
         projectComponentId = createObjectResponse;
@@ -215,7 +215,7 @@ function createProjectComponent() {
     enable: true
 }
 function getProjectComponents() {
-    stream<ProjectComponents, error> objectStreamResponse = cdataConnectorToJira->getProjectComponents();
+    stream<ProjectComponents, error> objectStreamResponse = cdataJiraClient->getProjectComponents();
     error? e = objectStreamResponse.forEach(isolated function(ProjectComponents jobject) {
         io:println("Project Components details: ", jobject);
     });
@@ -229,7 +229,7 @@ function getProjectComponents() {
     enable: true
 }
 function getProjectComponentById() {
-    record {|ProjectComponents value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentById(
+    record {|ProjectComponents value;|}|error? getObjectResponse = cdataJiraClient->getProjectComponentById(
         <int> projectComponentId);
     if (getObjectResponse is record {|ProjectComponents value;|}) {
         io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
@@ -247,7 +247,7 @@ function getProjectComponentById() {
     enable: true
 }
 function getProjectComponentByProjectId() {
-    record {|ProjectComponents value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectId(
+    record {|ProjectComponents value;|}|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectId(
         <int> projectId);
     if (getObjectResponse is record {|ProjectComponents value;|}) {
         io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
@@ -265,7 +265,7 @@ function getProjectComponentByProjectId() {
     enable: true
 }
 function getProjectComponentByProjectKey() {
-    record {|ProjectComponents value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectComponentByProjectKey(
+    record {|ProjectComponents value;|}|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectKey(
         <string> projectKey);
     if (getObjectResponse is record {|ProjectComponents value;|}) {
         io:println("Selected Project Component ID: ", getObjectResponse.value["Id"]);
@@ -287,7 +287,7 @@ function updateProjectComponentById() {
     ProjectComponents project = {
         LeadKey: "newlead"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectComponentById(project);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectComponentById(project);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project Component ID: ", updateRecordResponse);
     } else {
@@ -300,7 +300,7 @@ function updateProjectComponentById() {
     enable: true
 }
 function deleteProjectComponentById() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectComponentById(<int> projectComponentId);
+    error? deleteAccountResponse = cdataJiraClient->deleteProjectComponentById(<int> projectComponentId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project Component ID: ", projectComponentId);
     } else {
@@ -313,7 +313,7 @@ function deleteProjectComponentById() {
     enable: true
 }
 function deleteProjectById_PC() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
+    error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
     } else {
@@ -336,7 +336,7 @@ function createProject_PV() {
         ProjectTypeKey: "business",
         Description: "New business project"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Project ID: ", createObjectResponse);
         projectId = createObjectResponse;
@@ -357,7 +357,7 @@ function createProjectVersion() {
         ReleaseDate: "2018-04-04",
         StartDate: "2018-02-02"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProjectVersion(projectVersion);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createProjectVersion(projectVersion);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Project Version ID: ", createObjectResponse);
         projectVersionId = createObjectResponse;
@@ -371,7 +371,7 @@ function createProjectVersion() {
     enable: true
 }
 function getProjectVersions() {
-    stream<ProjectVersions, error> objectStreamResponse = cdataConnectorToJira->getProjectVersions();
+    stream<ProjectVersions, error> objectStreamResponse = cdataJiraClient->getProjectVersions();
     error? e = objectStreamResponse.forEach(isolated function(ProjectVersions jobject) {
         io:println("Project Versions details: ", jobject);
     });
@@ -385,7 +385,7 @@ function getProjectVersions() {
     enable: true
 }
 function getProjectVersionById() {
-    record {|ProjectVersions value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionById(
+    record {|ProjectVersions value;|}|error? getObjectResponse = cdataJiraClient->getProjectVersionById(
         <int> projectVersionId);
     if (getObjectResponse is record {|ProjectVersions value;|}) {
         io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
@@ -402,7 +402,7 @@ function getProjectVersionById() {
     enable: true
 }
 function getProjectVersionByProjectId() {
-    record {|ProjectVersions value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectVersionByProjectId(
+    record {|ProjectVersions value;|}|error? getObjectResponse = cdataJiraClient->getProjectVersionByProjectId(
         <int> projectId);
     if (getObjectResponse is record {|ProjectVersions value;|}) {
         io:println("Selected Project Version ID: ", getObjectResponse.value["Id"]);
@@ -423,7 +423,7 @@ function updateProjectVersionById() {
         Id: <int> projectVersionId,
         ReleaseDate: "2019-04-04"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateProjectVersionById(projectVersion);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectVersionById(projectVersion);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Project Version ID: ", updateRecordResponse);
     } else {
@@ -436,7 +436,7 @@ function updateProjectVersionById() {
     enable: true
 }
 function deleteProjectVersionById() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectVersionById(<int> projectVersionId);
+    error? deleteAccountResponse = cdataJiraClient->deleteProjectVersionById(<int> projectVersionId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project Version ID: ", projectVersionId);
     } else {
@@ -449,7 +449,7 @@ function deleteProjectVersionById() {
     enable: true
 }
 function deleteProjectById_PV() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
+    error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
     } else {
@@ -469,7 +469,7 @@ function createIssueType() {
         Description: "test description",
         Subtask: false
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createIssueType(issueType);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createIssueType(issueType);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Issue Type ID: ", createObjectResponse);
         issueTypeId = createObjectResponse;
@@ -483,7 +483,7 @@ function createIssueType() {
     enable: true
 }
 function getIssueTypes() {
-    stream<IssueTypes, error> objectStreamResponse = cdataConnectorToJira->getIssueTypes();
+    stream<IssueTypes, error> objectStreamResponse = cdataJiraClient->getIssueTypes();
     error? e = objectStreamResponse.forEach(isolated function(IssueTypes jobject) {
         io:println("Issue Types details: ", jobject);
     });
@@ -497,7 +497,7 @@ function getIssueTypes() {
     enable: true
 }
 function getIssueTypeById() {
-    record {|IssueTypes value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueTypeById(
+    record {|IssueTypes value;|}|error? getObjectResponse = cdataJiraClient->getIssueTypeById(
         <string> issueTypeId);
     if (getObjectResponse is record {|IssueTypes value;|}) {
         io:println("Selected Issue Type ID: ", getObjectResponse.value["Id"]);
@@ -518,7 +518,7 @@ function updateIssueTypeById() {
         Name: "Updated Name 3",
         Description: "Updated description"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateIssueTypeById(issueType);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateIssueTypeById(issueType);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Issue Type ID: ", updateRecordResponse);
     } else {
@@ -531,7 +531,7 @@ function updateIssueTypeById() {
     enable: true
 }
 function deleteIssueTypeById() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteIssueTypeById(<string> issueTypeId);
+    error? deleteAccountResponse = cdataJiraClient->deleteIssueTypeById(<string> issueTypeId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Issue Type ID: ", issueTypeId);
     } else {
@@ -546,7 +546,7 @@ function deleteIssueTypeById() {
     enable: true
 }
 function getRoles() {
-    stream<Roles, error> objectStreamResponse = cdataConnectorToJira->getRoles();
+    stream<Roles, error> objectStreamResponse = cdataJiraClient->getRoles();
     error? e = objectStreamResponse.forEach(isolated function(Roles jobject) {
         io:println("Roles details: ", jobject);
     });
@@ -560,7 +560,7 @@ function getRoles() {
     enable: true
 }
 function getRoleById() {
-    record {|Roles value;|}|error? getObjectResponse = cdataConnectorToJira->getRoleById(10002);
+    record {|Roles value;|}|error? getObjectResponse = cdataJiraClient->getRoleById(10002);
     if (getObjectResponse is record {|Roles value;|}) {
         io:println("Selected Role ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -585,7 +585,7 @@ function createProject_B() {
         ProjectTypeKey: "business",
         Description: "New business project"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createProject(project);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Project ID: ", createObjectResponse);
         projectId = createObjectResponse;
@@ -603,7 +603,7 @@ function createBoard() {
         Type: "kanban",
         FilterId: "10001"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createBoard(board);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createBoard(board);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Board ID: ", createObjectResponse);
         boardId = createObjectResponse;
@@ -617,7 +617,7 @@ function createBoard() {
     enable: true
 }
 function getBoards() {
-    stream<Boards, error> objectStreamResponse = cdataConnectorToJira->getBoards();
+    stream<Boards, error> objectStreamResponse = cdataJiraClient->getBoards();
     error? e = objectStreamResponse.forEach(isolated function(Boards jobject) {
         io:println("Boards details: ", jobject);
     });
@@ -631,7 +631,7 @@ function getBoards() {
     enable: true
 }
 function getBoardById() {
-    record {|Boards value;|}|error? getObjectResponse = cdataConnectorToJira->getBoardById(1);
+    record {|Boards value;|}|error? getObjectResponse = cdataJiraClient->getBoardById(1);
     if (getObjectResponse is record {|Boards value;|}) {
         io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -646,7 +646,7 @@ function getBoardById() {
     enable: true
 }
 function getBoard() {
-    record {|record{} value;|}|error? getObjectResponse = cdataConnectorToJira->getBoard("ROL");
+    record {|record{} value;|}|error? getObjectResponse = cdataJiraClient->getBoard("ROL");
     if (getObjectResponse is record {|record{} value;|}) {
         io:println("Selected Board ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -661,7 +661,7 @@ function getBoard() {
     enable: true
 }
 function deleteProjectById_B() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteProjectById(<int> projectId);
+    error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Project ID: ", projectId);
     } else {
@@ -683,7 +683,7 @@ function createSprint() {
         StartDate: "2018-02-02",
         EndDate: "2018-04-04"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createSprint(sprint);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createSprint(sprint);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Sprint ID: ", createObjectResponse);
         sprintId = createObjectResponse;
@@ -697,7 +697,7 @@ function createSprint() {
     enable: true
 }
 function getSprints() {
-    stream<Sprints, error> objectStreamResponse = cdataConnectorToJira->getSprints();
+    stream<Sprints, error> objectStreamResponse = cdataJiraClient->getSprints();
     error? e = objectStreamResponse.forEach(isolated function(Sprints jobject) {
         io:println("Sprints details: ", jobject);
     });
@@ -711,7 +711,7 @@ function getSprints() {
     enable: true
 }
 function getSprintId() {
-    record {|Sprints value;|}|error? getObjectResponse = cdataConnectorToJira->getSprintById(<int> sprintId);
+    record {|Sprints value;|}|error? getObjectResponse = cdataJiraClient->getSprintById(<int> sprintId);
     if (getObjectResponse is record {|Sprints value;|}) {
         io:println("Selected Sprint ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -730,7 +730,7 @@ function updateSprintById() {
         Id: <int> sprintId,
         State: "active"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateSprintById(sprint);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateSprintById(sprint);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Sprint ID: ", updateRecordResponse);
     } else {
@@ -743,7 +743,7 @@ function updateSprintById() {
     enable: true
 }
 function deleteSprintById() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteSprintById(<int> sprintId);
+    error? deleteAccountResponse = cdataJiraClient->deleteSprintById(<int> sprintId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Sprint ID: ", sprintId);
     } else {
@@ -764,7 +764,7 @@ function createIssue() {
         Summary: "Desc from prod",
         IssueTypeId: "10001"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createIssue(issue);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createIssue(issue);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Issue ID: ", createObjectResponse);
         issueId = createObjectResponse;
@@ -778,7 +778,7 @@ function createIssue() {
     enable: true
 }
 function getIssues() {
-    stream<Issues, error> objectStreamResponse = cdataConnectorToJira->getIssues();
+    stream<Issues, error> objectStreamResponse = cdataJiraClient->getIssues();
     error? e = objectStreamResponse.forEach(isolated function(Issues jobject) {
         io:println("Issues details: ", jobject);
     });
@@ -792,7 +792,7 @@ function getIssues() {
     enable: true
 }
 function getIssueById() {
-    record {|Issues value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueById(<int> issueId);
+    record {|Issues value;|}|error? getObjectResponse = cdataJiraClient->getIssueById(<int> issueId);
     if (getObjectResponse is record {|Issues value;|}) {
         io:println("Selected Issue ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -811,7 +811,7 @@ function updateIssueById() {
         Id: <int> issueId,
         Summary: "Updated Desc FROM prod"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateIssueById(issue);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateIssueById(issue);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Issue ID: ", updateRecordResponse);
     } else {
@@ -824,7 +824,7 @@ function updateIssueById() {
     enable: true
 }
 function deleteIssueById() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteIssueById(<int> issueId);
+    error? deleteAccountResponse = cdataJiraClient->deleteIssueById(<int> issueId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Issue ID: ", issueId);
     } else {
@@ -838,7 +838,7 @@ function deleteIssueById() {
 }
 function getIssuesByJql() {
     string jqlQuery = "project = 'RolyProject1' AND Status = 'In Progress'";
-    stream<Issues, error> objectStreamResponse = cdataConnectorToJira->getIssuesByJql(jqlQuery);
+    stream<Issues, error> objectStreamResponse = cdataJiraClient->getIssuesByJql(jqlQuery);
     error? e = objectStreamResponse.forEach(isolated function(Issues jobject) {
         io:println("Issues details: ", jobject);
     });
@@ -858,7 +858,7 @@ function createComment() {
         IssueId: 10004, 
         Body: "Test Comment"
     };
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->createComment(comment);
+    (string|int)?|error createObjectResponse = cdataJiraClient->createComment(comment);
     if (createObjectResponse is (string|int)?) {
         io:println("Created Comment ID: ", createObjectResponse);
         commentId = createObjectResponse;
@@ -872,7 +872,7 @@ function createComment() {
     enable: true
 }
 function getComments() {
-    stream<Comments, error> objectStreamResponse = cdataConnectorToJira->getComments();
+    stream<Comments, error> objectStreamResponse = cdataJiraClient->getComments();
     error? e = objectStreamResponse.forEach(isolated function(Comments jobject) {
         io:println("Comments details: ", jobject);
     });
@@ -886,7 +886,7 @@ function getComments() {
     enable: true
 }
 function getCommentsByIssueId() {
-    stream<Comments, error> objectStreamResponse = cdataConnectorToJira->getCommentsByIssueId(10004);
+    stream<Comments, error> objectStreamResponse = cdataJiraClient->getCommentsByIssueId(10004);
     error? e = objectStreamResponse.forEach(isolated function(Comments jobject) {
         io:println("Comments details: ", jobject);
     });
@@ -905,7 +905,7 @@ function updateCommentsById() {
         IssueId: 10004,
         Body: "Updated Comment"
     };
-    (string|int)?|error updateRecordResponse = cdataConnectorToJira->updateCommentByIssueId(comment);
+    (string|int)?|error updateRecordResponse = cdataJiraClient->updateCommentByIssueId(comment);
     if (updateRecordResponse is (string|int)?) {
         io:println("Updated Comment ID: ", updateRecordResponse);
     } else {
@@ -918,7 +918,7 @@ function updateCommentsById() {
     enable: true
 }
 function deleteCommentByIssueId() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteCommentByIssueId(<int> commentId, 10004);
+    error? deleteAccountResponse = cdataJiraClient->deleteCommentByIssueId(<int> commentId, 10004);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Comment ID: ", commentId);
     } else {
@@ -933,7 +933,7 @@ function deleteCommentByIssueId() {
     enable: true
 }
 function getUsers() {
-    stream<Users, error> objectStreamResponse = cdataConnectorToJira->getUsers();
+    stream<Users, error> objectStreamResponse = cdataJiraClient->getUsers();
     error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
         io:println("Users details: ", jobject);
     });
@@ -947,7 +947,7 @@ function getUsers() {
     enable: true
 }
 function getUsersOfAllGroups() {
-    stream<Users, error> objectStreamResponse = cdataConnectorToJira->getUsersOfAllGroups();
+    stream<Users, error> objectStreamResponse = cdataJiraClient->getUsersOfAllGroups();
     error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
         io:println("Users details: ", jobject);
     });
@@ -961,7 +961,7 @@ function getUsersOfAllGroups() {
     enable: true
 }
 function getUsersOfGroup() {
-    stream<Users, error> objectStreamResponse = cdataConnectorToJira->getUsersOfGroup("administrators");
+    stream<Users, error> objectStreamResponse = cdataJiraClient->getUsersOfGroup("administrators");
     error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
         io:println("Users details: ", jobject);
     });
@@ -976,7 +976,7 @@ function getUsersOfGroup() {
     enable: false
 }
 function uploadAttachmentToIssueByFilePath() {
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->uploadAttachmentToIssueByFilePath(
+    (string|int)?|error createObjectResponse = cdataJiraClient->uploadAttachmentToIssueByFilePath(
         "/home/roland/Documents/Notes/test25.txt", "ROL-23");
     if (createObjectResponse is (string|int)?) {
         io:println("Uploaded Attachment ID: ", createObjectResponse);
@@ -991,7 +991,7 @@ function uploadAttachmentToIssueByFilePath() {
     enable: true
 }
 function uploadAttachmentToIssueByEncodedContent() {
-    (string|int)?|error createObjectResponse = cdataConnectorToJira->uploadAttachmentToIssueByEncodedContent(
+    (string|int)?|error createObjectResponse = cdataJiraClient->uploadAttachmentToIssueByEncodedContent(
         "U29tZSBjb250ZW50IGhlcmU=", "Uploaded File", "ROL-23");
     if (createObjectResponse is (string|int)?) {
         io:println("Uploaded Attachment ID: ", createObjectResponse);
@@ -1006,7 +1006,7 @@ function uploadAttachmentToIssueByEncodedContent() {
     enable: true
 }
 function getAttachments() {
-    stream<Attachments, error> objectStreamResponse = cdataConnectorToJira->getAttachments();
+    stream<Attachments, error> objectStreamResponse = cdataJiraClient->getAttachments();
     error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
         io:println("Attachments details: ", jobject);
     });
@@ -1020,7 +1020,7 @@ function getAttachments() {
     enable: true
 }
 function getAttachmentById() {
-    record {|Attachments value;|}|error? getObjectResponse = cdataConnectorToJira->getAttachmentById(<int> attachmentId);
+    record {|Attachments value;|}|error? getObjectResponse = cdataJiraClient->getAttachmentById(<int> attachmentId);
     if (getObjectResponse is record {|Attachments value;|}) {
         io:println("Selected Attachment ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1035,7 +1035,7 @@ function getAttachmentById() {
     enable: true
 }
 function getAttachmentsByIssueId() {
-    stream<Attachments, error> objectStreamResponse = cdataConnectorToJira->getAttachmentsByIssueId(10022);
+    stream<Attachments, error> objectStreamResponse = cdataJiraClient->getAttachmentsByIssueId(10022);
     error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
         io:println("Attachments details: ", jobject);
     });
@@ -1050,7 +1050,7 @@ function getAttachmentsByIssueId() {
 }
 function getAttachmentsByJql() {
     string jqlQuery = "created > 2018-01-07";
-    stream<Attachments, error> objectStreamResponse = cdataConnectorToJira->getAttachmentsByJql(jqlQuery);
+    stream<Attachments, error> objectStreamResponse = cdataJiraClient->getAttachmentsByJql(jqlQuery);
     error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
         io:println("Attachments details: ", jobject);
     });
@@ -1064,7 +1064,7 @@ function getAttachmentsByJql() {
     enable: true
 }
 function deleteAttachmentById() {
-    error? deleteAccountResponse = cdataConnectorToJira->deleteAttachmentById(<int> attachmentId);
+    error? deleteAccountResponse = cdataJiraClient->deleteAttachmentById(<int> attachmentId);
     if (deleteAccountResponse is ()) {
         io:println("Deleted Attachment ID: ", attachmentId);
     } else {
@@ -1081,7 +1081,7 @@ function deleteAttachmentById() {
     enable: true
 }
 function getAdvancedSettings() {
-    stream<AdvancedSettings, error> objectStreamResponse = cdataConnectorToJira->getAdvancedSettings();
+    stream<AdvancedSettings, error> objectStreamResponse = cdataJiraClient->getAdvancedSettings();
     error? e = objectStreamResponse.forEach(isolated function(AdvancedSettings jobject) {
         io:println("AdvancedSettings details: ", jobject);
     });
@@ -1097,7 +1097,7 @@ function getAdvancedSettings() {
     enable: true
 }
 function getApplicationRoles() {
-    stream<ApplicationRoles, error> objectStreamResponse = cdataConnectorToJira->getApplicationRoles();
+    stream<ApplicationRoles, error> objectStreamResponse = cdataJiraClient->getApplicationRoles();
     error? e = objectStreamResponse.forEach(isolated function(ApplicationRoles jobject) {
         io:println("ApplicationRoles details: ", jobject);
     });
@@ -1112,7 +1112,7 @@ function getApplicationRoles() {
     enable: false
 }
 function getAudit() {
-    stream<Audit, error> objectStreamResponse = cdataConnectorToJira->getAudit("up");
+    stream<Audit, error> objectStreamResponse = cdataJiraClient->getAudit("up");
     error? e = objectStreamResponse.forEach(isolated function(Audit jobject) {
         io:println("Audit details: ", jobject);
     });
@@ -1128,7 +1128,7 @@ function getAudit() {
     enable: true
 }
 function getBoardIssues() {
-    stream<BoardIssues, error> objectStreamResponse = cdataConnectorToJira->getBoardIssues(1);
+    stream<BoardIssues, error> objectStreamResponse = cdataJiraClient->getBoardIssues(1);
     error? e = objectStreamResponse.forEach(isolated function(BoardIssues jobject) {
         io:println("BoardIssues details: ", jobject);
     });
@@ -1144,7 +1144,7 @@ function getBoardIssues() {
     enable: true
 }
 function getBoardSprints() {
-    stream<BoardSprints, error> objectStreamResponse = cdataConnectorToJira->getBoardSprints(1);
+    stream<BoardSprints, error> objectStreamResponse = cdataJiraClient->getBoardSprints(1);
     error? e = objectStreamResponse.forEach(isolated function(BoardSprints jobject) {
         io:println("BoardSprints details: ", jobject);
     });
@@ -1158,7 +1158,7 @@ function getBoardSprints() {
     enable: true
 }
 function getSprintsOfAllBoards() {
-    stream<BoardSprints, error> objectStreamResponse = cdataConnectorToJira->getSprintsOfAllBoards();
+    stream<BoardSprints, error> objectStreamResponse = cdataJiraClient->getSprintsOfAllBoards();
     error? e = objectStreamResponse.forEach(isolated function(BoardSprints jobject) {
         io:println("BoardSprints details: ", jobject);
     });
@@ -1174,7 +1174,7 @@ function getSprintsOfAllBoards() {
     enable: true
 }
 function getConfiguration() {
-    stream<Configuration, error> objectStreamResponse = cdataConnectorToJira->getConfiguration();
+    stream<Configuration, error> objectStreamResponse = cdataJiraClient->getConfiguration();
     error? e = objectStreamResponse.forEach(isolated function(Configuration jobject) {
         io:println("Configuration details: ", jobject);
     });
@@ -1190,7 +1190,7 @@ function getConfiguration() {
     enable: true
 }
 function getDashboards() {
-    stream<Dashboards, error> objectStreamResponse = cdataConnectorToJira->getDashboards();
+    stream<Dashboards, error> objectStreamResponse = cdataJiraClient->getDashboards();
     error? e = objectStreamResponse.forEach(isolated function(Dashboards jobject) {
         io:println("Dashboards details: ", jobject);
     });
@@ -1204,7 +1204,7 @@ function getDashboards() {
     enable: true
 }
 function getDashboardsByFilter() {
-    stream<Dashboards, error> objectStreamResponse = cdataConnectorToJira->getDashboardsByFilter("favourite");
+    stream<Dashboards, error> objectStreamResponse = cdataJiraClient->getDashboardsByFilter("favourite");
     error? e = objectStreamResponse.forEach(isolated function(Dashboards jobject) {
         io:println("Dashboards details: ", jobject);
     });
@@ -1218,7 +1218,7 @@ function getDashboardsByFilter() {
     enable: true
 }
 function getDashboardById() {
-    record {|Dashboards value;|}|error? getObjectResponse = cdataConnectorToJira->getDashboardById("10000");
+    record {|Dashboards value;|}|error? getObjectResponse = cdataJiraClient->getDashboardById("10000");
     if (getObjectResponse is record {|Dashboards value;|}) {
         io:println("Selected Dashboard ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1235,7 +1235,7 @@ function getDashboardById() {
     enable: true
 }
 function getEpics() {
-    stream<Epics, error> objectStreamResponse = cdataConnectorToJira->getEpics();
+    stream<Epics, error> objectStreamResponse = cdataJiraClient->getEpics();
     error? e = objectStreamResponse.forEach(isolated function(Epics jobject) {
         io:println("Epics details: ", jobject);
     });
@@ -1249,7 +1249,7 @@ function getEpics() {
     enable: true
 }
 function getEpicsOfBoard() {
-    stream<Epics, error> objectStreamResponse = cdataConnectorToJira->getEpicsOfBoard(1);
+    stream<Epics, error> objectStreamResponse = cdataJiraClient->getEpicsOfBoard(1);
     error? e = objectStreamResponse.forEach(isolated function(Epics jobject) {
         io:println("Epics details: ", jobject);
     });
@@ -1262,7 +1262,7 @@ function getEpicsOfBoard() {
     enable: false
 }
 function getEpicById() {
-    record {|Epics value;|}|error? getObjectResponse = cdataConnectorToJira->getEpicById(10001);
+    record {|Epics value;|}|error? getObjectResponse = cdataJiraClient->getEpicById(10001);
     if (getObjectResponse is record {|Epics value;|}) {
         io:println("Selected Epic ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1276,7 +1276,7 @@ function getEpicById() {
     enable: false
 }
 function getEpicByKey() {
-    record {|Epics value;|}|error? getObjectResponse = cdataConnectorToJira->getEpicByKey("ROL-2");
+    record {|Epics value;|}|error? getObjectResponse = cdataJiraClient->getEpicByKey("ROL-2");
     if (getObjectResponse is record {|Epics value;|}) {
         io:println("Selected Epic ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1293,7 +1293,7 @@ function getEpicByKey() {
     enable: true
 }
 function getFavouriteFilters() {
-    stream<FavouriteFilters, error> objectStreamResponse = cdataConnectorToJira->getFavouriteFilters();
+    stream<FavouriteFilters, error> objectStreamResponse = cdataJiraClient->getFavouriteFilters();
     error? e = objectStreamResponse.forEach(isolated function(FavouriteFilters jobject) {
         io:println("FavouriteFilters details: ", jobject);
     });
@@ -1309,7 +1309,7 @@ function getFavouriteFilters() {
     enable: true
 }
 function getFields() {
-    stream<Fields, error> objectStreamResponse = cdataConnectorToJira->getFields();
+    stream<Fields, error> objectStreamResponse = cdataJiraClient->getFields();
     error? e = objectStreamResponse.forEach(isolated function(Fields jobject) {
         io:println("Fields details: ", jobject);
     });
@@ -1325,7 +1325,7 @@ function getFields() {
     enable: true
 }
 function getFilters() {
-    stream<Filters, error> objectStreamResponse = cdataConnectorToJira->getFilters();
+    stream<Filters, error> objectStreamResponse = cdataJiraClient->getFilters();
     error? e = objectStreamResponse.forEach(isolated function(Filters jobject) {
         io:println("Filters details: ", jobject);
     });
@@ -1339,7 +1339,7 @@ function getFilters() {
     enable: true
 }
 function getFilterById() {
-    record {|Filters value;|}|error? getObjectResponse = cdataConnectorToJira->getFilterById("10001");
+    record {|Filters value;|}|error? getObjectResponse = cdataJiraClient->getFilterById("10001");
     if (getObjectResponse is record {|Filters value;|}) {
         io:println("Selected Filter ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1355,7 +1355,7 @@ function getFilterById() {
     enable: true
 }
 function getGroups() {
-    stream<Groups, error> objectStreamResponse = cdataConnectorToJira->getGroups();
+    stream<Groups, error> objectStreamResponse = cdataJiraClient->getGroups();
     error? e = objectStreamResponse.forEach(isolated function(Groups jobject) {
         io:println("Groups details: ", jobject);
     });
@@ -1371,7 +1371,7 @@ function getGroups() {
     enable: true
 }
 function getIssueAffectedVersions() {
-    stream<IssueAffectedVersions, error> objectStreamResponse = cdataConnectorToJira->getIssueAffectedVersions();
+    stream<IssueAffectedVersions, error> objectStreamResponse = cdataJiraClient->getIssueAffectedVersions();
     error? e = objectStreamResponse.forEach(isolated function(IssueAffectedVersions jobject) {
         io:println("IssueAffectedVersions details: ", jobject);
     });
@@ -1387,7 +1387,7 @@ function getIssueAffectedVersions() {
     enable: true
 }
 function getIssueChangelogs() {
-    stream<IssueChangelogs, error> objectStreamResponse = cdataConnectorToJira->getIssueChangelogs();
+    stream<IssueChangelogs, error> objectStreamResponse = cdataJiraClient->getIssueChangelogs();
     error? e = objectStreamResponse.forEach(isolated function(IssueChangelogs jobject) {
         io:println("IssueChangelogs details: ", jobject);
     });
@@ -1403,7 +1403,7 @@ function getIssueChangelogs() {
     enable: true
 }
 function getIssueComponents() {
-    stream<IssueComponents, error> objectStreamResponse = cdataConnectorToJira->getIssueComponents();
+    stream<IssueComponents, error> objectStreamResponse = cdataJiraClient->getIssueComponents();
     error? e = objectStreamResponse.forEach(isolated function(IssueComponents jobject) {
         io:println("IssueComponents details: ", jobject);
     });
@@ -1420,7 +1420,7 @@ function getIssueComponents() {
 }
 function getIssueCustomFieldOptions() {
     stream<IssueCustomFieldOptions, error> objectStreamResponse = 
-        cdataConnectorToJira->getIssueCustomFieldOptions(10020);
+        cdataJiraClient->getIssueCustomFieldOptions(10020);
     error? e = objectStreamResponse.forEach(isolated function(IssueCustomFieldOptions jobject) {
         io:println("IssueCustomFieldOptions details: ", jobject);
     });
@@ -1436,7 +1436,7 @@ function getIssueCustomFieldOptions() {
     enable: true
 }
 function getIssueCustomFields() {
-    stream<IssueCustomFields, error> objectStreamResponse = cdataConnectorToJira->getIssueCustomFields();
+    stream<IssueCustomFields, error> objectStreamResponse = cdataJiraClient->getIssueCustomFields();
     error? e = objectStreamResponse.forEach(isolated function(IssueCustomFields jobject) {
         io:println("IssueCustomFields details: ", jobject);
     });
@@ -1452,7 +1452,7 @@ function getIssueCustomFields() {
     enable: true
 }
 function getIssueFixVersions() {
-    stream<IssueFixVersions, error> objectStreamResponse = cdataConnectorToJira->getIssueFixVersions();
+    stream<IssueFixVersions, error> objectStreamResponse = cdataJiraClient->getIssueFixVersions();
     error? e = objectStreamResponse.forEach(isolated function(IssueFixVersions jobject) {
         io:println("IssueFixVersions details: ", jobject);
     });
@@ -1468,7 +1468,7 @@ function getIssueFixVersions() {
     enable: true
 }
 function getIssueLinks() {
-    stream<IssueLinks, error> objectStreamResponse = cdataConnectorToJira->getIssueLinks();
+    stream<IssueLinks, error> objectStreamResponse = cdataJiraClient->getIssueLinks();
     error? e = objectStreamResponse.forEach(isolated function(IssueLinks jobject) {
         io:println("IssueLinks details: ", jobject);
     });
@@ -1484,7 +1484,7 @@ function getIssueLinks() {
     enable: true
 }
 function getIssueLinkTypes() {
-    stream<IssueLinkTypes, error> objectStreamResponse = cdataConnectorToJira->getIssueLinkTypes();
+    stream<IssueLinkTypes, error> objectStreamResponse = cdataJiraClient->getIssueLinkTypes();
     error? e = objectStreamResponse.forEach(isolated function(IssueLinkTypes jobject) {
         io:println("IssueLinkTypes details: ", jobject);
     });
@@ -1498,7 +1498,7 @@ function getIssueLinkTypes() {
     enable: true
 }
 function getIssueLinkTypesById() {
-    record {|IssueLinkTypes value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueLinkTypesById("10000");
+    record {|IssueLinkTypes value;|}|error? getObjectResponse = cdataJiraClient->getIssueLinkTypesById("10000");
     if (getObjectResponse is record {|IssueLinkTypes value;|}) {
         io:println("Selected IssueLinkType ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1516,7 +1516,7 @@ function getIssueLinkTypesById() {
 }
 function getIssueNavigatorDefaultColumns() {
     stream<IssueNavigatorDefaultColumns, error> objectStreamResponse = 
-        cdataConnectorToJira->getIssueNavigatorDefaultColumns();
+        cdataJiraClient->getIssueNavigatorDefaultColumns();
     error? e = objectStreamResponse.forEach(isolated function(IssueNavigatorDefaultColumns jobject) {
         io:println("IssueNavigatorDefaultColumns details: ", jobject);
     });
@@ -1532,7 +1532,7 @@ function getIssueNavigatorDefaultColumns() {
     enable: true
 }
 function getIssuePriorities() {
-    stream<IssuePriorities, error> objectStreamResponse = cdataConnectorToJira->getIssuePriorities();
+    stream<IssuePriorities, error> objectStreamResponse = cdataJiraClient->getIssuePriorities();
     error? e = objectStreamResponse.forEach(isolated function(IssuePriorities jobject) {
         io:println("IssuePriorities details: ", jobject);
     });
@@ -1546,7 +1546,7 @@ function getIssuePriorities() {
     enable: true
 }
 function getIssuePriorityById() {
-    record {|IssuePriorities value;|}|error? getObjectResponse = cdataConnectorToJira->getIssuePriorityById("1");
+    record {|IssuePriorities value;|}|error? getObjectResponse = cdataJiraClient->getIssuePriorityById("1");
     if (getObjectResponse is record {|IssuePriorities value;|}) {
         io:println("Selected IssuePriority ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1563,7 +1563,7 @@ function getIssuePriorityById() {
     enable: true
 }
 function getIssueResolutions() {
-    stream<IssueResolutions, error> objectStreamResponse = cdataConnectorToJira->getIssueResolutions();
+    stream<IssueResolutions, error> objectStreamResponse = cdataJiraClient->getIssueResolutions();
     error? e = objectStreamResponse.forEach(isolated function(IssueResolutions jobject) {
         io:println("IssueResolutions details: ", jobject);
     });
@@ -1577,7 +1577,7 @@ function getIssueResolutions() {
     enable: true
 }
 function getIssueResolutionById() {
-    record {|IssueResolutions value;|}|error? getObjectResponse = cdataConnectorToJira->getIssueResolutionById("10000");
+    record {|IssueResolutions value;|}|error? getObjectResponse = cdataJiraClient->getIssueResolutionById("10000");
     if (getObjectResponse is record {|IssueResolutions value;|}) {
         io:println("Selected IssueResolution ID: ", getObjectResponse.value["Id"]);
     } else if (getObjectResponse is ()) {
@@ -1594,7 +1594,7 @@ function getIssueResolutionById() {
     enable: true
 }
 function getIssueSubtasks() {
-    stream<IssueSubtasks, error> objectStreamResponse = cdataConnectorToJira->getIssueSubtasks();
+    stream<IssueSubtasks, error> objectStreamResponse = cdataJiraClient->getIssueSubtasks();
     error? e = objectStreamResponse.forEach(isolated function(IssueSubtasks jobject) {
         io:println("IssueSubtasks details: ", jobject);
     });
@@ -1608,7 +1608,7 @@ function getIssueSubtasks() {
     enable: true
 }
 function getIssueSubtasksByIssueId() {
-    stream<IssueSubtasks, error> objectStreamResponse = cdataConnectorToJira->getIssueSubtasksByIssueId(10109);
+    stream<IssueSubtasks, error> objectStreamResponse = cdataJiraClient->getIssueSubtasksByIssueId(10109);
     error? e = objectStreamResponse.forEach(isolated function(IssueSubtasks jobject) {
         io:println("IssueSubtasks details: ", jobject);
     });
@@ -1624,7 +1624,7 @@ function getIssueSubtasksByIssueId() {
     enable: true
 }
 function getIssueTransitions() {
-    stream<IssueTransitions, error> objectStreamResponse = cdataConnectorToJira->getIssueTransitions();
+    stream<IssueTransitions, error> objectStreamResponse = cdataJiraClient->getIssueTransitions();
     error? e = objectStreamResponse.forEach(isolated function(IssueTransitions jobject) {
         io:println("IssueTransitions details: ", jobject);
     });
@@ -1639,7 +1639,7 @@ function getIssueTransitions() {
     enable: false
 }
 function getMyPermissions() {
-    stream<MyPermissions, error> objectStreamResponse = cdataConnectorToJira->getMyPermissions();
+    stream<MyPermissions, error> objectStreamResponse = cdataJiraClient->getMyPermissions();
     error? e = objectStreamResponse.forEach(isolated function(MyPermissions jobject) {
         io:println("MyPermissions details: ", jobject);
     });
@@ -1655,7 +1655,7 @@ function getMyPermissions() {
     enable: true
 }
 function getPermissions() {
-    stream<Permissions, error> objectStreamResponse = cdataConnectorToJira->getPermissions();
+    stream<Permissions, error> objectStreamResponse = cdataJiraClient->getPermissions();
     error? e = objectStreamResponse.forEach(isolated function(Permissions jobject) {
         io:println("Permissions details: ", jobject);
     });
@@ -1671,7 +1671,7 @@ function getPermissions() {
     enable: true
 }
 function getProjectCategories() {
-    stream<ProjectCategories, error> objectStreamResponse = cdataConnectorToJira->getProjectCategories();
+    stream<ProjectCategories, error> objectStreamResponse = cdataJiraClient->getProjectCategories();
     error? e = objectStreamResponse.forEach(isolated function(ProjectCategories jobject) {
         io:println("ProjectCategories details: ", jobject);
     });
@@ -1687,7 +1687,7 @@ function getProjectCategories() {
     enable: true
 }
 function getProjectRoles() {
-    stream<ProjectRoles, error> objectStreamResponse = cdataConnectorToJira->getProjectRoles();
+    stream<ProjectRoles, error> objectStreamResponse = cdataJiraClient->getProjectRoles();
     error? e = objectStreamResponse.forEach(isolated function(ProjectRoles jobject) {
         io:println("ProjectRoles details: ", jobject);
     });
@@ -1701,7 +1701,7 @@ function getProjectRoles() {
     enable: true
 }
 function getProjectRolesByProjectId() {
-    stream<ProjectRoles, error> objectStreamResponse = cdataConnectorToJira->getProjectRolesByProjectId(10000);
+    stream<ProjectRoles, error> objectStreamResponse = cdataJiraClient->getProjectRolesByProjectId(10000);
     error? e = objectStreamResponse.forEach(isolated function(ProjectRoles jobject) {
         io:println("ProjectRoles details: ", jobject);
     });
@@ -1717,7 +1717,7 @@ function getProjectRolesByProjectId() {
     enable: true
 }
 function getProjectsIssueTypes() {
-    stream<ProjectsIssueTypes, error> objectStreamResponse = cdataConnectorToJira->getProjectsIssueTypes();
+    stream<ProjectsIssueTypes, error> objectStreamResponse = cdataJiraClient->getProjectsIssueTypes();
     error? e = objectStreamResponse.forEach(isolated function(ProjectsIssueTypes jobject) {
         io:println("ProjectsIssueTypes details: ", jobject);
     });
@@ -1733,7 +1733,7 @@ function getProjectsIssueTypes() {
     enable: true
 }
 function getProjectTypes() {
-    stream<ProjectTypes, error> objectStreamResponse = cdataConnectorToJira->getProjectTypes();
+    stream<ProjectTypes, error> objectStreamResponse = cdataJiraClient->getProjectTypes();
     error? e = objectStreamResponse.forEach(isolated function(ProjectTypes jobject) {
         io:println("ProjectTypes details: ", jobject);
     });
@@ -1747,7 +1747,7 @@ function getProjectTypes() {
     enable: true
 }
 function getProjectTypesByKey() {
-    record {|ProjectTypes value;|}|error? getObjectResponse = cdataConnectorToJira->getProjectTypesByKey("software");
+    record {|ProjectTypes value;|}|error? getObjectResponse = cdataJiraClient->getProjectTypesByKey("software");
     if (getObjectResponse is record {|ProjectTypes value;|}) {
         io:println("Selected ProjectType Key: ", getObjectResponse.value["Key"]);
     } else if (getObjectResponse is ()) {
@@ -1763,7 +1763,7 @@ function getProjectTypesByKey() {
     enable: false
 }
 function getRoleDetails() {
-    stream<RoleDetails, error> objectStreamResponse = cdataConnectorToJira->getRoleDetails();
+    stream<RoleDetails, error> objectStreamResponse = cdataJiraClient->getRoleDetails();
     error? e = objectStreamResponse.forEach(isolated function(RoleDetails jobject) {
         io:println("RoleDetails details: ", jobject);
     });
@@ -1779,7 +1779,7 @@ function getRoleDetails() {
     enable: true
 }
 function getSecurityLevels() {
-    stream<SecurityLevels, error> objectStreamResponse = cdataConnectorToJira->getSecurityLevels();
+    stream<SecurityLevels, error> objectStreamResponse = cdataJiraClient->getSecurityLevels();
     error? e = objectStreamResponse.forEach(isolated function(SecurityLevels jobject) {
         io:println("SecurityLevels details: ", jobject);
     });
@@ -1795,7 +1795,7 @@ function getSecurityLevels() {
     enable: true
 }
 function getSecuritySchemes() {
-    stream<SecuritySchemes, error> objectStreamResponse = cdataConnectorToJira->getSecuritySchemes();
+    stream<SecuritySchemes, error> objectStreamResponse = cdataJiraClient->getSecuritySchemes();
     error? e = objectStreamResponse.forEach(isolated function(SecuritySchemes jobject) {
         io:println("SecuritySchemes details: ", jobject);
     });
@@ -1811,7 +1811,7 @@ function getSecuritySchemes() {
     enable: true
 }
 function getSprintIssues() {
-    stream<SprintIssues, error> objectStreamResponse = cdataConnectorToJira->getSprintIssues();
+    stream<SprintIssues, error> objectStreamResponse = cdataJiraClient->getSprintIssues();
     error? e = objectStreamResponse.forEach(isolated function(SprintIssues jobject) {
         io:println("SprintIssues details: ", jobject);
     });
@@ -1827,7 +1827,7 @@ function getSprintIssues() {
     enable: true
 }
 function getStatuses() {
-    stream<Statuses, error> objectStreamResponse = cdataConnectorToJira->getStatuses();
+    stream<Statuses, error> objectStreamResponse = cdataJiraClient->getStatuses();
     error? e = objectStreamResponse.forEach(isolated function(Statuses jobject) {
         io:println("Statuses details: ", jobject);
     });
@@ -1843,7 +1843,7 @@ function getStatuses() {
     enable: true
 }
 function getTimeTrackingProviders() {
-    stream<TimeTrackingProviders, error> objectStreamResponse = cdataConnectorToJira->getTimeTrackingProviders();
+    stream<TimeTrackingProviders, error> objectStreamResponse = cdataJiraClient->getTimeTrackingProviders();
     error? e = objectStreamResponse.forEach(isolated function(TimeTrackingProviders jobject) {
         io:println("TimeTrackingProviders details: ", jobject);
     });
@@ -1859,7 +1859,7 @@ function getTimeTrackingProviders() {
     enable: true
 }
 function getVotes() {
-    stream<Votes, error> objectStreamResponse = cdataConnectorToJira->getVotesByIssueKey("ROL-110");
+    stream<Votes, error> objectStreamResponse = cdataJiraClient->getVotesByIssueKey("ROL-110");
     error? e = objectStreamResponse.forEach(isolated function(Votes jobject) {
         io:println("Votes details: ", jobject);
     });
@@ -1875,7 +1875,7 @@ function getVotes() {
     enable: true
 }
 function getWatchers() {
-    stream<Watchers, error> objectStreamResponse = cdataConnectorToJira->getWatchersByIssueKey("ROL-110");
+    stream<Watchers, error> objectStreamResponse = cdataJiraClient->getWatchersByIssueKey("ROL-110");
     error? e = objectStreamResponse.forEach(isolated function(Watchers jobject) {
         io:println("Watchers details: ", jobject);
     });
@@ -1891,7 +1891,7 @@ function getWatchers() {
     enable: true
 }
 function getWorkflows() {
-    stream<Workflows, error> objectStreamResponse = cdataConnectorToJira->getWorkflows();
+    stream<Workflows, error> objectStreamResponse = cdataJiraClient->getWorkflows();
     error? e = objectStreamResponse.forEach(isolated function(Workflows jobject) {
         io:println("Workflows details: ", jobject);
     });
@@ -1907,7 +1907,7 @@ function getWorkflows() {
     enable: true
 }
 function getWorkflowStatusCategories() {
-    stream<WorkflowStatusCategories, error> objectStreamResponse = cdataConnectorToJira->getWorkflowStatusCategories();
+    stream<WorkflowStatusCategories, error> objectStreamResponse = cdataJiraClient->getWorkflowStatusCategories();
     error? e = objectStreamResponse.forEach(isolated function(WorkflowStatusCategories jobject) {
         io:println("WorkflowStatusCategories details: ", jobject);
     });
@@ -1923,7 +1923,7 @@ function getWorkflowStatusCategories() {
     enable: true
 }
 function getWorkflowStatuses() {
-    stream<WorkflowStatuses, error> objectStreamResponse = cdataConnectorToJira->getWorkflowStatuses();
+    stream<WorkflowStatuses, error> objectStreamResponse = cdataJiraClient->getWorkflowStatuses();
     error? e = objectStreamResponse.forEach(isolated function(WorkflowStatuses jobject) {
         io:println("WorkflowStatuses details: ", jobject);
     });
@@ -1941,7 +1941,7 @@ function getWorkflowStatuses() {
 }
 function uploadAttachment() {
     UploadAttachmentResponse|error? objectResponse = 
-        cdataConnectorToJira->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
+        cdataJiraClient->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
         fileName = "MyNote");
     if (objectResponse is UploadAttachmentResponse) {
         io:println("UploadAttachmentResponse details: ", objectResponse);
@@ -1960,7 +1960,7 @@ function uploadAttachment() {
 }
 function downloadAttachment() {
     DownloadAttachmentResponse|error? objectResponse = 
-        cdataConnectorToJira->downloadAttachment("10088", "/home/roland/Documents/Notes1/", "MyDownloadedNote", true);
+        cdataJiraClient->downloadAttachment("10088", "/home/roland/Documents/Notes1/", "MyDownloadedNote", true);
     if (objectResponse is DownloadAttachmentResponse) {
         io:println("DownloadAttachmentResponse details: ", objectResponse);
     } else if (objectResponse is ()) {
@@ -1977,7 +1977,7 @@ function downloadAttachment() {
     enable: true
 }
 function getTimeTrackingSettings() {
-    TimeTrackingSettings|error? objectResponse = cdataConnectorToJira->getTimeTrackingSettings();
+    TimeTrackingSettings|error? objectResponse = cdataJiraClient->getTimeTrackingSettings();
     if (objectResponse is TimeTrackingSettings) {
         io:println("TimeTrackingSettings details: ", objectResponse);
     } else if (objectResponse is ()) {
@@ -1990,7 +1990,7 @@ function getTimeTrackingSettings() {
 @test:AfterSuite { }
 function afterSuite() {
     io:println("Close the connection to Jira using CData Connector");
-    error? closeResponse = cdataConnectorToJira->close();
+    error? closeResponse = cdataJiraClient->close();
     if (closeResponse is sql:Error) {
         test:assertFail(closeResponse.message());
     }
