@@ -1332,3 +1332,11 @@ public type CreateCustomFieldResponse record {
     readonly string Key?;
     readonly string Name?;
 };
+
+# CreateSchema stored procedure result set representation in Jira.
+# Creates a schema file for the specified table or view.
+#
+# + Result - Returns Success or Failure
+public type CreateSchemaResponse record {
+    readonly string Result?;
+};

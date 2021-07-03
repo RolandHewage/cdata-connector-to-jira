@@ -1373,6 +1373,23 @@ public client class Client {
         return;
     }
 
+    // CreateSchema
+
+    isolated remote function createSchema(string tableName, string fileName) returns CreateSchemaResponse|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL CreateSchema(${tableName}, ${fileName})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [CreateSchemaResponse]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<CreateSchemaResponse, sql:Error> resultStream = 
+                <stream<CreateSchemaResponse, sql:Error>> result;
+            record {|CreateSchemaResponse value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
+        check retCall.close();
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
