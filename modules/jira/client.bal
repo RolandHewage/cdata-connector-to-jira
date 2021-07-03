@@ -1222,41 +1222,6 @@ public client class Client {
         return;
     }
 
-    // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
-    //                                           string? fileName = ()) returns stream<record {}, error>|error? {         
-    //     sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
-    //                                            ${fileLocation}, ${fileName})}`;
-    //     io:println(sqlQuery);
-    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
-    //     stream<record{}, error>? result = retCall.queryResult;
-    //     if !(result is ()) {
-    //         stream<record{}, sql:Error> userStream = <stream<record{}, sql:Error>> result;
-    //         return userStream;
-    //     } 
-    //     check retCall.close();
-    //     return result;
-    // }
-
-    // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
-    //                                           string? fileName = ()) returns (string|int)|error? {         
-    //     sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
-    //                                            ${fileLocation}, ${fileName})}`;
-    //     io:println(sqlQuery);
-    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
-    //     sql:ExecutionResult? result = retCall.executionResult;
-    //     check retCall.close();
-    //     return result?.lastInsertId;
-    // }
-
-    // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
-    //                                           string? fileName = ()) returns stream<record {}, error> {     
-    //     sql:ParameterizedQuery sqlQuery = `EXEC UploadAttachment IssueId = ${issueId}, IssueKey = ${issueKey}, 
-    //                                        FileLocation = ${fileLocation}, FileName = ${fileName}`;
-    //     io:println(sqlQuery);
-    //     stream<record {}, error> result = self.cdataClient->query(sqlQuery);
-    //     return result;
-    // }
-
     // DownloadAttachment
 
     isolated remote function downloadAttachment(string attachmentId, string fileLocation, string? fileName = (), 
@@ -1276,17 +1241,6 @@ public client class Client {
         return;
     }
 
-    // isolated remote function downloadAttachment(string attachmentId, string fileLocation, string? fileName = (), 
-    //                                             boolean? overwrite = ()) returns (string|int)|error? {         
-    //     sql:ParameterizedCallQuery sqlQuery = `{CALL DownloadAttachment(${attachmentId}, ${fileLocation}, 
-    //                                            ${fileName}, ${overwrite})}`;
-    //     io:println(sqlQuery);
-    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
-    //     sql:ExecutionResult? result = retCall.executionResult;
-    //     check retCall.close();
-    //     return result?.lastInsertId;
-    // }
-
     // GetTimeTrackingSettings
 
     isolated remote function getTimeTrackingSettings() returns TimeTrackingSettings|error? {         
@@ -1302,19 +1256,6 @@ public client class Client {
         check retCall.close();
         return;
     }
-
-    // isolated remote function getTimeTrackingSettings() returns stream<TimeTrackingSettings, error>|error? {
-    //     sql:ParameterizedCallQuery sqlQuery = `{CALL GetTimeTrackingSettings()}`;
-    //     io:println(sqlQuery);
-    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [TimeTrackingSettings]);
-    //     stream<record{}, sql:Error>? result = retCall.queryResult;
-    //     if !(result is ()) {
-    //         stream<TimeTrackingSettings, sql:Error> userStream = <stream<TimeTrackingSettings, sql:Error>> result;
-    //         return userStream;
-    //     } 
-    //     check retCall.close();
-    //     return;
-    // }
 
     // SetTimeTrackingSettings
 
