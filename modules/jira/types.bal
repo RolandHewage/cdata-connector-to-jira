@@ -1340,3 +1340,10 @@ public type CreateCustomFieldResponse record {
 public type CreateSchemaResponse record {
     readonly string Result?;
 };
+
+# SelectTimeTrackingProvider stored procedure result set representation in Jira. Selects a time tracking provider.
+#
+# + Success - This value shows whether the operation was successful or not
+public type SelectTimeTrackingProviderResponse record {
+    readonly string Success?;
+};

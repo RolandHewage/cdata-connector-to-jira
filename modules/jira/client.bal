@@ -1390,6 +1390,23 @@ public client class Client {
         return;
     }
 
+    // SelectTimeTrackingProvider
+
+    isolated remote function selectTimeTrackingProvider(string 'key) returns SelectTimeTrackingProviderResponse|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL SelectTimeTrackingProvider(${'key})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [SelectTimeTrackingProviderResponse]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<SelectTimeTrackingProviderResponse, sql:Error> resultStream = 
+                <stream<SelectTimeTrackingProviderResponse, sql:Error>> result;
+            record {|SelectTimeTrackingProviderResponse value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
+        check retCall.close();
+        return;
+    }
+
     isolated remote function close() returns error? {
         check self.cdataClient.close();
     }
