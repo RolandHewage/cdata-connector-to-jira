@@ -1320,3 +1320,15 @@ public type SetTimeTrackingSettingsResponse record {
 public type ChangeIssueStatusResponse record {
     readonly string Success?;
 };
+
+# CreateCustomField stored procedure result set representation in Jira.
+# Use this stored procedure to create a new custom field.
+#
+# + Id - Unique identifier of the new custom field
+# + Key - Unique identifier of the new custom field
+# + Name - Name of the new custom field
+public type CreateCustomFieldResponse record {
+    readonly string Id?;
+    readonly string Key?;
+    readonly string Name?;
+};

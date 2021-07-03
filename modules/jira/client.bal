@@ -1352,7 +1352,26 @@ public client class Client {
         } 
         check retCall.close();
         return;
-    }   
+    } 
+
+    // CreateCustomField
+
+    isolated remote function createCustomField(string name, string 'type, string searcherKey, string? description = ()) 
+                                               returns CreateCustomFieldResponse|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL CreateCustomField(${name}, ${description}, 
+                                               ${'type}, ${searcherKey})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [CreateCustomFieldResponse]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<CreateCustomFieldResponse, sql:Error> resultStream = 
+                <stream<CreateCustomFieldResponse, sql:Error>> result;
+            record {|CreateCustomFieldResponse value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
+        check retCall.close();
+        return;
+    }
 
     isolated remote function close() returns error? {
         check self.cdataClient.close();
