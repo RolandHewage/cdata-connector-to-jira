@@ -1205,27 +1205,48 @@ public client class Client {
 
     // UploadAttachment
 
+    isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
+                                              string? fileName = ()) returns UploadAttachmentResponse|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
+                                               ${fileLocation}, ${fileName})}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [UploadAttachmentResponse]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<UploadAttachmentResponse, sql:Error> resultStream = 
+                <stream<UploadAttachmentResponse, sql:Error>> result;
+            record {|UploadAttachmentResponse value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
+        check retCall.close();
+        return;
+    }
+
     // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
     //                                           string? fileName = ()) returns stream<record {}, error>|error? {         
     //     sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
     //                                            ${fileLocation}, ${fileName})}`;
     //     io:println(sqlQuery);
     //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
-    //     stream<record {}, error>? result = retCall.queryResult;
+    //     stream<record{}, error>? result = retCall.queryResult;
+    //     if !(result is ()) {
+    //         stream<record{}, sql:Error> userStream = <stream<record{}, sql:Error>> result;
+    //         return userStream;
+    //     } 
     //     check retCall.close();
     //     return result;
     // }
 
-    isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
-                                              string? fileName = ()) returns (string|int)|error? {         
-        sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
-                                               ${fileLocation}, ${fileName})}`;
-        io:println(sqlQuery);
-        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
-        sql:ExecutionResult? result = retCall.executionResult;
-        check retCall.close();
-        return result?.lastInsertId;
-    }
+    // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
+    //                                           string? fileName = ()) returns (string|int)|error? {         
+    //     sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
+    //                                            ${fileLocation}, ${fileName})}`;
+    //     io:println(sqlQuery);
+    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
+    //     sql:ExecutionResult? result = retCall.executionResult;
+    //     check retCall.close();
+    //     return result?.lastInsertId;
+    // }
 
     // isolated remote function uploadAttachment(string fileLocation, string? issueId = (), string? issueKey = (), 
     //                                           string? fileName = ()) returns stream<record {}, error> {     
@@ -1239,15 +1260,61 @@ public client class Client {
     // DownloadAttachment
 
     isolated remote function downloadAttachment(string attachmentId, string fileLocation, string? fileName = (), 
-                                                boolean? overwrite = ()) returns (string|int)|error? {         
+                                                boolean? overwrite = ()) returns DownloadAttachmentResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL DownloadAttachment(${attachmentId}, ${fileLocation}, 
                                                ${fileName}, ${overwrite})}`;
         io:println(sqlQuery);
-        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
-        sql:ExecutionResult? result = retCall.executionResult;
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [DownloadAttachmentResponse]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<DownloadAttachmentResponse, sql:Error> resultStream = 
+                <stream<DownloadAttachmentResponse, sql:Error>> result;
+            record {|DownloadAttachmentResponse value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
         check retCall.close();
-        return result?.lastInsertId;
+        return;
     }
+
+    // isolated remote function downloadAttachment(string attachmentId, string fileLocation, string? fileName = (), 
+    //                                             boolean? overwrite = ()) returns (string|int)|error? {         
+    //     sql:ParameterizedCallQuery sqlQuery = `{CALL DownloadAttachment(${attachmentId}, ${fileLocation}, 
+    //                                            ${fileName}, ${overwrite})}`;
+    //     io:println(sqlQuery);
+    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery);
+    //     sql:ExecutionResult? result = retCall.executionResult;
+    //     check retCall.close();
+    //     return result?.lastInsertId;
+    // }
+
+    // GetTimeTrackingSettings
+
+    isolated remote function getTimeTrackingSettings() returns TimeTrackingSettings|error? {         
+        sql:ParameterizedCallQuery sqlQuery = `{CALL GetTimeTrackingSettings()}`;
+        io:println(sqlQuery);
+        sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [TimeTrackingSettings]);
+        stream<record{}, error>? result = retCall.queryResult;
+        if !(result is ()) {
+            stream<TimeTrackingSettings, sql:Error> resultStream = <stream<TimeTrackingSettings, sql:Error>> result;
+            record {|TimeTrackingSettings value;|} nextElement = check resultStream.next();
+            return nextElement.value;
+        } 
+        check retCall.close();
+        return;
+    }
+
+    // isolated remote function getTimeTrackingSettings() returns stream<TimeTrackingSettings, error>|error? {
+    //     sql:ParameterizedCallQuery sqlQuery = `{CALL GetTimeTrackingSettings()}`;
+    //     io:println(sqlQuery);
+    //     sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [TimeTrackingSettings]);
+    //     stream<record{}, sql:Error>? result = retCall.queryResult;
+    //     if !(result is ()) {
+    //         stream<TimeTrackingSettings, sql:Error> userStream = <stream<TimeTrackingSettings, sql:Error>> result;
+    //         return userStream;
+    //     } 
+    //     check retCall.close();
+    //     return;
+    // }
 
     isolated remote function close() returns error? {
         check self.cdataClient.close();

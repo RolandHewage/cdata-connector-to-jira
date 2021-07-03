@@ -1277,3 +1277,32 @@ public type WorkflowStatuses record {
     readonly string URL?;
     readonly string IconUrl?;
 };
+
+# UploadAttachment stored procedure result set representation in Jira. Upload attachment on a specific Issue.
+#
+# + Success - This value shows whether the operation was successful or not  
+# + attachmentId - Attachment ID
+public type UploadAttachmentResponse record {
+    readonly string Success?;
+    readonly string attachmentId?;
+};
+
+# DownloadAttachment stored procedure result set representation in Jira. Download attachment by specifying its Id. 
+#
+# + Success - This value shows whether the operation was successful or not
+public type DownloadAttachmentResponse record {
+    readonly string Success?;
+};
+
+# GetTimeTrackingSettings stored procedure result set representation in Jira. The time tracking settings. 
+#
+# + WorkingHoursPerDay - The number of hours in a working day
+# + WorkingDaysPerWeek - The number of days in a working week
+# + TimeFormat - The format that will appear on an issue's Time Spent field
+# + DefaultUnit - The default unit of time applied to logged time
+public type TimeTrackingSettings record {
+    readonly int WorkingHoursPerDay?;
+    readonly float WorkingDaysPerWeek?;
+    readonly string TimeFormat?;
+    readonly string DefaultUnit?;
+};

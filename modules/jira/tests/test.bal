@@ -1936,6 +1936,22 @@ function getWorkflowStatuses() {
 
 // UploadAttachment
 
+@test:Config {
+    enable: true
+}
+function uploadAttachment() {
+    UploadAttachmentResponse|error? objectResponse = 
+        cdataConnectorToJira->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
+        fileName = "MyNote");
+    if (objectResponse is UploadAttachmentResponse) {
+        io:println("UploadAttachmentResponse details: ", objectResponse);
+    } else if (objectResponse is ()) {
+        io:println("Empty response");
+    } else {
+        test:assertFail(objectResponse.message());
+    } 
+}
+
 // @test:Config {
 //     enable: true
 // }
@@ -1957,22 +1973,22 @@ function getWorkflowStatuses() {
 //     } 
 // }
 
-@test:Config {
-    dependsOn: [getWorkflowStatuses],
-    enable: true
-}
-function uploadAttachment() {
-    (string|int)|error? objectResponse = 
-        cdataConnectorToJira->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
-        fileName = "MyNote");
-    if (objectResponse is (string|int)) {
-        io:println("UploadAttachment last insert ID: ", objectResponse);
-    } else if (objectResponse is ()) {
-        io:println("Empty response");
-    } else {
-        test:assertFail(objectResponse.message());
-    } 
-}
+// @test:Config {
+//     dependsOn: [getWorkflowStatuses],
+//     enable: true
+// }
+// function uploadAttachment() {
+//     (string|int)|error? objectResponse = 
+//         cdataConnectorToJira->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
+//         fileName = "MyNote");
+//     if (objectResponse is (string|int)) {
+//         io:println("UploadAttachment last insert ID: ", objectResponse);
+//     } else if (objectResponse is ()) {
+//         io:println("Empty response");
+//     } else {
+//         test:assertFail(objectResponse.message());
+//     } 
+// }
 
 // @test:Config {
 //     enable: true
@@ -1988,21 +2004,75 @@ function uploadAttachment() {
 //     }
 // }
 
+// DownloadAttachment
+
 @test:Config {
     dependsOn: [uploadAttachment],
     enable: true
 }
 function downloadAttachment() {
-    (string|int)|error? objectResponse = 
+    DownloadAttachmentResponse|error? objectResponse = 
         cdataConnectorToJira->downloadAttachment("10088", "/home/roland/Documents/Notes1/", "MyDownloadedNote", true);
-    if (objectResponse is (string|int)) {
-        io:println("DownloadAttachment last insert ID: ", objectResponse);
+    if (objectResponse is DownloadAttachmentResponse) {
+        io:println("DownloadAttachmentResponse details: ", objectResponse);
     } else if (objectResponse is ()) {
         io:println("Empty response");
     } else {
         test:assertFail(objectResponse.message());
     } 
 }
+
+// @test:Config {
+//     dependsOn: [uploadAttachment],
+//     enable: true
+// }
+// function downloadAttachment() {
+//     (string|int)|error? objectResponse = 
+//         cdataConnectorToJira->downloadAttachment("10088", "/home/roland/Documents/Notes1/", "MyDownloadedNote", true);
+//     if (objectResponse is (string|int)) {
+//         io:println("DownloadAttachment last insert ID: ", objectResponse);
+//     } else if (objectResponse is ()) {
+//         io:println("Empty response");
+//     } else {
+//         test:assertFail(objectResponse.message());
+//     } 
+// }
+
+// GetTimeTrackingSettings
+
+@test:Config {
+    dependsOn: [downloadAttachment],
+    enable: true
+}
+function getTimeTrackingSettings() {
+    TimeTrackingSettings|error? objectResponse = cdataConnectorToJira->getTimeTrackingSettings();
+    if (objectResponse is TimeTrackingSettings) {
+        io:println("TimeTrackingSettings details: ", objectResponse);
+    } else if (objectResponse is ()) {
+        io:println("Empty response");
+    } else {
+        test:assertFail(objectResponse.message());
+    } 
+}
+
+// @test:Config {
+//     enable: true
+// }
+// function getTimeTrackingSettings() {
+//     stream<TimeTrackingSettings, error>|error? objectStreamResponse = cdataConnectorToJira->getTimeTrackingSettings();
+//     if (objectStreamResponse is stream<TimeTrackingSettings, error>) {
+//         error? e = objectStreamResponse.forEach(isolated function(TimeTrackingSettings jobject) {
+//             io:println("TimeTrackingSettings details: ", jobject);
+//         });
+//         if (e is error) {
+//             test:assertFail(e.message());
+//         }
+//     } else if (objectStreamResponse is ()) {
+//         io:println("Empty response");
+//     } else {
+//         test:assertFail(objectStreamResponse.message());
+//     } 
+// }
 
 @test:AfterSuite { }
 function afterSuite() {
