@@ -25,6 +25,7 @@ public type CommonConfig record {
     *Schema;
     *Caching;
     *Miscellaneous;
+    *Pooling;
 };
 
 // Connection Properties
@@ -242,6 +243,22 @@ public type Miscellaneous record {
     string timezone?;
     boolean useConnectionPooling?;
     boolean useDefaultOrderBy?;
+};
+
+# Represents the properties which are used to configure DB connection pool.
+#
+# + enablePooling - Enable configuring connection pooling properties 
+# + maxOpenConnections - The maximum number of open connections that the pool is allowed to have, including both 
+#                        idle and in-use connections. Default value is 15
+# + maxConnectionLifeTime - The maximum lifetime (in seconds) of a connection in the pool. 
+#                           Default value is 1800 seconds (30 minutes)
+# + minIdleConnections - The minimum number of idle connections that pool tries to maintain in the pool. 
+#                        Default is the same as maxOpenConnections
+public type Pooling record {
+    boolean enablePooling?;
+    int maxOpenConnections?;
+    decimal maxConnectionLifeTime?;
+    int minIdleConnections?;
 };
 
 // OAuth Connection String Options

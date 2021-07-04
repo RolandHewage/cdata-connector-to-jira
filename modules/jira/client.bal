@@ -21,11 +21,12 @@ import cdata;
 # CData Client connector to Jira.  
 public client class Client {
     private cdata:Client cdataClient;
-    private sql:ConnectionPool connPool;
+    private sql:ConnectionPool? connectionPool;
 
     public isolated function init(JiraConfig configuration) returns error? {
         string jdbcUrl = generateJdbcUrl(configuration);
-        self.cdataClient = check new (jdbcUrl);
+        self.connectionPool = handleConnectionPooling(configuration);
+        self.cdataClient = check new (jdbcUrl, self.connectionPool);
     }
 
     // Projects

@@ -20,9 +20,10 @@ import ballerinax/java.jdbc;
 # CData Client connector.  
 public client class Client {
     private jdbc:Client dbClient;
+    private sql:ConnectionPool? connPool;
 
-    public isolated function init(string jdbcUrl) returns error? {
-        self.dbClient = check new (jdbcUrl);
+    public isolated function init(string jdbcUrl, sql:ConnectionPool? connectionPool = ()) returns sql:Error? {
+        self.dbClient = check new (jdbcUrl, connectionPool = connectionPool);
     }
 
     # Queries the database with the provided query and returns the result as a stream.
@@ -73,7 +74,7 @@ public client class Client {
         return self.dbClient->call(sqlQuery, rowTypes);
     }
 
-    public isolated function close() returns error? {
+    public isolated function close() returns sql:Error? {
         check self.dbClient.close();
     }
 } 

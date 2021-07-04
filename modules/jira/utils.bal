@@ -15,6 +15,7 @@
 // under the License.
 
 import cdata;
+import ballerina/sql;
 
 isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     string jdbcUrl = "jdbc:cdata:jira:";
@@ -22,11 +23,22 @@ isolated function generateJdbcUrl(JiraConfig configuration) returns string {
         jdbcUrl = jdbcUrl + cdata:handleProperties("User", configuration.basicAuth?.hostBasicAuth.user);
         jdbcUrl = jdbcUrl + cdata:handleProperties("APIToken", configuration.basicAuth?.hostBasicAuth?.apiToken);
         jdbcUrl = jdbcUrl + cdata:handleProperties("Url", configuration.basicAuth.url);
-    }
-    if (configuration.basicAuth.hostBasicAuth is ServerBasicAuth) {
+    } else if (configuration.basicAuth.hostBasicAuth is ServerBasicAuth) {
         jdbcUrl = jdbcUrl + cdata:handleProperties("User", configuration.basicAuth?.hostBasicAuth.user);
         jdbcUrl = jdbcUrl + cdata:handleProperties("Password", configuration.basicAuth?.hostBasicAuth?.password);
         jdbcUrl = jdbcUrl + cdata:handleProperties("Url", configuration.basicAuth.url);
     }
     return cdata:generateJdbcUrl(jdbcUrl, configuration);
+}
+
+isolated function handleConnectionPooling(JiraConfig configuration) returns sql:ConnectionPool? {
+    if (configuration?.enablePooling is true) {
+        sql:ConnectionPool connPool = {
+            maxOpenConnections: configuration?.maxOpenConnections ?: 15,
+            maxConnectionLifeTime: configuration?.maxConnectionLifeTime ?: 1800,
+            minIdleConnections: configuration?.minIdleConnections ?: 15
+        };
+        return connPool;
+    }
+    return;
 }

@@ -47,7 +47,9 @@ JiraBasicAuth basicAuth = {
 };
 
 JiraConfig config = {
-    basicAuth: basicAuth
+    basicAuth: basicAuth,
+    enablePooling: true,
+    maxOpenConnections: 30
 };
 
 Client cdataJiraClient = check new (config);
@@ -1346,6 +1348,7 @@ function getFilterById() {
 // Groups
 
 @test:Config {
+    dependsOn: [getFilterById],
     enable: true
 }
 function getGroups() {
@@ -1931,6 +1934,7 @@ function getWorkflowStatuses() {
 // UploadAttachment
 
 @test:Config {
+    dependsOn: [getWorkflowStatuses],
     enable: true
 }
 function uploadAttachment() {
