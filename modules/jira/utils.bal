@@ -15,8 +15,6 @@
 // under the License.
 
 import cdata;
-// import ballerina/sql;
-// import ballerinax/java.jdbc;
 
 isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     string jdbcUrl = "jdbc:cdata:jira:";
@@ -31,26 +29,3 @@ isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     }
     return jdbcUrl;
 }
-
-// isolated function handleConnectionPooling(JiraConfig configuration) returns sql:ConnectionPool? {
-//     if (configuration?.pooling?.enablePooling is true) {
-//         sql:ConnectionPool connPool = {
-//             maxOpenConnections: configuration?.pooling?.maxOpenConnections ?: 15,
-//             maxConnectionLifeTime: configuration?.pooling?.maxConnectionLifeTime ?: 1800,
-//             minIdleConnections: configuration?.pooling?.minIdleConnections ?: 15
-//         };
-//         return connPool;
-//     }
-//     return;
-// }
-
-// isolated function handleOptions(JiraConfig configuration) returns jdbc:Options? {
-//     if !(configuration?.commonConfig is ()) {
-//         map<anydata> commonConfigMap = <map<anydata>>configuration?.commonConfig;
-//         jdbc:Options options = {
-//             properties: commonConfigMap
-//         };
-//         return options;
-//     }
-//     return;
-// }
