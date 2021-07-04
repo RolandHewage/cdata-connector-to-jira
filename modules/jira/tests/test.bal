@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
+import ballerina/log;
 import ballerina/os;
 import ballerina/sql;
 import ballerina/test;
@@ -64,7 +64,7 @@ Client cdataJiraClient = check new (config);
 function getProjects() {
     stream<Projects, error> objectStreamResponse = cdataJiraClient->getProjects();
     error? e = objectStreamResponse.forEach(isolated function(Projects jobject) {
-        io:println("Project details: ", jobject);
+        log:printInfo("Project details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -86,7 +86,7 @@ function createProject() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Project ID: ", createObjectResponse);
+        log:printInfo("Created Project ID: " + createObjectResponse.toString());
         projectId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -100,10 +100,10 @@ function createProject() {
 function getProjectById() {
     Projects|error? getObjectResponse = cdataJiraClient->getProjectById(<int> projectId);
     if (getObjectResponse is Projects) {
-        io:println("Selected Project ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Project ID: " + getObjectResponse?.Id.toString());
         projectKey = <string> getObjectResponse?.Key;
     } else if (getObjectResponse is ()) {
-        io:println("Project table is empty");
+        log:printInfo("Project table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -121,7 +121,7 @@ function updateProjectById() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectById(project);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Project ID: ", updateRecordResponse);
+        log:printInfo("Updated Project ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -139,7 +139,7 @@ function updateProjectByKey() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectByKey(project);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Project ID: ", updateRecordResponse);
+        log:printInfo("Updated Project ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -152,7 +152,7 @@ function updateProjectByKey() {
 function deleteProjectById() {
     error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project ID: ", projectId);
+        log:printInfo("Deleted Project ID: " + projectId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -165,7 +165,7 @@ function deleteProjectById() {
 function deleteProjectByKey() {
     error? deleteAccountResponse = cdataJiraClient->deleteProjectByKey(<string> projectKey);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project ID: ", projectId);
+        log:printInfo("Deleted Project ID: " + projectId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -188,7 +188,7 @@ function createProject_PC() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Project ID: ", createObjectResponse);
+        log:printInfo("Created Project ID: " + createObjectResponse.toString());
         projectId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -207,7 +207,7 @@ function createProjectComponent() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createProjectComponent(projectComponent);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Project Component ID: ", createObjectResponse);
+        log:printInfo("Created Project Component ID: " + createObjectResponse.toString());
         projectComponentId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -221,7 +221,7 @@ function createProjectComponent() {
 function getProjectComponents() {
     stream<ProjectComponents, error> objectStreamResponse = cdataJiraClient->getProjectComponents();
     error? e = objectStreamResponse.forEach(isolated function(ProjectComponents jobject) {
-        io:println("Project Components details: ", jobject);
+        log:printInfo("Project Components details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -235,11 +235,11 @@ function getProjectComponents() {
 function getProjectComponentById() {
     ProjectComponents|error? getObjectResponse = cdataJiraClient->getProjectComponentById(<int> projectComponentId);
     if (getObjectResponse is ProjectComponents) {
-        io:println("Selected Project Component ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Project Component ID: " + getObjectResponse?.Id.toString());
         projectId = <int> getObjectResponse?.ProjectId;
         projectKey = <string> getObjectResponse?.ProjectKey;
     } else if (getObjectResponse is ()) {
-        io:println("Project Component table is empty");
+        log:printInfo("Project Component table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -252,11 +252,11 @@ function getProjectComponentById() {
 function getProjectComponentByProjectId() {
     ProjectComponents|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectId(<int> projectId);
     if (getObjectResponse is ProjectComponents) {
-        io:println("Selected Project Component ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Project Component ID: " + getObjectResponse?.Id.toString());
         projectId = <int> getObjectResponse?.ProjectId;
         projectKey = <string> getObjectResponse?.ProjectKey;
     } else if (getObjectResponse is ()) {
-        io:println("Project Component table is empty");
+        log:printInfo("Project Component table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -269,11 +269,11 @@ function getProjectComponentByProjectId() {
 function getProjectComponentByProjectKey() {
     ProjectComponents|error? getObjectResponse = cdataJiraClient->getProjectComponentByProjectKey(<string> projectKey);
     if (getObjectResponse is ProjectComponents) {
-        io:println("Selected Project Component ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Project Component ID: " + getObjectResponse?.Id.toString());
         projectId = <int> getObjectResponse?.ProjectId;
         projectKey = <string> getObjectResponse?.ProjectKey;
     } else if (getObjectResponse is ()) {
-        io:println("Project Component table is empty");
+        log:printInfo("Project Component table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -290,7 +290,7 @@ function updateProjectComponentById() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectComponentById(project);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Project Component ID: ", updateRecordResponse);
+        log:printInfo("Updated Project Component ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -303,7 +303,7 @@ function updateProjectComponentById() {
 function deleteProjectComponentById() {
     error? deleteAccountResponse = cdataJiraClient->deleteProjectComponentById(<int> projectComponentId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project Component ID: ", projectComponentId);
+        log:printInfo("Deleted Project Component ID: " + projectComponentId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -316,7 +316,7 @@ function deleteProjectComponentById() {
 function deleteProjectById_PC() {
     error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project ID: ", projectId);
+        log:printInfo("Deleted Project ID: " + projectId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -339,7 +339,7 @@ function createProject_PV() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Project ID: ", createObjectResponse);
+        log:printInfo("Created Project ID: " + createObjectResponse.toString());
         projectId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -360,7 +360,7 @@ function createProjectVersion() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createProjectVersion(projectVersion);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Project Version ID: ", createObjectResponse);
+        log:printInfo("Created Project Version ID: " + createObjectResponse.toString());
         projectVersionId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -374,7 +374,7 @@ function createProjectVersion() {
 function getProjectVersions() {
     stream<ProjectVersions, error> objectStreamResponse = cdataJiraClient->getProjectVersions();
     error? e = objectStreamResponse.forEach(isolated function(ProjectVersions jobject) {
-        io:println("Project Versions details: ", jobject);
+        log:printInfo("Project Versions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -388,10 +388,10 @@ function getProjectVersions() {
 function getProjectVersionById() {
     ProjectVersions|error? getObjectResponse = cdataJiraClient->getProjectVersionById(<int> projectVersionId);
     if (getObjectResponse is ProjectVersions) {
-        io:println("Selected Project Version ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Project Version ID: " + getObjectResponse?.Id.toString());
         projectId = <int> getObjectResponse?.ProjectId;
     } else if (getObjectResponse is ()) {
-        io:println("Project Version table is empty");
+        log:printInfo("Project Version table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -404,10 +404,10 @@ function getProjectVersionById() {
 function getProjectVersionByProjectId() {
     ProjectVersions|error? getObjectResponse = cdataJiraClient->getProjectVersionByProjectId(<int> projectId);
     if (getObjectResponse is ProjectVersions) {
-        io:println("Selected Project Version ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Project Version ID: " + getObjectResponse?.Id.toString());
         projectId = <int> getObjectResponse?.ProjectId;
     } else if (getObjectResponse is ()) {
-        io:println("Project Version table is empty");
+        log:printInfo("Project Version table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -424,7 +424,7 @@ function updateProjectVersionById() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateProjectVersionById(projectVersion);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Project Version ID: ", updateRecordResponse);
+        log:printInfo("Updated Project Version ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -437,7 +437,7 @@ function updateProjectVersionById() {
 function deleteProjectVersionById() {
     error? deleteAccountResponse = cdataJiraClient->deleteProjectVersionById(<int> projectVersionId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project Version ID: ", projectVersionId);
+        log:printInfo("Deleted Project Version ID: " + projectVersionId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -450,7 +450,7 @@ function deleteProjectVersionById() {
 function deleteProjectById_PV() {
     error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project ID: ", projectId);
+        log:printInfo("Deleted Project ID: " + projectId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -470,7 +470,7 @@ function createIssueType() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createIssueType(issueType);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Issue Type ID: ", createObjectResponse);
+        log:printInfo("Created Issue Type ID: " + createObjectResponse.toString());
         issueTypeId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -484,7 +484,7 @@ function createIssueType() {
 function getIssueTypes() {
     stream<IssueTypes, error> objectStreamResponse = cdataJiraClient->getIssueTypes();
     error? e = objectStreamResponse.forEach(isolated function(IssueTypes jobject) {
-        io:println("Issue Types details: ", jobject);
+        log:printInfo("Issue Types details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -499,9 +499,9 @@ function getIssueTypeById() {
     IssueTypes|error? getObjectResponse = cdataJiraClient->getIssueTypeById(
         <string> issueTypeId);
     if (getObjectResponse is IssueTypes) {
-        io:println("Selected Issue Type ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Issue Type ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Issue Type table is empty");
+        log:printInfo("Issue Type table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -519,7 +519,7 @@ function updateIssueTypeById() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateIssueTypeById(issueType);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Issue Type ID: ", updateRecordResponse);
+        log:printInfo("Updated Issue Type ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -532,7 +532,7 @@ function updateIssueTypeById() {
 function deleteIssueTypeById() {
     error? deleteAccountResponse = cdataJiraClient->deleteIssueTypeById(<string> issueTypeId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Issue Type ID: ", issueTypeId);
+        log:printInfo("Deleted Issue Type ID: " + issueTypeId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -547,7 +547,7 @@ function deleteIssueTypeById() {
 function getRoles() {
     stream<Roles, error> objectStreamResponse = cdataJiraClient->getRoles();
     error? e = objectStreamResponse.forEach(isolated function(Roles jobject) {
-        io:println("Roles details: ", jobject);
+        log:printInfo("Roles details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -561,9 +561,9 @@ function getRoles() {
 function getRoleById() {
     Roles|error? getObjectResponse = cdataJiraClient->getRoleById(10002);
     if (getObjectResponse is Roles) {
-        io:println("Selected Role ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Role ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Role table is empty");
+        log:printInfo("Role table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -586,7 +586,7 @@ function createProject_B() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createProject(project);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Project ID: ", createObjectResponse);
+        log:printInfo("Created Project ID: " + createObjectResponse.toString());
         projectId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -604,7 +604,7 @@ function createBoard() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createBoard(board);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Board ID: ", createObjectResponse);
+        log:printInfo("Created Board ID: " + createObjectResponse.toString());
         boardId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -618,7 +618,7 @@ function createBoard() {
 function getBoards() {
     stream<Boards, error> objectStreamResponse = cdataJiraClient->getBoards();
     error? e = objectStreamResponse.forEach(isolated function(Boards jobject) {
-        io:println("Boards details: ", jobject);
+        log:printInfo("Boards details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -632,9 +632,9 @@ function getBoards() {
 function getBoardById() {
     Boards|error? getObjectResponse = cdataJiraClient->getBoardById(1);
     if (getObjectResponse is Boards) {
-        io:println("Selected Board ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Board ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("board table is empty");
+        log:printInfo("board table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -646,9 +646,9 @@ function getBoardById() {
 function getBoard() {
     Boards|error? getObjectResponse = cdataJiraClient->getBoard("ROL");
     if (getObjectResponse is Boards) {
-        io:println("Selected Board ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Board ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("board table is empty");
+        log:printInfo("board table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -661,7 +661,7 @@ function getBoard() {
 function deleteProjectById_B() {
     error? deleteAccountResponse = cdataJiraClient->deleteProjectById(<int> projectId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Project ID: ", projectId);
+        log:printInfo("Deleted Project ID: " + projectId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -683,7 +683,7 @@ function createSprint() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createSprint(sprint);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Sprint ID: ", createObjectResponse);
+        log:printInfo("Created Sprint ID: " + createObjectResponse.toString());
         sprintId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -697,7 +697,7 @@ function createSprint() {
 function getSprints() {
     stream<Sprints, error> objectStreamResponse = cdataJiraClient->getSprints();
     error? e = objectStreamResponse.forEach(isolated function(Sprints jobject) {
-        io:println("Sprints details: ", jobject);
+        log:printInfo("Sprints details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -711,9 +711,9 @@ function getSprints() {
 function getSprintId() {
     Sprints|error? getObjectResponse = cdataJiraClient->getSprintById(<int> sprintId);
     if (getObjectResponse is Sprints) {
-        io:println("Selected Sprint ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Sprint ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Sprint table is empty");
+        log:printInfo("Sprint table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -730,7 +730,7 @@ function updateSprintById() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateSprintById(sprint);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Sprint ID: ", updateRecordResponse);
+        log:printInfo("Updated Sprint ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -743,7 +743,7 @@ function updateSprintById() {
 function deleteSprintById() {
     error? deleteAccountResponse = cdataJiraClient->deleteSprintById(<int> sprintId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Sprint ID: ", sprintId);
+        log:printInfo("Deleted Sprint ID: " + sprintId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -764,7 +764,7 @@ function createIssue() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createIssue(issue);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Issue ID: ", createObjectResponse);
+        log:printInfo("Created Issue ID: " + createObjectResponse.toString());
         issueId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -778,7 +778,7 @@ function createIssue() {
 function getIssues() {
     stream<Issues, error> objectStreamResponse = cdataJiraClient->getIssues();
     error? e = objectStreamResponse.forEach(isolated function(Issues jobject) {
-        io:println("Issues details: ", jobject);
+        log:printInfo("Issues details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -792,9 +792,9 @@ function getIssues() {
 function getIssueById() {
     Issues|error? getObjectResponse = cdataJiraClient->getIssueById(<int> issueId);
     if (getObjectResponse is Issues) {
-        io:println("Selected Issue ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Issue ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Issues table is empty");
+        log:printInfo("Issues table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -811,7 +811,7 @@ function updateIssueById() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateIssueById(issue);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Issue ID: ", updateRecordResponse);
+        log:printInfo("Updated Issue ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -824,7 +824,7 @@ function updateIssueById() {
 function deleteIssueById() {
     error? deleteAccountResponse = cdataJiraClient->deleteIssueById(<int> issueId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Issue ID: ", issueId);
+        log:printInfo("Deleted Issue ID: " + issueId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -838,7 +838,7 @@ function getIssuesByJql() {
     string jqlQuery = "project = 'RolyProject1' AND Status = 'In Progress'";
     stream<Issues, error> objectStreamResponse = cdataJiraClient->getIssuesByJql(jqlQuery);
     error? e = objectStreamResponse.forEach(isolated function(Issues jobject) {
-        io:println("Issues details: ", jobject);
+        log:printInfo("Issues details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -858,7 +858,7 @@ function createComment() {
     };
     (string|int)?|error createObjectResponse = cdataJiraClient->createComment(comment);
     if (createObjectResponse is (string|int)?) {
-        io:println("Created Comment ID: ", createObjectResponse);
+        log:printInfo("Created Comment ID: " + createObjectResponse.toString());
         commentId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -872,7 +872,7 @@ function createComment() {
 function getComments() {
     stream<Comments, error> objectStreamResponse = cdataJiraClient->getComments();
     error? e = objectStreamResponse.forEach(isolated function(Comments jobject) {
-        io:println("Comments details: ", jobject);
+        log:printInfo("Comments details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -886,7 +886,7 @@ function getComments() {
 function getCommentsByIssueId() {
     stream<Comments, error> objectStreamResponse = cdataJiraClient->getCommentsByIssueId(10004);
     error? e = objectStreamResponse.forEach(isolated function(Comments jobject) {
-        io:println("Comments details: ", jobject);
+        log:printInfo("Comments details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -905,7 +905,7 @@ function updateCommentsById() {
     };
     (string|int)?|error updateRecordResponse = cdataJiraClient->updateCommentByIssueId(comment);
     if (updateRecordResponse is (string|int)?) {
-        io:println("Updated Comment ID: ", updateRecordResponse);
+        log:printInfo("Updated Comment ID: " + updateRecordResponse.toString());
     } else {
         test:assertFail(updateRecordResponse.message());
     }
@@ -918,7 +918,7 @@ function updateCommentsById() {
 function deleteCommentByIssueId() {
     error? deleteAccountResponse = cdataJiraClient->deleteCommentByIssueId(<int> commentId, 10004);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Comment ID: ", commentId);
+        log:printInfo("Deleted Comment ID: " + commentId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -933,7 +933,7 @@ function deleteCommentByIssueId() {
 function getUsers() {
     stream<Users, error> objectStreamResponse = cdataJiraClient->getUsers();
     error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
-        io:println("Users details: ", jobject);
+        log:printInfo("Users details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -947,7 +947,7 @@ function getUsers() {
 function getUsersOfAllGroups() {
     stream<Users, error> objectStreamResponse = cdataJiraClient->getUsersOfAllGroups();
     error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
-        io:println("Users details: ", jobject);
+        log:printInfo("Users details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -961,7 +961,7 @@ function getUsersOfAllGroups() {
 function getUsersOfGroup() {
     stream<Users, error> objectStreamResponse = cdataJiraClient->getUsersOfGroup("administrators");
     error? e = objectStreamResponse.forEach(isolated function(Users jobject) {
-        io:println("Users details: ", jobject);
+        log:printInfo("Users details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -977,7 +977,7 @@ function uploadAttachmentToIssueByFilePath() {
     (string|int)?|error createObjectResponse = cdataJiraClient->uploadAttachmentToIssueByFilePath(
         "/home/roland/Documents/Notes/test25.txt", "ROL-23");
     if (createObjectResponse is (string|int)?) {
-        io:println("Uploaded Attachment ID: ", createObjectResponse);
+        log:printInfo("Uploaded Attachment ID: " + createObjectResponse.toString());
         attachmentId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -992,7 +992,7 @@ function uploadAttachmentToIssueByEncodedContent() {
     (string|int)?|error createObjectResponse = cdataJiraClient->uploadAttachmentToIssueByEncodedContent(
         "U29tZSBjb250ZW50IGhlcmU=", "Uploaded File", "ROL-23");
     if (createObjectResponse is (string|int)?) {
-        io:println("Uploaded Attachment ID: ", createObjectResponse);
+        log:printInfo("Uploaded Attachment ID: " + createObjectResponse.toString());
         attachmentId = createObjectResponse;
     } else {
         test:assertFail(createObjectResponse.message());
@@ -1006,7 +1006,7 @@ function uploadAttachmentToIssueByEncodedContent() {
 function getAttachments() {
     stream<Attachments, error> objectStreamResponse = cdataJiraClient->getAttachments();
     error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
-        io:println("Attachments details: ", jobject);
+        log:printInfo("Attachments details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1020,9 +1020,9 @@ function getAttachments() {
 function getAttachmentById() {
     Attachments|error? getObjectResponse = cdataJiraClient->getAttachmentById(<int> attachmentId);
     if (getObjectResponse is Attachments) {
-        io:println("Selected Attachment ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Attachment ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Attachments table is empty");
+        log:printInfo("Attachments table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1035,7 +1035,7 @@ function getAttachmentById() {
 function getAttachmentsByIssueId() {
     stream<Attachments, error> objectStreamResponse = cdataJiraClient->getAttachmentsByIssueId(10022);
     error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
-        io:println("Attachments details: ", jobject);
+        log:printInfo("Attachments details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1050,7 +1050,7 @@ function getAttachmentsByJql() {
     string jqlQuery = "created > 2018-01-07";
     stream<Attachments, error> objectStreamResponse = cdataJiraClient->getAttachmentsByJql(jqlQuery);
     error? e = objectStreamResponse.forEach(isolated function(Attachments jobject) {
-        io:println("Attachments details: ", jobject);
+        log:printInfo("Attachments details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1064,7 +1064,7 @@ function getAttachmentsByJql() {
 function deleteAttachmentById() {
     error? deleteAccountResponse = cdataJiraClient->deleteAttachmentById(<int> attachmentId);
     if (deleteAccountResponse is ()) {
-        io:println("Deleted Attachment ID: ", attachmentId);
+        log:printInfo("Deleted Attachment ID: " + attachmentId.toString());
     } else {
         test:assertFail(deleteAccountResponse.message());
     }
@@ -1081,7 +1081,7 @@ function deleteAttachmentById() {
 function getAdvancedSettings() {
     stream<AdvancedSettings, error> objectStreamResponse = cdataJiraClient->getAdvancedSettings();
     error? e = objectStreamResponse.forEach(isolated function(AdvancedSettings jobject) {
-        io:println("AdvancedSettings details: ", jobject);
+        log:printInfo("AdvancedSettings details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1097,7 +1097,7 @@ function getAdvancedSettings() {
 function getApplicationRoles() {
     stream<ApplicationRoles, error> objectStreamResponse = cdataJiraClient->getApplicationRoles();
     error? e = objectStreamResponse.forEach(isolated function(ApplicationRoles jobject) {
-        io:println("ApplicationRoles details: ", jobject);
+        log:printInfo("ApplicationRoles details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1112,7 +1112,7 @@ function getApplicationRoles() {
 function getAudit() {
     stream<Audit, error> objectStreamResponse = cdataJiraClient->getAudit("up");
     error? e = objectStreamResponse.forEach(isolated function(Audit jobject) {
-        io:println("Audit details: ", jobject);
+        log:printInfo("Audit details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1128,7 +1128,7 @@ function getAudit() {
 function getBoardIssues() {
     stream<BoardIssues, error> objectStreamResponse = cdataJiraClient->getBoardIssues(1);
     error? e = objectStreamResponse.forEach(isolated function(BoardIssues jobject) {
-        io:println("BoardIssues details: ", jobject);
+        log:printInfo("BoardIssues details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1144,7 +1144,7 @@ function getBoardIssues() {
 function getBoardSprints() {
     stream<BoardSprints, error> objectStreamResponse = cdataJiraClient->getBoardSprints(1);
     error? e = objectStreamResponse.forEach(isolated function(BoardSprints jobject) {
-        io:println("BoardSprints details: ", jobject);
+        log:printInfo("BoardSprints details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1158,7 +1158,7 @@ function getBoardSprints() {
 function getSprintsOfAllBoards() {
     stream<BoardSprints, error> objectStreamResponse = cdataJiraClient->getSprintsOfAllBoards();
     error? e = objectStreamResponse.forEach(isolated function(BoardSprints jobject) {
-        io:println("BoardSprints details: ", jobject);
+        log:printInfo("BoardSprints details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1174,7 +1174,7 @@ function getSprintsOfAllBoards() {
 function getConfiguration() {
     stream<Configuration, error> objectStreamResponse = cdataJiraClient->getConfiguration();
     error? e = objectStreamResponse.forEach(isolated function(Configuration jobject) {
-        io:println("Configuration details: ", jobject);
+        log:printInfo("Configuration details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1190,7 +1190,7 @@ function getConfiguration() {
 function getDashboards() {
     stream<Dashboards, error> objectStreamResponse = cdataJiraClient->getDashboards();
     error? e = objectStreamResponse.forEach(isolated function(Dashboards jobject) {
-        io:println("Dashboards details: ", jobject);
+        log:printInfo("Dashboards details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1204,7 +1204,7 @@ function getDashboards() {
 function getDashboardsByFilter() {
     stream<Dashboards, error> objectStreamResponse = cdataJiraClient->getDashboardsByFilter("favourite");
     error? e = objectStreamResponse.forEach(isolated function(Dashboards jobject) {
-        io:println("Dashboards details: ", jobject);
+        log:printInfo("Dashboards details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1218,9 +1218,9 @@ function getDashboardsByFilter() {
 function getDashboardById() {
     Dashboards|error? getObjectResponse = cdataJiraClient->getDashboardById("10000");
     if (getObjectResponse is Dashboards) {
-        io:println("Selected Dashboard ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Dashboard ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Dashboards table is empty");
+        log:printInfo("Dashboards table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1235,7 +1235,7 @@ function getDashboardById() {
 function getEpics() {
     stream<Epics, error> objectStreamResponse = cdataJiraClient->getEpics();
     error? e = objectStreamResponse.forEach(isolated function(Epics jobject) {
-        io:println("Epics details: ", jobject);
+        log:printInfo("Epics details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1249,7 +1249,7 @@ function getEpics() {
 function getEpicsOfBoard() {
     stream<Epics, error> objectStreamResponse = cdataJiraClient->getEpicsOfBoard(1);
     error? e = objectStreamResponse.forEach(isolated function(Epics jobject) {
-        io:println("Epics details: ", jobject);
+        log:printInfo("Epics details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1262,9 +1262,9 @@ function getEpicsOfBoard() {
 function getEpicById() {
     Epics|error? getObjectResponse = cdataJiraClient->getEpicById(10001);
     if (getObjectResponse is Epics) {
-        io:println("Selected Epic ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Epic ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Epics table is empty");
+        log:printInfo("Epics table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1276,9 +1276,9 @@ function getEpicById() {
 function getEpicByKey() {
     Epics|error? getObjectResponse = cdataJiraClient->getEpicByKey("ROL-2");
     if (getObjectResponse is Epics) {
-        io:println("Selected Epic ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Epic ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Epics table is empty");
+        log:printInfo("Epics table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1293,7 +1293,7 @@ function getEpicByKey() {
 function getFavouriteFilters() {
     stream<FavouriteFilters, error> objectStreamResponse = cdataJiraClient->getFavouriteFilters();
     error? e = objectStreamResponse.forEach(isolated function(FavouriteFilters jobject) {
-        io:println("FavouriteFilters details: ", jobject);
+        log:printInfo("FavouriteFilters details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1309,7 +1309,7 @@ function getFavouriteFilters() {
 function getFields() {
     stream<Fields, error> objectStreamResponse = cdataJiraClient->getFields();
     error? e = objectStreamResponse.forEach(isolated function(Fields jobject) {
-        io:println("Fields details: ", jobject);
+        log:printInfo("Fields details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1325,7 +1325,7 @@ function getFields() {
 function getFilters() {
     stream<Filters, error> objectStreamResponse = cdataJiraClient->getFilters();
     error? e = objectStreamResponse.forEach(isolated function(Filters jobject) {
-        io:println("Filters details: ", jobject);
+        log:printInfo("Filters details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1339,9 +1339,9 @@ function getFilters() {
 function getFilterById() {
     Filters|error? getObjectResponse = cdataJiraClient->getFilterById("10001");
     if (getObjectResponse is Filters) {
-        io:println("Selected Filter ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected Filter ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("Filters table is empty");
+        log:printInfo("Filters table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1356,7 +1356,7 @@ function getFilterById() {
 function getGroups() {
     stream<Groups, error> objectStreamResponse = cdataJiraClient->getGroups();
     error? e = objectStreamResponse.forEach(isolated function(Groups jobject) {
-        io:println("Groups details: ", jobject);
+        log:printInfo("Groups details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1372,7 +1372,7 @@ function getGroups() {
 function getIssueAffectedVersions() {
     stream<IssueAffectedVersions, error> objectStreamResponse = cdataJiraClient->getIssueAffectedVersions();
     error? e = objectStreamResponse.forEach(isolated function(IssueAffectedVersions jobject) {
-        io:println("IssueAffectedVersions details: ", jobject);
+        log:printInfo("IssueAffectedVersions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1388,7 +1388,7 @@ function getIssueAffectedVersions() {
 function getIssueChangelogs() {
     stream<IssueChangelogs, error> objectStreamResponse = cdataJiraClient->getIssueChangelogs();
     error? e = objectStreamResponse.forEach(isolated function(IssueChangelogs jobject) {
-        io:println("IssueChangelogs details: ", jobject);
+        log:printInfo("IssueChangelogs details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1404,7 +1404,7 @@ function getIssueChangelogs() {
 function getIssueComponents() {
     stream<IssueComponents, error> objectStreamResponse = cdataJiraClient->getIssueComponents();
     error? e = objectStreamResponse.forEach(isolated function(IssueComponents jobject) {
-        io:println("IssueComponents details: ", jobject);
+        log:printInfo("IssueComponents details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1421,7 +1421,7 @@ function getIssueCustomFieldOptions() {
     stream<IssueCustomFieldOptions, error> objectStreamResponse = 
         cdataJiraClient->getIssueCustomFieldOptions(10020);
     error? e = objectStreamResponse.forEach(isolated function(IssueCustomFieldOptions jobject) {
-        io:println("IssueCustomFieldOptions details: ", jobject);
+        log:printInfo("IssueCustomFieldOptions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1437,7 +1437,7 @@ function getIssueCustomFieldOptions() {
 function getIssueCustomFields() {
     stream<IssueCustomFields, error> objectStreamResponse = cdataJiraClient->getIssueCustomFields();
     error? e = objectStreamResponse.forEach(isolated function(IssueCustomFields jobject) {
-        io:println("IssueCustomFields details: ", jobject);
+        log:printInfo("IssueCustomFields details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1453,7 +1453,7 @@ function getIssueCustomFields() {
 function getIssueFixVersions() {
     stream<IssueFixVersions, error> objectStreamResponse = cdataJiraClient->getIssueFixVersions();
     error? e = objectStreamResponse.forEach(isolated function(IssueFixVersions jobject) {
-        io:println("IssueFixVersions details: ", jobject);
+        log:printInfo("IssueFixVersions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1469,7 +1469,7 @@ function getIssueFixVersions() {
 function getIssueLinks() {
     stream<IssueLinks, error> objectStreamResponse = cdataJiraClient->getIssueLinks();
     error? e = objectStreamResponse.forEach(isolated function(IssueLinks jobject) {
-        io:println("IssueLinks details: ", jobject);
+        log:printInfo("IssueLinks details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1485,7 +1485,7 @@ function getIssueLinks() {
 function getIssueLinkTypes() {
     stream<IssueLinkTypes, error> objectStreamResponse = cdataJiraClient->getIssueLinkTypes();
     error? e = objectStreamResponse.forEach(isolated function(IssueLinkTypes jobject) {
-        io:println("IssueLinkTypes details: ", jobject);
+        log:printInfo("IssueLinkTypes details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1499,9 +1499,9 @@ function getIssueLinkTypes() {
 function getIssueLinkTypesById() {
     IssueLinkTypes|error? getObjectResponse = cdataJiraClient->getIssueLinkTypesById("10000");
     if (getObjectResponse is IssueLinkTypes) {
-        io:println("Selected IssueLinkType ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected IssueLinkType ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("IssueLinkTypes table is empty");
+        log:printInfo("IssueLinkTypes table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1517,7 +1517,7 @@ function getIssueNavigatorDefaultColumns() {
     stream<IssueNavigatorDefaultColumns, error> objectStreamResponse = 
         cdataJiraClient->getIssueNavigatorDefaultColumns();
     error? e = objectStreamResponse.forEach(isolated function(IssueNavigatorDefaultColumns jobject) {
-        io:println("IssueNavigatorDefaultColumns details: ", jobject);
+        log:printInfo("IssueNavigatorDefaultColumns details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1533,7 +1533,7 @@ function getIssueNavigatorDefaultColumns() {
 function getIssuePriorities() {
     stream<IssuePriorities, error> objectStreamResponse = cdataJiraClient->getIssuePriorities();
     error? e = objectStreamResponse.forEach(isolated function(IssuePriorities jobject) {
-        io:println("IssuePriorities details: ", jobject);
+        log:printInfo("IssuePriorities details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1547,9 +1547,9 @@ function getIssuePriorities() {
 function getIssuePriorityById() {
     IssuePriorities|error? getObjectResponse = cdataJiraClient->getIssuePriorityById("1");
     if (getObjectResponse is IssuePriorities) {
-        io:println("Selected IssuePriority ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected IssuePriority ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("IssuePriorities table is empty");
+        log:printInfo("IssuePriorities table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1564,7 +1564,7 @@ function getIssuePriorityById() {
 function getIssueResolutions() {
     stream<IssueResolutions, error> objectStreamResponse = cdataJiraClient->getIssueResolutions();
     error? e = objectStreamResponse.forEach(isolated function(IssueResolutions jobject) {
-        io:println("IssueResolutions details: ", jobject);
+        log:printInfo("IssueResolutions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1578,9 +1578,9 @@ function getIssueResolutions() {
 function getIssueResolutionById() {
     IssueResolutions|error? getObjectResponse = cdataJiraClient->getIssueResolutionById("10000");
     if (getObjectResponse is IssueResolutions) {
-        io:println("Selected IssueResolution ID: ", getObjectResponse?.Id);
+        log:printInfo("Selected IssueResolution ID: " + getObjectResponse?.Id.toString());
     } else if (getObjectResponse is ()) {
-        io:println("IssueResolutions table is empty");
+        log:printInfo("IssueResolutions table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1595,7 +1595,7 @@ function getIssueResolutionById() {
 function getIssueSubtasks() {
     stream<IssueSubtasks, error> objectStreamResponse = cdataJiraClient->getIssueSubtasks();
     error? e = objectStreamResponse.forEach(isolated function(IssueSubtasks jobject) {
-        io:println("IssueSubtasks details: ", jobject);
+        log:printInfo("IssueSubtasks details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1609,7 +1609,7 @@ function getIssueSubtasks() {
 function getIssueSubtasksByIssueId() {
     stream<IssueSubtasks, error> objectStreamResponse = cdataJiraClient->getIssueSubtasksByIssueId(10109);
     error? e = objectStreamResponse.forEach(isolated function(IssueSubtasks jobject) {
-        io:println("IssueSubtasks details: ", jobject);
+        log:printInfo("IssueSubtasks details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1625,7 +1625,7 @@ function getIssueSubtasksByIssueId() {
 function getIssueTransitions() {
     stream<IssueTransitions, error> objectStreamResponse = cdataJiraClient->getIssueTransitions();
     error? e = objectStreamResponse.forEach(isolated function(IssueTransitions jobject) {
-        io:println("IssueTransitions details: ", jobject);
+        log:printInfo("IssueTransitions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1640,7 +1640,7 @@ function getIssueTransitions() {
 function getMyPermissions() {
     stream<MyPermissions, error> objectStreamResponse = cdataJiraClient->getMyPermissions();
     error? e = objectStreamResponse.forEach(isolated function(MyPermissions jobject) {
-        io:println("MyPermissions details: ", jobject);
+        log:printInfo("MyPermissions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1656,7 +1656,7 @@ function getMyPermissions() {
 function getPermissions() {
     stream<Permissions, error> objectStreamResponse = cdataJiraClient->getPermissions();
     error? e = objectStreamResponse.forEach(isolated function(Permissions jobject) {
-        io:println("Permissions details: ", jobject);
+        log:printInfo("Permissions details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1672,7 +1672,7 @@ function getPermissions() {
 function getProjectCategories() {
     stream<ProjectCategories, error> objectStreamResponse = cdataJiraClient->getProjectCategories();
     error? e = objectStreamResponse.forEach(isolated function(ProjectCategories jobject) {
-        io:println("ProjectCategories details: ", jobject);
+        log:printInfo("ProjectCategories details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1688,7 +1688,7 @@ function getProjectCategories() {
 function getProjectRoles() {
     stream<ProjectRoles, error> objectStreamResponse = cdataJiraClient->getProjectRoles();
     error? e = objectStreamResponse.forEach(isolated function(ProjectRoles jobject) {
-        io:println("ProjectRoles details: ", jobject);
+        log:printInfo("ProjectRoles details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1702,7 +1702,7 @@ function getProjectRoles() {
 function getProjectRolesByProjectId() {
     stream<ProjectRoles, error> objectStreamResponse = cdataJiraClient->getProjectRolesByProjectId(10000);
     error? e = objectStreamResponse.forEach(isolated function(ProjectRoles jobject) {
-        io:println("ProjectRoles details: ", jobject);
+        log:printInfo("ProjectRoles details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1718,7 +1718,7 @@ function getProjectRolesByProjectId() {
 function getProjectsIssueTypes() {
     stream<ProjectsIssueTypes, error> objectStreamResponse = cdataJiraClient->getProjectsIssueTypes();
     error? e = objectStreamResponse.forEach(isolated function(ProjectsIssueTypes jobject) {
-        io:println("ProjectsIssueTypes details: ", jobject);
+        log:printInfo("ProjectsIssueTypes details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1734,7 +1734,7 @@ function getProjectsIssueTypes() {
 function getProjectTypes() {
     stream<ProjectTypes, error> objectStreamResponse = cdataJiraClient->getProjectTypes();
     error? e = objectStreamResponse.forEach(isolated function(ProjectTypes jobject) {
-        io:println("ProjectTypes details: ", jobject);
+        log:printInfo("ProjectTypes details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1748,9 +1748,9 @@ function getProjectTypes() {
 function getProjectTypesByKey() {
     ProjectTypes|error? getObjectResponse = cdataJiraClient->getProjectTypesByKey("software");
     if (getObjectResponse is ProjectTypes) {
-        io:println("Selected ProjectType Key: ", getObjectResponse?.Key);
+        log:printInfo("Selected ProjectType Key: " + getObjectResponse?.Key.toString());
     } else if (getObjectResponse is ()) {
-        io:println("ProjectTypes table is empty");
+        log:printInfo("ProjectTypes table is empty");
     } else {
         test:assertFail(getObjectResponse.message());
     }
@@ -1764,7 +1764,7 @@ function getProjectTypesByKey() {
 function getRoleDetails() {
     stream<RoleDetails, error> objectStreamResponse = cdataJiraClient->getRoleDetails();
     error? e = objectStreamResponse.forEach(isolated function(RoleDetails jobject) {
-        io:println("RoleDetails details: ", jobject);
+        log:printInfo("RoleDetails details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1780,7 +1780,7 @@ function getRoleDetails() {
 function getSecurityLevels() {
     stream<SecurityLevels, error> objectStreamResponse = cdataJiraClient->getSecurityLevels();
     error? e = objectStreamResponse.forEach(isolated function(SecurityLevels jobject) {
-        io:println("SecurityLevels details: ", jobject);
+        log:printInfo("SecurityLevels details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1796,7 +1796,7 @@ function getSecurityLevels() {
 function getSecuritySchemes() {
     stream<SecuritySchemes, error> objectStreamResponse = cdataJiraClient->getSecuritySchemes();
     error? e = objectStreamResponse.forEach(isolated function(SecuritySchemes jobject) {
-        io:println("SecuritySchemes details: ", jobject);
+        log:printInfo("SecuritySchemes details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1812,7 +1812,7 @@ function getSecuritySchemes() {
 function getSprintIssues() {
     stream<SprintIssues, error> objectStreamResponse = cdataJiraClient->getSprintIssues();
     error? e = objectStreamResponse.forEach(isolated function(SprintIssues jobject) {
-        io:println("SprintIssues details: ", jobject);
+        log:printInfo("SprintIssues details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1828,7 +1828,7 @@ function getSprintIssues() {
 function getStatuses() {
     stream<Statuses, error> objectStreamResponse = cdataJiraClient->getStatuses();
     error? e = objectStreamResponse.forEach(isolated function(Statuses jobject) {
-        io:println("Statuses details: ", jobject);
+        log:printInfo("Statuses details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1844,7 +1844,7 @@ function getStatuses() {
 function getTimeTrackingProviders() {
     stream<TimeTrackingProviders, error> objectStreamResponse = cdataJiraClient->getTimeTrackingProviders();
     error? e = objectStreamResponse.forEach(isolated function(TimeTrackingProviders jobject) {
-        io:println("TimeTrackingProviders details: ", jobject);
+        log:printInfo("TimeTrackingProviders details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1860,7 +1860,7 @@ function getTimeTrackingProviders() {
 function getVotes() {
     stream<Votes, error> objectStreamResponse = cdataJiraClient->getVotesByIssueKey("ROL-110");
     error? e = objectStreamResponse.forEach(isolated function(Votes jobject) {
-        io:println("Votes details: ", jobject);
+        log:printInfo("Votes details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1876,7 +1876,7 @@ function getVotes() {
 function getWatchers() {
     stream<Watchers, error> objectStreamResponse = cdataJiraClient->getWatchersByIssueKey("ROL-110");
     error? e = objectStreamResponse.forEach(isolated function(Watchers jobject) {
-        io:println("Watchers details: ", jobject);
+        log:printInfo("Watchers details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1892,7 +1892,7 @@ function getWatchers() {
 function getWorkflows() {
     stream<Workflows, error> objectStreamResponse = cdataJiraClient->getWorkflows();
     error? e = objectStreamResponse.forEach(isolated function(Workflows jobject) {
-        io:println("Workflows details: ", jobject);
+        log:printInfo("Workflows details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1908,7 +1908,7 @@ function getWorkflows() {
 function getWorkflowStatusCategories() {
     stream<WorkflowStatusCategories, error> objectStreamResponse = cdataJiraClient->getWorkflowStatusCategories();
     error? e = objectStreamResponse.forEach(isolated function(WorkflowStatusCategories jobject) {
-        io:println("WorkflowStatusCategories details: ", jobject);
+        log:printInfo("WorkflowStatusCategories details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1924,7 +1924,7 @@ function getWorkflowStatusCategories() {
 function getWorkflowStatuses() {
     stream<WorkflowStatuses, error> objectStreamResponse = cdataJiraClient->getWorkflowStatuses();
     error? e = objectStreamResponse.forEach(isolated function(WorkflowStatuses jobject) {
-        io:println("WorkflowStatuses details: ", jobject);
+        log:printInfo("WorkflowStatuses details: " + jobject.toString());
     });
     if (e is error) {
         test:assertFail(e.message());
@@ -1944,9 +1944,9 @@ function uploadAttachment() {
         cdataJiraClient->uploadAttachment("/home/roland/Documents/Notes/test25.txt", issueKey = "ROL-113", 
         fileName = "MyNote");
     if (objectResponse is UploadAttachmentResponse) {
-        io:println("UploadAttachmentResponse details: ", objectResponse);
+        log:printInfo("UploadAttachmentResponse details: " + objectResponse.toString());
     } else if (objectResponse is ()) {
-        io:println("Empty response");
+        log:printInfo("Empty response");
     } else {
         test:assertFail(objectResponse.message());
     } 
@@ -1962,9 +1962,9 @@ function downloadAttachment() {
     DownloadAttachmentResponse|error? objectResponse = 
         cdataJiraClient->downloadAttachment("10088", "/home/roland/Documents/Notes1/", "MyDownloadedNote", true);
     if (objectResponse is DownloadAttachmentResponse) {
-        io:println("DownloadAttachmentResponse details: ", objectResponse);
+        log:printInfo("DownloadAttachmentResponse details: " + objectResponse.toString());
     } else if (objectResponse is ()) {
-        io:println("Empty response");
+        log:printInfo("Empty response");
     } else {
         test:assertFail(objectResponse.message());
     } 
@@ -1979,9 +1979,9 @@ function downloadAttachment() {
 function getTimeTrackingSettings() {
     TimeTrackingSettings|error? objectResponse = cdataJiraClient->getTimeTrackingSettings();
     if (objectResponse is TimeTrackingSettings) {
-        io:println("TimeTrackingSettings details: ", objectResponse);
+        log:printInfo("TimeTrackingSettings details: " + objectResponse.toString());
     } else if (objectResponse is ()) {
-        io:println("Empty response");
+        log:printInfo("Empty response");
     } else {
         test:assertFail(objectResponse.message());
     } 
@@ -1989,7 +1989,7 @@ function getTimeTrackingSettings() {
 
 @test:AfterSuite { }
 function afterSuite() {
-    io:println("Close the connection to Jira using CData Connector");
+    log:printInfo("Close the connection to Jira using CData Connector");
     error? closeResponse = cdataJiraClient->close();
     if (closeResponse is sql:Error) {
         test:assertFail(closeResponse.message());

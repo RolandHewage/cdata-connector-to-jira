@@ -14,7 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
 import ballerina/sql;
 import cdata;
 
@@ -35,7 +34,6 @@ public client class Client {
 
     isolated remote function getProjects() returns stream<Projects, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Projects`;
-        io:println(selectQuery);
         stream<Projects, error> resultStream = self.cdataClient->query(selectQuery, Projects);
         return resultStream;
     }
@@ -47,14 +45,12 @@ public client class Client {
                                               ${projects?.Description}, ${projects?.AssigneeType},
                                               ${projects?.ProjectCategoryId}, ${projects?.ProjectTypeKey},
                                               ${projects?.LeadAccountId})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getProjectById(int projectId) returns Projects|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Projects WHERE Id = ${projectId}`;
-        io:println(selectQuery);
         stream<Projects, error> resultStream = self.cdataClient->query(selectQuery, Projects);
         record {|Projects value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -69,7 +65,6 @@ public client class Client {
                                               ProjectTypeKey = ${projects?.ProjectTypeKey}, 
                                               LeadAccountId = ${projects?.LeadAccountId} 
                                               WHERE Id = ${projects?.Id}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
@@ -82,21 +77,18 @@ public client class Client {
                                               ProjectTypeKey = ${projects?.ProjectTypeKey}, 
                                               LeadAccountId = ${projects?.LeadAccountId} 
                                               WHERE Key = ${projects?.Key}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteProjectById(int projectId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Projects WHERE Id = ${projectId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
 
     isolated remote function deleteProjectByKey(string projectKey) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Projects WHERE Key = ${projectKey}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -105,7 +97,6 @@ public client class Client {
 
     isolated remote function getProjectComponents() returns stream<ProjectComponents, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectComponents`;
-        io:println(selectQuery);
         stream<ProjectComponents, error> resultStream = self.cdataClient->query(selectQuery, ProjectComponents);
         return resultStream;
     }
@@ -116,14 +107,12 @@ public client class Client {
                                               VALUES (${projectComponents?.ProjectKey}, ${projectComponents?.Name}, 
                                               ${projectComponents?.Description}, ${projectComponents?.LeadKey},
                                               ${projectComponents?.AssigneeType})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getProjectComponentById(int projectComponentId) returns ProjectComponents|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectComponents WHERE Id = ${projectComponentId}`;
-        io:println(selectQuery);
         stream<ProjectComponents, error> resultStream = self.cdataClient->query(selectQuery, ProjectComponents);
         record {|ProjectComponents value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -131,7 +120,6 @@ public client class Client {
 
     isolated remote function getProjectComponentByProjectId(int projectId) returns ProjectComponents|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectComponents WHERE ProjectId = ${projectId}`;
-        io:println(selectQuery);
         stream<ProjectComponents, error> resultStream = self.cdataClient->query(selectQuery, ProjectComponents);
         record {|ProjectComponents value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -139,7 +127,6 @@ public client class Client {
 
     isolated remote function getProjectComponentByProjectKey(string projectKey) returns ProjectComponents|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectComponents WHERE ProjectKey = ${projectKey}`;
-        io:println(selectQuery);
         stream<ProjectComponents, error> resultStream = self.cdataClient->query(selectQuery, ProjectComponents);
         record {|ProjectComponents value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -154,14 +141,12 @@ public client class Client {
                                               LeadKey = ${projectComponents?.LeadKey},
                                               AssigneeType = ${projectComponents?.AssigneeType}
                                               WHERE Id = ${projectComponents?.Id}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteProjectComponentById(int projectComponentId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM ProjectComponents WHERE Id = ${projectComponentId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -170,7 +155,6 @@ public client class Client {
 
     isolated remote function getProjectVersions() returns stream<ProjectVersions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectVersions`;
-        io:println(selectQuery);
         stream<ProjectVersions, error> resultStream = self.cdataClient->query(selectQuery, ProjectVersions);
         return resultStream;
     }    
@@ -182,14 +166,12 @@ public client class Client {
                                               ${projectVersions?.Name}, ${projectVersions?.Description}, 
                                               ${projectVersions?.Released}, ${projectVersions?.ReleaseDate}, 
                                               ${projectVersions?.StartDate}, ${projectVersions?.Archived})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getProjectVersionById(int projectVersionId) returns ProjectVersions|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectVersions WHERE Id = ${projectVersionId}`;
-        io:println(selectQuery);
         stream<ProjectVersions, error> resultStream = self.cdataClient->query(selectQuery, ProjectVersions);
         record {|ProjectVersions value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -197,7 +179,6 @@ public client class Client {
 
     isolated remote function getProjectVersionByProjectId(int projectId) returns ProjectVersions|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectVersions WHERE ProjectId = ${projectId}`;
-        io:println(selectQuery);
         stream<ProjectVersions, error> resultStream = self.cdataClient->query(selectQuery, ProjectVersions);
         record {|ProjectVersions value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -205,7 +186,6 @@ public client class Client {
 
     isolated remote function getProjectVersionByProjectKey(string projectKey) returns ProjectVersions|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectVersions WHERE ProjectKey = ${projectKey}`;
-        io:println(selectQuery);
         stream<ProjectVersions, error> resultStream = self.cdataClient->query(selectQuery, ProjectVersions);
         record {|ProjectVersions value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -224,14 +204,12 @@ public client class Client {
                                               UserReleaseDate = ${projectVersions?.UserReleaseDate},
                                               Archived = ${projectVersions?.Archived}
                                               WHERE Id = ${projectVersions?.Id}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteProjectVersionById(int projectVersionId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM ProjectVersions WHERE Id = ${projectVersionId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -240,7 +218,6 @@ public client class Client {
 
     isolated remote function getIssueTypes() returns stream<IssueTypes, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueTypes`;
-        io:println(selectQuery);
         stream<IssueTypes, error> resultStream = self.cdataClient->query(selectQuery, IssueTypes);
         return resultStream;
     }
@@ -249,14 +226,12 @@ public client class Client {
         sql:ParameterizedQuery insertQuery = `INSERT INTO IssueTypes (Name, Description, Subtask)
                                               VALUES (${issueTypes?.Name}, ${issueTypes?.Description}, 
                                               ${issueTypes?.Subtask})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getIssueTypeById(string issueTypeId) returns IssueTypes|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueTypes WHERE Id = ${issueTypeId}`;
-        io:println(selectQuery);
         stream<IssueTypes, error> resultStream = self.cdataClient->query(selectQuery, IssueTypes);
         record {|IssueTypes value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -267,14 +242,12 @@ public client class Client {
                                               Description = ${issueTypes?.Description}, 
                                               Subtask = ${issueTypes?.Subtask}
                                               WHERE Id = ${issueTypes?.Id}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteIssueTypeById(string issueTypeId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM IssueTypes WHERE Id = ${issueTypeId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -283,7 +256,6 @@ public client class Client {
 
     isolated remote function getRoles() returns stream<Roles, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Roles`;
-        io:println(selectQuery);
         stream<Roles, error> resultStream = self.cdataClient->query(selectQuery, Roles);
         return resultStream;
     }
@@ -293,14 +265,12 @@ public client class Client {
         sql:ParameterizedQuery insertQuery = `INSERT INTO Roles (Name, Description, Actors, Scope, IsAdmin, IsDefault)
                                               VALUES (${roles?.Name}, ${roles?.Description}, ${roles?.Actors}, 
                                               ${roles?.Scope}, ${roles?.IsAdmin}, ${roles?.IsDefault})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getRoleById(int roleId) returns Roles|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Roles WHERE Id = ${roleId}`;
-        io:println(selectQuery);
         stream<Roles, error> resultStream = self.cdataClient->query(selectQuery, Roles);
         record {|Roles value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -313,7 +283,6 @@ public client class Client {
                                               Actors = ${roles?.Actors}, Scope = ${roles?.Scope}, 
                                               IsAdmin = ${roles?.IsAdmin}, IsDefault = ${roles?.IsDefault}
                                               WHERE Id = ${roles?.Id}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
@@ -321,7 +290,6 @@ public client class Client {
     // Project roles aren't editable in Jira Software Free. Upgrade for advanced team configuration.
     isolated remote function deleteRoleById(int roleId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Roles WHERE Id = ${roleId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -330,7 +298,6 @@ public client class Client {
 
     isolated remote function getBoards() returns stream<Boards, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Boards`;
-        io:println(selectQuery);
         stream<Boards, error> resultStream = self.cdataClient->query(selectQuery, Boards);
         return resultStream;
     }
@@ -339,14 +306,12 @@ public client class Client {
     isolated remote function createBoard(Boards boards) returns (string|int)?|error {
         sql:ParameterizedQuery insertQuery = `INSERT INTO Boards (Name, Type)
                                               VALUES (${boards?.Name}, ${boards?.Type})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getBoardById(int boardId) returns Boards|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Boards WHERE Id = ${boardId}`;
-        io:println(selectQuery);
         stream<Boards, error> resultStream = self.cdataClient->query(selectQuery, Boards);
         record {|Boards value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -354,7 +319,6 @@ public client class Client {
 
     isolated remote function getBoard(string projectKeyOrId) returns Boards|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Boards WHERE ProjectKeyOrId = ${projectKeyOrId}`;
-        io:println(selectQuery);
         stream<Boards, error> resultStream = self.cdataClient->query(selectQuery);
         record {|Boards value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -362,7 +326,6 @@ public client class Client {
 
     isolated remote function deleteBoardById(int boardId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Boards WHERE Id = ${boardId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -371,7 +334,6 @@ public client class Client {
 
     isolated remote function getSprints() returns stream<Sprints, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Sprints`;
-        io:println(selectQuery);
         stream<Sprints, error> resultStream = self.cdataClient->query(selectQuery, Sprints);
         return resultStream;
     }
@@ -381,14 +343,12 @@ public client class Client {
                                               EndDate)
                                               VALUES (${sprints?.Name}, ${sprints?.State}, ${sprints?.Goal}, 
                                               ${sprints?.OriginBoardId}, ${sprints?.StartDate}, ${sprints?.EndDate})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getSprintById(int sprintId) returns Sprints|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Sprints WHERE Id = ${sprintId}`;
-        io:println(selectQuery);
         stream<Sprints, error> resultStream = self.cdataClient->query(selectQuery, Sprints);
         record {|Sprints value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -400,14 +360,12 @@ public client class Client {
                                               Goal = ${sprints?.Goal}, OriginBoardId = ${sprints?.OriginBoardId}, 
                                               StartDate = ${sprints?.StartDate}, EndDate = ${sprints?.EndDate}
                                               WHERE Id = ${sprints?.Id}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteSprintById(int sprintId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Sprints WHERE Id = ${sprintId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -416,14 +374,12 @@ public client class Client {
 
     isolated remote function getIssues() returns stream<Issues, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Issues`;
-        io:println(selectQuery);
         stream<Issues, error> resultStream = self.cdataClient->query(selectQuery, Issues);
         return resultStream;
     }
 
     isolated remote function getIssuesByJql(string jqlQuery) returns stream<Issues, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Issues WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<Issues, error> resultStream = self.cdataClient->query(selectQuery, Issues);
         return resultStream;
     }
@@ -443,14 +399,12 @@ public client class Client {
                                               ${issues?.FixVersionsAggregate}, ${issues?.ComponentsAggregate}, 
                                               ${issues?.IssueLinksAggregate}, ${issues?.AffectedVersionsAggregate},
                                               ${issues?.AssigneeAccountId})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getIssueById(int issueId) returns Issues|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Issues WHERE Id = ${issueId}`;
-        io:println(selectQuery);
         stream<Issues, error> resultStream = self.cdataClient->query(selectQuery, Issues);
         record {|Issues value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -461,14 +415,12 @@ public client class Client {
                                               Description = ${issues?.Description}, Summary = ${issues?.Summary},
                                               Labels = ${issues?.Labels}
                                               WHERE Id = ${issues?.Id}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteIssueById(int issueId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Issues WHERE Id = ${issueId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }
@@ -477,7 +429,6 @@ public client class Client {
 
     isolated remote function getComments() returns stream<Comments, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Comments`;
-        io:println(selectQuery);
         stream<Comments, error> resultStream = self.cdataClient->query(selectQuery, Comments);
         return resultStream;
     }
@@ -488,14 +439,12 @@ public client class Client {
                                               VALUES (${comments?.IssueId}, ${comments?.IssueKey}, 
                                               ${comments?.Body}, ${comments?.VisibilityType}, 
                                               ${comments?.VisibilityValue})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getCommentsByIssueId(int issueId) returns stream<Comments, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Comments WHERE IssueId = ${issueId}`;
-        io:println(selectQuery);
         stream<Comments, error> resultStream = self.cdataClient->query(selectQuery, Comments);
         return resultStream;
     }
@@ -503,14 +452,12 @@ public client class Client {
     isolated remote function updateCommentByIssueId(Comments comments) returns (string|int)?|error {
         sql:ParameterizedQuery updateQuery = `UPDATE Comments SET Body = ${comments?.Body}
                                               WHERE Id = ${comments?.Id} AND IssueId = ${comments?.IssueId}`;
-        io:println(updateQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(updateQuery);
         return result.lastInsertId;
     }
 
     isolated remote function deleteCommentByIssueId(int commentId, int issueId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Comments WHERE Id = ${commentId} AND IssueId = ${issueId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }    
@@ -519,21 +466,18 @@ public client class Client {
 
     isolated remote function getUsers() returns stream<Users, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Users`;
-        io:println(selectQuery);
         stream<Users, error> resultStream = self.cdataClient->query(selectQuery, Users);
         return resultStream;
     }
 
     isolated remote function getUsersOfAllGroups() returns stream<Users, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Users WHERE GroupName IN (SELECT Name FROM Groups)`;
-        io:println(selectQuery);
         stream<Users, error> resultStream = self.cdataClient->query(selectQuery, Users);
         return resultStream;
     }
 
     isolated remote function getUsersOfGroup(string groupName) returns stream<Users, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Users WHERE GroupName = ${groupName}`;
-        io:println(selectQuery);
         stream<Users, error> resultStream = self.cdataClient->query(selectQuery, Users);
         return resultStream;
     }
@@ -542,7 +486,6 @@ public client class Client {
 
     isolated remote function getAttachments() returns stream<Attachments, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments`;
-        io:println(selectQuery);
         stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
         return resultStream;
     }
@@ -551,7 +494,6 @@ public client class Client {
                                                                returns (string|int)?|error {
         sql:ParameterizedQuery insertQuery = `INSERT INTO Attachments (FilePath, IssueKey)
                                               VALUES (${filePath}, ${issueKey})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
@@ -560,14 +502,12 @@ public client class Client {
                                                                      string issueKey) returns (string|int)?|error {
         sql:ParameterizedQuery insertQuery = `INSERT INTO Attachments (ContentEncoded, Name, IssueKey)
                                               VALUES (${contentEncoded}, ${name}, ${issueKey})`;
-        io:println(insertQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(insertQuery);
         return result.lastInsertId;
     }
 
     isolated remote function getAttachmentById(int attachmentId) returns Attachments|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments WHERE Id = ${attachmentId}`;
-        io:println(selectQuery);
         stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
         record {|Attachments value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -575,21 +515,18 @@ public client class Client {
 
     isolated remote function getAttachmentsByIssueId(int issueId) returns stream<Attachments, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments WHERE IssueId = ${issueId}`;
-        io:println(selectQuery);
         stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
         return resultStream;
     }
 
     isolated remote function getAttachmentsByJql(string jqlQuery) returns stream<Attachments, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Attachments WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<Attachments, error> resultStream = self.cdataClient->query(selectQuery, Attachments);
         return resultStream;
     }
 
     isolated remote function deleteAttachmentById(int attachmentId) returns error? {
         sql:ParameterizedQuery deleteQuery = `DELETE FROM Attachments WHERE Id = ${attachmentId}`;
-        io:println(deleteQuery);
         sql:ExecutionResult result = check self.cdataClient->execute(deleteQuery);
         return;
     }  
@@ -600,7 +537,6 @@ public client class Client {
 
     isolated remote function getAdvancedSettings() returns stream<AdvancedSettings, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM AdvancedSettings`;
-        io:println(selectQuery);
         stream<AdvancedSettings, error> resultStream = self.cdataClient->query(selectQuery, AdvancedSettings);
         return resultStream;
     }
@@ -609,7 +545,6 @@ public client class Client {
 
     isolated remote function getApplicationRoles() returns stream<ApplicationRoles, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ApplicationRoles`;
-        io:println(selectQuery);
         stream<ApplicationRoles, error> resultStream = self.cdataClient->query(selectQuery, ApplicationRoles);
         return resultStream;
     }
@@ -619,7 +554,6 @@ public client class Client {
     // Audit logs aren't available for this site as all of its Jira Cloud products are on Free plans.
     isolated remote function getAudit(string filter) returns stream<Audit, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Audit WHERE Filter = ${filter}`;
-        io:println(selectQuery);
         stream<Audit, error> resultStream = self.cdataClient->query(selectQuery, Audit);
         return resultStream;
     }
@@ -628,7 +562,6 @@ public client class Client {
 
     isolated remote function getBoardIssues(int boardId) returns stream<BoardIssues, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM BoardIssues WHERE BoardId = ${boardId}`;
-        io:println(selectQuery);
         stream<BoardIssues, error> resultStream = self.cdataClient->query(selectQuery, BoardIssues);
         return resultStream;
     }
@@ -637,7 +570,6 @@ public client class Client {
 
     isolated remote function getBoardSprints(int boardId) returns stream<BoardSprints, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM BoardSprints WHERE BoardId = ${boardId}`;
-        io:println(selectQuery);
         stream<BoardSprints, error> resultStream = self.cdataClient->query(selectQuery, BoardSprints);
         return resultStream;
     }
@@ -646,7 +578,6 @@ public client class Client {
         // Boards of type 'kanban' do not support sprints, so you can retrieve all the sprints faster using this query 
         sql:ParameterizedQuery selectQuery = `SELECT * FROM BoardSprints WHERE BoardId IN (SELECT Id FROM Boards 
                                               WHERE Type != 'kanban')`;
-        io:println(selectQuery);
         stream<BoardSprints, error> resultStream = self.cdataClient->query(selectQuery, BoardSprints);
         return resultStream;
     }
@@ -655,7 +586,6 @@ public client class Client {
 
     isolated remote function getConfiguration() returns stream<Configuration, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Configuration`;
-        io:println(selectQuery);
         stream<Configuration, error> resultStream = self.cdataClient->query(selectQuery, Configuration);
         return resultStream;
     }
@@ -664,21 +594,18 @@ public client class Client {
 
     isolated remote function getDashboards() returns stream<Dashboards, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Dashboards`;
-        io:println(selectQuery);
         stream<Dashboards, error> resultStream = self.cdataClient->query(selectQuery, Dashboards);
         return resultStream;
     }
 
     isolated remote function getDashboardsByFilter(string filter) returns stream<Dashboards, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Dashboards WHERE Filter = ${filter}`;
-        io:println(selectQuery);
         stream<Dashboards, error> resultStream = self.cdataClient->query(selectQuery, Dashboards);
         return resultStream;
     }
 
     isolated remote function getDashboardById(string dashboardId) returns Dashboards|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Dashboards WHERE Id = ${dashboardId}`;
-        io:println(selectQuery);
         stream<Dashboards, error> resultStream = self.cdataClient->query(selectQuery, Dashboards);
         record {|Dashboards value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -688,14 +615,12 @@ public client class Client {
 
     isolated remote function getEpics() returns stream<Epics, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics`;
-        io:println(selectQuery);
         stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
         return resultStream;
     }
 
     isolated remote function getEpicsOfBoard(int boardId) returns stream<Epics, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics WHERE BoardId = ${boardId}`;
-        io:println(selectQuery);
         stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
         return resultStream;
     }
@@ -705,7 +630,6 @@ public client class Client {
     // where `PROJ-123` has an issue type at level one of the issue type hierarchy).
     isolated remote function getEpicById(int epicId) returns Epics|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics WHERE Id = ${epicId}`;
-        io:println(selectQuery);
         stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
         record {|Epics value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -716,7 +640,6 @@ public client class Client {
     // where `PROJ-123` has an issue type at level one of the issue type hierarchy).
     isolated remote function getEpicByKey(string epicKey) returns Epics|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Epics WHERE Key = ${epicKey}`;
-        io:println(selectQuery);
         stream<Epics, error> resultStream = self.cdataClient->query(selectQuery, Epics);
         record {|Epics value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -726,7 +649,6 @@ public client class Client {
 
     isolated remote function getFavouriteFilters() returns stream<FavouriteFilters, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM FavouriteFilters`;
-        io:println(selectQuery);
         stream<FavouriteFilters, error> resultStream = self.cdataClient->query(selectQuery, FavouriteFilters);
         return resultStream;
     }
@@ -735,7 +657,6 @@ public client class Client {
 
     isolated remote function getFields() returns stream<Fields, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Fields`;
-        io:println(selectQuery);
         stream<Fields, error> resultStream = self.cdataClient->query(selectQuery, Fields);
         return resultStream;
     }
@@ -744,14 +665,12 @@ public client class Client {
 
     isolated remote function getFilters() returns stream<Filters, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Filters`;
-        io:println(selectQuery);
         stream<Filters, error> resultStream = self.cdataClient->query(selectQuery, Filters);
         return resultStream;
     }
 
     isolated remote function getFilterById(string filterId) returns Filters|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Filters WHERE Id = ${filterId}`;
-        io:println(selectQuery);
         stream<Filters, error> resultStream = self.cdataClient->query(selectQuery, Filters);
         record {|Filters value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -761,7 +680,6 @@ public client class Client {
 
     isolated remote function getGroups() returns stream<Groups, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Groups`;
-        io:println(selectQuery);
         stream<Groups, error> resultStream = self.cdataClient->query(selectQuery, Groups);
         return resultStream;
     }
@@ -770,7 +688,6 @@ public client class Client {
 
     isolated remote function getIssueAffectedVersions() returns stream<IssueAffectedVersions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueAffectedVersions`;
-        io:println(selectQuery);
         stream<IssueAffectedVersions, error> resultStream = self.cdataClient->query(selectQuery, IssueAffectedVersions);
         return resultStream;
     }
@@ -778,7 +695,6 @@ public client class Client {
     isolated remote function getIssueAffectedVersionsByJql(string jqlQuery) 
                                                            returns stream<IssueAffectedVersions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueAffectedVersions WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<IssueAffectedVersions, error> resultStream = self.cdataClient->query(selectQuery, IssueAffectedVersions);
         return resultStream;
     }
@@ -787,7 +703,6 @@ public client class Client {
 
     isolated remote function getIssueChangelogs() returns stream<IssueChangelogs, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueChangelogs`;
-        io:println(selectQuery);
         stream<IssueChangelogs, error> resultStream = self.cdataClient->query(selectQuery, IssueChangelogs);
         return resultStream;
     }
@@ -796,14 +711,12 @@ public client class Client {
 
     isolated remote function getIssueComponents() returns stream<IssueComponents, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueComponents`;
-        io:println(selectQuery);
         stream<IssueComponents, error> resultStream = self.cdataClient->query(selectQuery, IssueComponents);
         return resultStream;
     }
 
     isolated remote function getIssueComponentsByJql(string jqlQuery) returns stream<IssueComponents, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueComponents WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<IssueComponents, error> resultStream = self.cdataClient->query(selectQuery, IssueComponents);
         return resultStream;
     }
@@ -814,7 +727,6 @@ public client class Client {
                                                         returns stream<IssueCustomFieldOptions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueCustomFieldOptions 
                                               WHERE CustomFieldId = ${customFieldId}`;
-        io:println(selectQuery);
         stream<IssueCustomFieldOptions, error> resultStream = self.cdataClient->query(selectQuery, 
             IssueCustomFieldOptions);
         return resultStream;
@@ -824,7 +736,6 @@ public client class Client {
 
     isolated remote function getIssueCustomFields() returns stream<IssueCustomFields, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueCustomFields`;
-        io:println(selectQuery);
         stream<IssueCustomFields, error> resultStream = self.cdataClient->query(selectQuery, IssueCustomFields);
         return resultStream;
     }
@@ -833,14 +744,12 @@ public client class Client {
 
     isolated remote function getIssueFixVersions() returns stream<IssueFixVersions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueFixVersions`;
-        io:println(selectQuery);
         stream<IssueFixVersions, error> resultStream = self.cdataClient->query(selectQuery, IssueFixVersions);
         return resultStream;
     }
 
     isolated remote function getIssueFixVersionsByJql(string jqlQuery) returns stream<IssueFixVersions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueFixVersions WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<IssueFixVersions, error> resultStream = self.cdataClient->query(selectQuery, IssueFixVersions);
         return resultStream;
     }
@@ -849,14 +758,12 @@ public client class Client {
 
     isolated remote function getIssueLinks() returns stream<IssueLinks, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueLinks`;
-        io:println(selectQuery);
         stream<IssueLinks, error> resultStream = self.cdataClient->query(selectQuery, IssueLinks);
         return resultStream;
     }
 
     isolated remote function getIssueLinksByJql(string jqlQuery) returns stream<IssueLinks, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueLinks WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<IssueLinks, error> resultStream = self.cdataClient->query(selectQuery, IssueLinks);
         return resultStream;
     }
@@ -865,14 +772,12 @@ public client class Client {
 
     isolated remote function getIssueLinkTypes() returns stream<IssueLinkTypes, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueLinkTypes`;
-        io:println(selectQuery);
         stream<IssueLinkTypes, error> resultStream = self.cdataClient->query(selectQuery, IssueLinkTypes);
         return resultStream;
     }
 
     isolated remote function getIssueLinkTypesById(string issueLinkTypesId) returns IssueLinkTypes|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueLinkTypes WHERE Id = ${issueLinkTypesId}`;
-        io:println(selectQuery);
         stream<IssueLinkTypes, error> resultStream = self.cdataClient->query(selectQuery, IssueLinkTypes);
         record {|IssueLinkTypes value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -882,7 +787,6 @@ public client class Client {
 
     isolated remote function getIssueNavigatorDefaultColumns() returns stream<IssueNavigatorDefaultColumns, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueNavigatorDefaultColumns`;
-        io:println(selectQuery);
         stream<IssueNavigatorDefaultColumns, error> resultStream = 
             self.cdataClient->query(selectQuery, IssueNavigatorDefaultColumns);
         return resultStream;
@@ -892,14 +796,12 @@ public client class Client {
 
     isolated remote function getIssuePriorities() returns stream<IssuePriorities, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssuePriorities`;
-        io:println(selectQuery);
         stream<IssuePriorities, error> resultStream = self.cdataClient->query(selectQuery, IssuePriorities);
         return resultStream;
     }
 
     isolated remote function getIssuePriorityById(string issuePrioritiesId) returns IssuePriorities|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssuePriorities WHERE Id = ${issuePrioritiesId}`;
-        io:println(selectQuery);
         stream<IssuePriorities, error> resultStream = self.cdataClient->query(selectQuery, IssuePriorities);
         record {|IssuePriorities value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -909,14 +811,12 @@ public client class Client {
 
     isolated remote function getIssueResolutions() returns stream<IssueResolutions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueResolutions`;
-        io:println(selectQuery);
         stream<IssueResolutions, error> resultStream = self.cdataClient->query(selectQuery, IssueResolutions);
         return resultStream;
     }
 
     isolated remote function getIssueResolutionById(string issueResolutionId) returns IssueResolutions|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueResolutions WHERE Id = ${issueResolutionId}`;
-        io:println(selectQuery);
         stream<IssueResolutions, error> resultStream = self.cdataClient->query(selectQuery, IssueResolutions);
         record {|IssueResolutions value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -926,21 +826,18 @@ public client class Client {
 
     isolated remote function getIssueSubtasks() returns stream<IssueSubtasks, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueSubtasks`;
-        io:println(selectQuery);
         stream<IssueSubtasks, error> resultStream = self.cdataClient->query(selectQuery, IssueSubtasks);
         return resultStream;
     }
 
     isolated remote function getIssueSubtasksByIssueId(int issueId) returns stream<IssueSubtasks, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueSubtasks WHERE IssueId = ${issueId}`;
-        io:println(selectQuery);
         stream<IssueSubtasks, error> resultStream = self.cdataClient->query(selectQuery, IssueSubtasks);
         return resultStream;
     }
 
     isolated remote function getIssueSubtasksByJql(string jqlQuery) returns stream<IssueSubtasks, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueSubtasks WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<IssueSubtasks, error> resultStream = self.cdataClient->query(selectQuery, IssueSubtasks);
         return resultStream;
     }
@@ -949,14 +846,12 @@ public client class Client {
 
     isolated remote function getIssueTransitions() returns stream<IssueTransitions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueTransitions`;
-        io:println(selectQuery);
         stream<IssueTransitions, error> resultStream = self.cdataClient->query(selectQuery, IssueTransitions);
         return resultStream;
     }
 
     isolated remote function getIssueTransitionsByJql(string jqlQuery) returns stream<IssueTransitions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM IssueTransitions WHERE JQL = ${jqlQuery}`;
-        io:println(selectQuery);
         stream<IssueTransitions, error> resultStream = self.cdataClient->query(selectQuery, IssueTransitions);
         return resultStream;
     }
@@ -966,7 +861,6 @@ public client class Client {
     // Error while executing SQL query: SELECT * FROM MyPermissions. The 'permissions' query parameter is required.
     isolated remote function getMyPermissions() returns stream<MyPermissions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM MyPermissions`;
-        io:println(selectQuery);
         stream<MyPermissions, error> resultStream = self.cdataClient->query(selectQuery, MyPermissions);
         return resultStream;
     }
@@ -975,7 +869,6 @@ public client class Client {
 
     isolated remote function getPermissions() returns stream<Permissions, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Permissions`;
-        io:println(selectQuery);
         stream<Permissions, error> resultStream = self.cdataClient->query(selectQuery, Permissions);
         return resultStream;
     }
@@ -984,7 +877,6 @@ public client class Client {
 
     isolated remote function getProjectCategories() returns stream<ProjectCategories, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectCategories`;
-        io:println(selectQuery);
         stream<ProjectCategories, error> resultStream = self.cdataClient->query(selectQuery, ProjectCategories);
         return resultStream;
     }
@@ -993,14 +885,12 @@ public client class Client {
 
     isolated remote function getProjectRoles() returns stream<ProjectRoles, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectRoles`;
-        io:println(selectQuery);
         stream<ProjectRoles, error> resultStream = self.cdataClient->query(selectQuery, ProjectRoles);
         return resultStream;
     }
 
     isolated remote function getProjectRolesByProjectId(int projectId) returns stream<ProjectRoles, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectRoles WHERE ProjectId = ${projectId}`;
-        io:println(selectQuery);
         stream<ProjectRoles, error> resultStream = self.cdataClient->query(selectQuery, ProjectRoles);
         return resultStream;
     }
@@ -1009,7 +899,6 @@ public client class Client {
 
     isolated remote function getProjectsIssueTypes() returns stream<ProjectsIssueTypes, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectsIssueTypes`;
-        io:println(selectQuery);
         stream<ProjectsIssueTypes, error> resultStream = self.cdataClient->query(selectQuery, ProjectsIssueTypes);
         return resultStream;
     }
@@ -1018,14 +907,12 @@ public client class Client {
 
     isolated remote function getProjectTypes() returns stream<ProjectTypes, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectTypes`;
-        io:println(selectQuery);
         stream<ProjectTypes, error> resultStream = self.cdataClient->query(selectQuery, ProjectTypes);
         return resultStream;
     }
 
     isolated remote function getProjectTypesByKey(string projectTypeKey) returns ProjectTypes|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM ProjectTypes WHERE Key = ${projectTypeKey}`;
-        io:println(selectQuery);
         stream<ProjectTypes, error> resultStream = self.cdataClient->query(selectQuery, ProjectTypes);
         record {|ProjectTypes value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -1036,7 +923,6 @@ public client class Client {
     // Error while executing SQL query: SELECT * FROM RoleDetails. Unable to retrieve columns for table [RoleDetails].
     isolated remote function getRoleDetails() returns stream<RoleDetails, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM RoleDetails`;
-        io:println(selectQuery);
         stream<RoleDetails, error> resultStream = self.cdataClient->query(selectQuery, RoleDetails);
         return resultStream;
     }
@@ -1045,7 +931,6 @@ public client class Client {
 
     isolated remote function getSecurityLevels() returns stream<SecurityLevels, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM SecurityLevels`;
-        io:println(selectQuery);
         stream<SecurityLevels, error> resultStream = self.cdataClient->query(selectQuery, SecurityLevels);
         return resultStream;
     }
@@ -1054,7 +939,6 @@ public client class Client {
 
     isolated remote function getSecuritySchemes() returns stream<SecuritySchemes, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM SecuritySchemes`;
-        io:println(selectQuery);
         stream<SecuritySchemes, error> resultStream = self.cdataClient->query(selectQuery, SecuritySchemes);
         return resultStream;
     }
@@ -1063,14 +947,12 @@ public client class Client {
 
     isolated remote function getSprintIssues() returns stream<SprintIssues, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM SprintIssues`;
-        io:println(selectQuery);
         stream<SprintIssues, error> resultStream = self.cdataClient->query(selectQuery, SprintIssues);
         return resultStream;
     }
 
     isolated remote function getSprintIssuesBySprintId(int sprintId) returns stream<SprintIssues, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM SprintIssues WHERE SprintId = ${sprintId}`;
-        io:println(selectQuery);
         stream<SprintIssues, error> resultStream = self.cdataClient->query(selectQuery, SprintIssues);
         return resultStream;
     }
@@ -1078,7 +960,6 @@ public client class Client {
     isolated remote function getSprintIssuesOfAllBoards() returns stream<SprintIssues, error> {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM SprintIssues WHERE SprintId IN (SELECT Id FROM BoardSprints 
                                               WHERE BoardId IN (SELECT Id FROM Boards WHERE Type != 'kanban'))`;
-        io:println(selectQuery);
         stream<SprintIssues, error> resultStream = self.cdataClient->query(selectQuery, SprintIssues);
         return resultStream;
     }
@@ -1087,14 +968,12 @@ public client class Client {
 
     isolated remote function getStatuses() returns stream<Statuses, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM Statuses`;
-        io:println(selectQuery);
         stream<Statuses, error> resultStream = self.cdataClient->query(selectQuery, Statuses);
         return resultStream;
     }
 
     isolated remote function getStatusesById(string statusId) returns Statuses|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Statuses WHERE Id = ${statusId}`;
-        io:println(selectQuery);
         stream<Statuses, error> resultStream = self.cdataClient->query(selectQuery, Statuses);
         record {|Statuses value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -1104,7 +983,6 @@ public client class Client {
 
     isolated remote function getTimeTrackingProviders() returns stream<TimeTrackingProviders, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM TimeTrackingProviders`;
-        io:println(selectQuery);
         stream<TimeTrackingProviders, error> resultStream = self.cdataClient->query(selectQuery, TimeTrackingProviders);
         return resultStream;
     }
@@ -1113,14 +991,12 @@ public client class Client {
 
     isolated remote function getVotesByIssueId(string issueId) returns stream<Votes, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM Votes WHERE IssueId = ${issueId}`;
-        io:println(selectQuery);
         stream<Votes, error> resultStream = self.cdataClient->query(selectQuery, Votes);
         return resultStream;
     }
 
     isolated remote function getVotesByIssueKey(string issueKey) returns stream<Votes, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM Votes WHERE IssueKey = ${issueKey}`;
-        io:println(selectQuery);
         stream<Votes, error> resultStream = self.cdataClient->query(selectQuery, Votes);
         return resultStream;
     }
@@ -1129,14 +1005,12 @@ public client class Client {
 
     isolated remote function getWatchersByIssueId(string issueId) returns stream<Watchers, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM Watchers WHERE IssueId = ${issueId}`;
-        io:println(selectQuery);
         stream<Watchers, error> resultStream = self.cdataClient->query(selectQuery, Watchers);
         return resultStream;
     }
 
     isolated remote function getWatchersByIssueKey(string issueKey) returns stream<Watchers, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM Watchers WHERE IssueKey = ${issueKey}`;
-        io:println(selectQuery);
         stream<Watchers, error> resultStream = self.cdataClient->query(selectQuery, Watchers);
         return resultStream;
     }
@@ -1145,14 +1019,12 @@ public client class Client {
 
     isolated remote function getWorkflows() returns stream<Workflows, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM Workflows`;
-        io:println(selectQuery);
         stream<Workflows, error> resultStream = self.cdataClient->query(selectQuery, Workflows);
         return resultStream;
     }
 
     isolated remote function getWorkflowByName(string workflowName) returns Workflows|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM Workflows WHERE Name = ${workflowName}`;
-        io:println(selectQuery);
         stream<Workflows, error> resultStream = self.cdataClient->query(selectQuery, Workflows);
         record {|Workflows value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -1162,7 +1034,6 @@ public client class Client {
 
     isolated remote function getWorkflowStatusCategories() returns stream<WorkflowStatusCategories, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM WorkflowStatusCategories`;
-        io:println(selectQuery);
         stream<WorkflowStatusCategories, error> resultStream = 
             self.cdataClient->query(selectQuery, WorkflowStatusCategories);
         return resultStream;
@@ -1172,7 +1043,6 @@ public client class Client {
                                                              returns WorkflowStatusCategories|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM WorkflowStatusCategories 
                                               WHERE Id = ${workflowStatusCategoryId}`;
-        io:println(selectQuery);
         stream<WorkflowStatusCategories, error> resultStream = 
             self.cdataClient->query(selectQuery, WorkflowStatusCategories);
         record {|WorkflowStatusCategories value;|} nextElement = check resultStream.next();
@@ -1183,7 +1053,6 @@ public client class Client {
                                                              returns WorkflowStatusCategories|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM WorkflowStatusCategories 
                                               WHERE Key = ${workflowStatusCategoryKey}`;
-        io:println(selectQuery);
         stream<WorkflowStatusCategories, error> resultStream = 
             self.cdataClient->query(selectQuery, WorkflowStatusCategories);
         record {|WorkflowStatusCategories value;|} nextElement = check resultStream.next();
@@ -1194,14 +1063,12 @@ public client class Client {
 
     isolated remote function getWorkflowStatuses() returns stream<WorkflowStatuses, error> {
         sql:ParameterizedQuery selectQuery = `Select * FROM WorkflowStatuses`;
-        io:println(selectQuery);
         stream<WorkflowStatuses, error> resultStream = self.cdataClient->query(selectQuery, WorkflowStatuses);
         return resultStream;
     }
 
     isolated remote function getWorkflowStatusById(int workflowStatusId) returns WorkflowStatuses|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM WorkflowStatuses WHERE Id = ${workflowStatusId}`;
-        io:println(selectQuery);
         stream<WorkflowStatuses, error> resultStream = self.cdataClient->query(selectQuery, WorkflowStatuses);
         record {|WorkflowStatuses value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -1209,7 +1076,6 @@ public client class Client {
 
     isolated remote function getWorkflowStatusByKey(string workflowStatusName) returns WorkflowStatuses|error? {
         sql:ParameterizedQuery selectQuery = `SELECT * FROM WorkflowStatuses WHERE Name = ${workflowStatusName}`;
-        io:println(selectQuery);
         stream<WorkflowStatuses, error> resultStream = self.cdataClient->query(selectQuery, WorkflowStatuses);
         record {|WorkflowStatuses value;|} nextElement = check resultStream.next();
         return nextElement.value;
@@ -1223,7 +1089,6 @@ public client class Client {
                                               string? fileName = ()) returns UploadAttachmentResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL UploadAttachment(${issueId}, ${issueKey}, 
                                                ${fileLocation}, ${fileName})}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [UploadAttachmentResponse]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
@@ -1242,7 +1107,6 @@ public client class Client {
                                                 boolean? overwrite = ()) returns DownloadAttachmentResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL DownloadAttachment(${attachmentId}, ${fileLocation}, 
                                                ${fileName}, ${overwrite})}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [DownloadAttachmentResponse]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
@@ -1259,7 +1123,6 @@ public client class Client {
 
     isolated remote function getTimeTrackingSettings() returns TimeTrackingSettings|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL GetTimeTrackingSettings()}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [TimeTrackingSettings]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
@@ -1278,7 +1141,6 @@ public client class Client {
                                                      returns SetTimeTrackingSettingsResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL SetTimeTrackingSettings(${workingHoursPerDay}, 
                                                ${workingDaysPerWeek}, ${timeFormat}, ${defaultUnit})}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [SetTimeTrackingSettingsResponse]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
@@ -1296,7 +1158,6 @@ public client class Client {
     isolated remote function changeIssueStatus(string transitionId, string? issueId = (), string? issueKey = ()) 
                                                returns ChangeIssueStatusResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL ChangeIssueStatus(${issueId}, ${issueKey}, ${transitionId})}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [ChangeIssueStatusResponse]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
@@ -1315,7 +1176,6 @@ public client class Client {
                                                returns CreateCustomFieldResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL CreateCustomField(${name}, ${description}, 
                                                ${'type}, ${searcherKey})}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [CreateCustomFieldResponse]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
@@ -1332,7 +1192,6 @@ public client class Client {
 
     isolated remote function createSchema(string tableName, string fileName) returns CreateSchemaResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL CreateSchema(${tableName}, ${fileName})}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [CreateSchemaResponse]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
@@ -1349,7 +1208,6 @@ public client class Client {
 
     isolated remote function selectTimeTrackingProvider(string 'key) returns SelectTimeTrackingProviderResponse|error? {         
         sql:ParameterizedCallQuery sqlQuery = `{CALL SelectTimeTrackingProvider(${'key})}`;
-        io:println(sqlQuery);
         sql:ProcedureCallResult retCall = check self.cdataClient->call(sqlQuery, [SelectTimeTrackingProviderResponse]);
         stream<record{}, error>? result = retCall.queryResult;
         if !(result is ()) {
