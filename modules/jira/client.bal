@@ -14,21 +14,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/sql;
 import ballerina/io;
+import ballerina/sql;
+import ballerinax/java.jdbc;
 import cdata;
 
 # CData Client connector to Jira.  
 public client class Client {
     private cdata:Client cdataClient;
     private sql:ConnectionPool? connectionPool;
+    private jdbc:Options? options;
 
     public isolated function init(JiraConfig configuration) returns error? {
         string jdbcUrl = generateJdbcUrl(configuration);
-        self.connectionPool = handleConnectionPooling(configuration);
+        self.connectionPool = cdata:handleConnectionPooling(configuration?.pooling);
+        self.options = cdata:handleOptions(configuration?.commonConfig);
         self.cdataClient = check new ({
             jdbcUrl: jdbcUrl,
-            connectionPool: self.connectionPool
+            connectionPool: self.connectionPool,
+            options: self.options
         });
     }
 

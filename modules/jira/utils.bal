@@ -15,7 +15,8 @@
 // under the License.
 
 import cdata;
-import ballerina/sql;
+// import ballerina/sql;
+// import ballerinax/java.jdbc;
 
 isolated function generateJdbcUrl(JiraConfig configuration) returns string {
     string jdbcUrl = "jdbc:cdata:jira:";
@@ -28,17 +29,28 @@ isolated function generateJdbcUrl(JiraConfig configuration) returns string {
         jdbcUrl = jdbcUrl + cdata:handleProperties("Password", configuration.basicAuth?.hostBasicAuth?.password);
         jdbcUrl = jdbcUrl + cdata:handleProperties("Url", configuration.basicAuth.url);
     }
-    return cdata:generateJdbcUrl(jdbcUrl, configuration);
+    return jdbcUrl;
 }
 
-isolated function handleConnectionPooling(JiraConfig configuration) returns sql:ConnectionPool? {
-    if (configuration?.enablePooling is true) {
-        sql:ConnectionPool connPool = {
-            maxOpenConnections: configuration?.maxOpenConnections ?: 15,
-            maxConnectionLifeTime: configuration?.maxConnectionLifeTime ?: 1800,
-            minIdleConnections: configuration?.minIdleConnections ?: 15
-        };
-        return connPool;
-    }
-    return;
-}
+// isolated function handleConnectionPooling(JiraConfig configuration) returns sql:ConnectionPool? {
+//     if (configuration?.pooling?.enablePooling is true) {
+//         sql:ConnectionPool connPool = {
+//             maxOpenConnections: configuration?.pooling?.maxOpenConnections ?: 15,
+//             maxConnectionLifeTime: configuration?.pooling?.maxConnectionLifeTime ?: 1800,
+//             minIdleConnections: configuration?.pooling?.minIdleConnections ?: 15
+//         };
+//         return connPool;
+//     }
+//     return;
+// }
+
+// isolated function handleOptions(JiraConfig configuration) returns jdbc:Options? {
+//     if !(configuration?.commonConfig is ()) {
+//         map<anydata> commonConfigMap = <map<anydata>>configuration?.commonConfig;
+//         jdbc:Options options = {
+//             properties: commonConfigMap
+//         };
+//         return options;
+//     }
+//     return;
+// }

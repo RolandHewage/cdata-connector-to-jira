@@ -48,8 +48,10 @@ JiraBasicAuth basicAuth = {
 
 JiraConfig config = {
     basicAuth: basicAuth,
-    enablePooling: true,
-    maxOpenConnections: 30
+    pooling: {
+        enablePooling: true,
+        maxOpenConnections: 30
+    }
 };
 
 Client cdataJiraClient = check new (config);

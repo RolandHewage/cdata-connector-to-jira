@@ -15,16 +15,19 @@
 // under the License.
 
 import ballerina/sql;
+import ballerinax/java.jdbc;
 
 # CData configuration.
 #
-# + jdbcUrl - The JDBC URL of the database
+# + jdbcUrl - The JDBC URL of the database  
 # + connectionPool - The `sql:ConnectionPool` object to be used within the JDBC client.
 #                    If there is no `connectionPool` provided, the global connection pool will be used and it will
-#                    be shared by other clients, which have the same properties
+#                    be shared by other clients, which have the same properties  
+# + options - The database-specific JDBC client properties
 public type CdataConfig record {
     string jdbcUrl;
     sql:ConnectionPool? connectionPool?;
+    jdbc:Options? options?;
 };
 
 # Common configuration.
@@ -38,19 +41,16 @@ public type CommonConfig record {
     *Schema;
     *Caching;
     *Miscellaneous;
-    *Pooling;
 };
 
 // Connection Properties
 
 # Complete list of the SSO properties you can configure in the connection string for this provider.
 #
-# + enableSso - Enable configuring SSO properties 
 # + ssoLoginUrl - The identity provider's login URL  
 # + ssoProperties - Additional properties required to connect to the identity provider in a semicolon-separated list  
 # + ssoExchangeUrl - The url used for consuming the SAML response and exchanging it with JIRA specific credentials
 public type SSO record {
-    boolean enableSso?;
     string ssoLoginUrl?;
     string ssoProperties?;
     string ssoExchangeUrl?;
@@ -58,7 +58,6 @@ public type SSO record {
 
 # Complete list of the OAuth properties you can configure in the connection string for this provider.
 #
-# + enableOAuth - Enable configuring OAuth properties 
 # + initiateOAuth - Set this property to initiate the process to obtain or refresh the OAuth access token when you connect    
 # + oauthVersion - Field Description  
 # + oauthClientId - The client ID assigned when you register your application with an OAuth authorization server     
@@ -79,7 +78,6 @@ public type SSO record {
 # + certificateSubject - The subject of the certificate used with Jira Private Application authentication     
 # + certificateStorePassword - The password of the certificate store used with Jira authentication
 public type OAuth record {
-    boolean enableOAuth?;
     string initiateOAuth?;
     string oauthVersion?;
     string oauthClientId?;
@@ -103,14 +101,12 @@ public type OAuth record {
 
 # Complete list of the SSL properties you can configure in the connection string for this provider.
 #
-# + enableSsl - Enable configuring SSL properties 
 # + sslClientCert - The TLS/SSL client certificate store for SSL Client Authentication (2-way SSL)  
 # + sslClientCertType - The type of key store containing the TLS/SSL client certificate   
 # + sslClientCertPassword - The password for the TLS/SSL client certificate  
 # + sslClientCertSubject - The subject of the TLS/SSL client certificate  
 # + sslServerCert - The certificate to be accepted from the server when connecting using TLS/SSL
 public type SSL record {
-    boolean enableSsl?;
     string sslClientCert?;
     string sslClientCertType?;
     string sslClientCertPassword?;
@@ -120,14 +116,12 @@ public type SSL record {
 
 # Complete list of the Firewall properties you can configure in the connection string for this provider.
 #
-# + enableFirewall - Enable configuring Firewall properties 
 # + firewallType - Field Description  
 # + firewallServer - The name or IP address of a proxy-based firewall  
 # + firewallPort - The TCP port for a proxy-based firewall    
 # + firewallUser - The user name to use to authenticate with a proxy-based firewall  
 # + firewallPassword - A password used to authenticate to a proxy-based firewall
 public type Firewall record {
-    boolean enableFirewall?;
     string firewallType?;
     string firewallServer?;
     int firewallPort?;
@@ -137,7 +131,6 @@ public type Firewall record {
 
 # Complete list of the Proxy properties you can configure in the connection string for this provider.
 #
-# + enableProxy - Enable configuring Proxy properties 
 # + proxyAutoDetect - This indicates whether to use the system proxy settings or not. This takes precedence over other proxy settings, so you'll need to set ProxyAutoDetect to FALSE in order use custom proxy settings  
 # + proxyServer - The hostname or IP address of a proxy to route HTTP traffic through  
 # + proxyPort - The TCP port the ProxyServer proxy is running on  
@@ -147,7 +140,6 @@ public type Firewall record {
 # + proxySslType - The SSL type to use when connecting to the ProxyServer proxy  
 # + proxyExceptions - A semicolon separated list of destination hostnames or IPs that are exempt from connecting through the ProxyServer
 public type Proxy record {
-    boolean enableProxy?;
     boolean proxyAutoDetect?;
     string proxyServer?;
     int proxyPort?;
@@ -160,14 +152,12 @@ public type Proxy record {
 
 # Complete list of the Logging properties you can configure in the connection string for this provider.
 #
-# + enableLogging - Enable configuring Logging properties 
 # + logFile - A filepath which designates the name and location of the log file  
 # + verbosity - The verbosity level that determines the amount of detail included in the log file  
 # + logModules - Core modules to be included in the log file  
 # + maxLogFileSize - A string specifying the maximum size in bytes for a log file (for example, 10 MB)  
 # + maxLogFileCount - A string specifying the maximum file count of log files
 public type Logging record {
-    boolean enableLogging?;
     string logFile?;
     string verbosity?;
     string logModules?;
@@ -177,13 +167,11 @@ public type Logging record {
 
 # Complete list of the Schema properties you can configure in the connection string for this provider.
 #
-# + enableSchema - Enable configuring Schema properties 
 # + location - A path to the directory that contains the schema files defining tables, views, and stored procedures  
 # + browsableSchemas - This property restricts the schemas reported to a subset of the available schemas. For example, BrowsableSchemas=SchemaA,SchemaB,SchemaC  
 # + tables - This property restricts the tables reported to a subset of the available tables. For example, Tables=TableA,TableB,TableC  
 # + views - Restricts the views reported to a subset of the available tables. For example, Views=ViewA,ViewB,ViewC
 public type Schema record {
-    boolean enableSchema?;
     string location?;
     string browsableSchemas?;
     string tables?;
@@ -192,7 +180,6 @@ public type Schema record {
 
 # Complete list of the Caching properties you can configure in the connection string for this provider.
 #
-# + enableCaching - Enable configuring Caching properties 
 # + autoCache - Automatically caches the results of SELECT queries into a cache database specified by either CacheLocation or both of CacheConnection and CacheProvider  
 # + cacheDriver - The database driver to be used to cache data  
 # + cacheConnection - The connection string for the cache database. This property is always used in conjunction with CacheProvider . Setting both properties will override the value set for CacheLocation for caching data  
@@ -201,7 +188,6 @@ public type Schema record {
 # + offline - Use offline mode to get the data from the cache instead of the live source  
 # + cacheMetadata - This property determines whether or not to cache the table metadata to a file store
 public type Caching record {
-    boolean enableCaching?;
     boolean autoCache?;
     string cacheDriver?;
     string cacheConnection?;
@@ -213,7 +199,6 @@ public type Caching record {
 
 # Complete list of the Miscellaneous properties you can configure in the connection string for this provider.
 #
-# + enableMiscellaneous - Enable configuring Miscellaneous properties 
 # + batchSize - The maximum size of each batch operation to submit  
 # + connectionLifeTime - The maximum lifetime of a connection in seconds. Once the time has elapsed, the connection object is disposed  
 # + connectOnOpen - This property species whether to connect to the JIRA when the connection is opened  
@@ -235,7 +220,6 @@ public type Caching record {
 # + useConnectionPooling - This property enables connection pooling  
 # + useDefaultOrderBy - Indicates if a default order by should be applied if none is specified in the query
 public type Miscellaneous record {
-    boolean enableMiscellaneous?;
     int batchSize?;
     int connectionLifeTime?;
     boolean connectOnOpen?;
@@ -267,7 +251,7 @@ public type Miscellaneous record {
 #                           Default value is 1800 seconds (30 minutes)
 # + minIdleConnections - The minimum number of idle connections that pool tries to maintain in the pool. 
 #                        Default is the same as maxOpenConnections
-public type Pooling record {
+public type ConnectionPooling record {
     boolean enablePooling?;
     int maxOpenConnections?;
     decimal maxConnectionLifeTime?;
