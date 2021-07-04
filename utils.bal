@@ -25,23 +25,24 @@ public isolated function handleProperties(string 'key, anydata value) returns st
     return suffix;
 }
 
-public isolated function handleConnectionPooling(ConnectionPooling? pooling = ()) returns sql:ConnectionPool? {
-    if (pooling?.enablePooling is true) {
+public isolated function handleConnectionPooling(ConnectionPool? connectionPool = ()) returns sql:ConnectionPool? {
+    if (connectionPool?.enablePooling is true) {
         sql:ConnectionPool connPool = {
-            maxOpenConnections: pooling?.maxOpenConnections ?: 15,
-            maxConnectionLifeTime: pooling?.maxConnectionLifeTime ?: 1800,
-            minIdleConnections: pooling?.minIdleConnections ?: 15
+            maxOpenConnections: connectionPool?.maxOpenConnections ?: 15,
+            maxConnectionLifeTime: connectionPool?.maxConnectionLifeTime ?: 1800,
+            minIdleConnections: connectionPool?.minIdleConnections ?: 15
         };
         return connPool;
     }
     return;
 }
 
-public isolated function handleOptions(CommonConfig? commonConfig = ()) returns jdbc:Options? {
-    if !(commonConfig is ()) {
-        map<anydata> commonConfigMap = <map<anydata>>commonConfig;
+public isolated function handleConnectionStringOptions(ConnectionStringOptions? connectionStringOptions = ()) 
+                                                       returns jdbc:Options? {
+    if !(connectionStringOptions is ()) {
+        map<anydata> connectionStringOptionsMap = <map<anydata>>connectionStringOptions;
         jdbc:Options options = {
-            properties: commonConfigMap
+            properties: connectionStringOptionsMap
         };
         return options;
     }

@@ -19,12 +19,12 @@ import cdata;
 # Client configuration.
 #
 # + basicAuth - Basic authentication     
-# + pooling - Properties which are used to configure DB connection pool
-# + commonConfig - Common configuration
+# + connectionPool - Properties which are used to configure DB connection pool
+# + connectionStringOptions - Various options that can be used to establish a connection
 public type JiraConfig record {
     JiraBasicAuth basicAuth;
-    cdata:ConnectionPooling pooling?;
-    cdata:CommonConfig commonConfig?;
+    cdata:ConnectionPool connectionPool?;
+    cdata:ConnectionStringOptions connectionStringOptions?;
 };
 
 # Basic authentication.

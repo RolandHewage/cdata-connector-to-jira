@@ -14,24 +14,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/sql;
-import ballerinax/java.jdbc;
-
 # CData configuration.
 #
 # + jdbcUrl - The JDBC URL of the database  
 # + connectionPool - The `sql:ConnectionPool` object to be used within the JDBC client.
 #                    If there is no `connectionPool` provided, the global connection pool will be used and it will
 #                    be shared by other clients, which have the same properties  
-# + options - The database-specific JDBC client properties
+# + connectionStringOptions - Various options that can be used to establish a connection
 public type CdataConfig record {
     string jdbcUrl;
-    sql:ConnectionPool? connectionPool?;
-    jdbc:Options? options?;
+    ConnectionPool? connectionPool?;
+    ConnectionStringOptions? connectionStringOptions?;
 };
 
-# Common configuration.
-public type CommonConfig record {
+# Represents the properties which are used to configure DB connection pool.
+#
+# + enablePooling - Enable configuring connection pooling properties 
+# + maxOpenConnections - The maximum number of open connections that the pool is allowed to have, including both 
+#                        idle and in-use connections. Default value is 15
+# + maxConnectionLifeTime - The maximum lifetime (in seconds) of a connection in the pool. 
+#                           Default value is 1800 seconds (30 minutes)
+# + minIdleConnections - The minimum number of idle connections that pool tries to maintain in the pool. 
+#                        Default is the same as maxOpenConnections
+public type ConnectionPool record {
+    boolean enablePooling?;
+    int maxOpenConnections?;
+    decimal maxConnectionLifeTime?;
+    int minIdleConnections?;
+};
+
+# Various options that can be used to establish a connection.
+public type ConnectionStringOptions record {
     *SSO;
     *OAuth;
     *SSL;
@@ -240,22 +253,6 @@ public type Miscellaneous record {
     string timezone?;
     boolean useConnectionPooling?;
     boolean useDefaultOrderBy?;
-};
-
-# Represents the properties which are used to configure DB connection pool.
-#
-# + enablePooling - Enable configuring connection pooling properties 
-# + maxOpenConnections - The maximum number of open connections that the pool is allowed to have, including both 
-#                        idle and in-use connections. Default value is 15
-# + maxConnectionLifeTime - The maximum lifetime (in seconds) of a connection in the pool. 
-#                           Default value is 1800 seconds (30 minutes)
-# + minIdleConnections - The minimum number of idle connections that pool tries to maintain in the pool. 
-#                        Default is the same as maxOpenConnections
-public type ConnectionPooling record {
-    boolean enablePooling?;
-    int maxOpenConnections?;
-    decimal maxConnectionLifeTime?;
-    int minIdleConnections?;
 };
 
 // OAuth Connection String Options
