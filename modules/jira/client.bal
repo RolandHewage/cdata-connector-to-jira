@@ -26,7 +26,10 @@ public client class Client {
     public isolated function init(JiraConfig configuration) returns error? {
         string jdbcUrl = generateJdbcUrl(configuration);
         self.connectionPool = handleConnectionPooling(configuration);
-        self.cdataClient = check new (jdbcUrl, self.connectionPool);
+        self.cdataClient = check new ({
+            jdbcUrl: jdbcUrl,
+            connectionPool: self.connectionPool
+        });
     }
 
     // Projects

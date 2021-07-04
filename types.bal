@@ -14,6 +14,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/sql;
+
+# CData configuration.
+#
+# + jdbcUrl - The JDBC URL of the database
+# + connectionPool - The `sql:ConnectionPool` object to be used within the JDBC client.
+#                    If there is no `connectionPool` provided, the global connection pool will be used and it will
+#                    be shared by other clients, which have the same properties
+public type CdataConfig record {
+    string jdbcUrl;
+    sql:ConnectionPool? connectionPool?;
+};
+
 # Common configuration.
 public type CommonConfig record {
     *SSO;

@@ -22,8 +22,8 @@ public client class Client {
     private jdbc:Client dbClient;
     private sql:ConnectionPool? connPool;
 
-    public isolated function init(string jdbcUrl, sql:ConnectionPool? connectionPool = ()) returns sql:Error? {
-        self.dbClient = check new (jdbcUrl, connectionPool = connectionPool);
+    public isolated function init(CdataConfig cdataConfig) returns sql:Error? {
+        self.dbClient = check new (cdataConfig.jdbcUrl, connectionPool = cdataConfig?.connectionPool);
     }
 
     # Queries the database with the provided query and returns the result as a stream.
