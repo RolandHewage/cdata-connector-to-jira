@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerinax/java.jdbc;
 import cdata;
 
 isolated function generateJdbcUrl(JiraConfig configuration) returns string {
@@ -28,4 +29,16 @@ isolated function generateJdbcUrl(JiraConfig configuration) returns string {
         jdbcUrl = jdbcUrl + cdata:handleProperties("Url", configuration.basicAuth.url);
     }
     return jdbcUrl;
+}
+
+public isolated function handleConnectionStringOptions(ConnectionStringOptions? connectionStringOptions = ()) 
+                                                       returns jdbc:Options? {
+    if !(connectionStringOptions is ()) {
+        map<anydata> connectionStringOptionsMap = <map<anydata>>connectionStringOptions;
+        jdbc:Options options = {
+            properties: connectionStringOptionsMap
+        };
+        return options;
+    }
+    return;
 }

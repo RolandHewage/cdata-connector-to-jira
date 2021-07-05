@@ -15,18 +15,21 @@
 // under the License.
 
 import ballerina/sql;
+import ballerinax/java.jdbc;
 import cdata;
 
 # CData Client connector to Jira.  
 public client class Client {
     private cdata:Client cdataClient;
+    private jdbc:Options? options;
 
     public isolated function init(JiraConfig configuration) returns error? {
         string jdbcUrl = generateJdbcUrl(configuration);
+        self.options = handleConnectionStringOptions(configuration?.connectionStringOptions);
         self.cdataClient = check new ({
             jdbcUrl: jdbcUrl,
             connectionPool: configuration?.connectionPool,
-            connectionStringOptions: configuration?.connectionStringOptions
+            options: self.options
         });
     }
 

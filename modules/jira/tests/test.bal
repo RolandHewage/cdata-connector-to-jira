@@ -49,7 +49,6 @@ JiraBasicAuth basicAuth = {
 JiraConfig config = {
     basicAuth: basicAuth,
     connectionPool: {
-        enablePooling: true,
         maxOpenConnections: 30
     }
 };

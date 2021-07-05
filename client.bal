@@ -24,9 +24,8 @@ public client class Client {
     private jdbc:Options? options;
 
     public isolated function init(CdataConfig cdataConfig) returns sql:Error? {
-        self.connectionPool = handleConnectionPooling(cdataConfig?.connectionPool);
-        self.options = handleConnectionStringOptions(cdataConfig?.connectionStringOptions);
-        self.dbClient = check new (cdataConfig.jdbcUrl, connectionPool = self.connectionPool, options = self.options);
+        self.dbClient = check new (cdataConfig.jdbcUrl, connectionPool = cdataConfig?.connectionPool, 
+            options = cdataConfig?.options);
     }
 
     # Queries the database with the provided query and returns the result as a stream.

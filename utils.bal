@@ -14,37 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/sql;
-import ballerinax/java.jdbc;
-
 public isolated function handleProperties(string 'key, anydata value) returns string {
     string suffix = "";
     if (value is string|int|float|decimal|boolean) {
         suffix = string `${'key}` + EQUAL + string `${value}` + SEMI_COLON;
     } 
     return suffix;
-}
-
-public isolated function handleConnectionPooling(ConnectionPool? connectionPool = ()) returns sql:ConnectionPool? {
-    if (connectionPool?.enablePooling is true) {
-        sql:ConnectionPool connPool = {
-            maxOpenConnections: connectionPool?.maxOpenConnections ?: 15,
-            maxConnectionLifeTime: connectionPool?.maxConnectionLifeTime ?: 1800,
-            minIdleConnections: connectionPool?.minIdleConnections ?: 15
-        };
-        return connPool;
-    }
-    return;
-}
-
-public isolated function handleConnectionStringOptions(ConnectionStringOptions? connectionStringOptions = ()) 
-                                                       returns jdbc:Options? {
-    if !(connectionStringOptions is ()) {
-        map<anydata> connectionStringOptionsMap = <map<anydata>>connectionStringOptions;
-        jdbc:Options options = {
-            properties: connectionStringOptionsMap
-        };
-        return options;
-    }
-    return;
 }
