@@ -1,11 +1,10 @@
 [package]
-org = "ballerinax"
-name = "cdata.jira"
+org = "rolandhewage"
+name = "cdatatest.jira"
 version = "0.1.0"
 license= ["Apache-2.0"]
-authors = ["Ballerina"]
+authors = ["Roland"]
 keywords = ["CData","Jira"]
-export = ["cdata", "cdata.jira"]
 
 [build-options]
 observabilityIncluded = true
