@@ -1,9 +1,9 @@
 [package]
-org = "rolandhewage"
-name = "cdatatest.jira"
+org = "ballerinax"
+name = "cdata.jira"
 version = "0.1.0"
 license= ["Apache-2.0"]
-authors = ["Roland"]
+authors = ["Ballerina"]
 keywords = ["CData","Jira"]
 
 [build-options]
@@ -11,4 +11,3 @@ observabilityIncluded = true
 
 [[platform.java11.dependency]]
 path = "./cdataDrivers/cdata.jdbc.jira.jar"
-modules = ["cdata_jira"]
